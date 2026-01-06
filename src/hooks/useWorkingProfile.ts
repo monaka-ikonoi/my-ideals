@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useImmer } from 'use-immer';
-import { ProfileSchema } from '../schema/profile';
-import { TemplateSchema } from '../schema/template';
+import { ProfileSchema } from '../domain/profile';
+import { TemplateSchema } from '../domain/template';
 import {
   type WorkingProfile,
   buildWorkingProfile,
