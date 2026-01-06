@@ -1,4 +1,4 @@
-import { CollectionPage } from './Collections';
+import { CollectionPage } from './components/CollectionPage';
 
 export default function App() {
   return (

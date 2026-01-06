@@ -1,7 +1,7 @@
-import { useWorkingProfile } from './hooks/useWorkingProfile';
-import { CollectionPanel } from './components/CollectionPanel';
+import { useWorkingProfile } from '../hooks/useWorkingProfile';
+import { CollectionPanel } from './CollectionPanel';
 import { useState, useMemo } from 'react';
-import type { WorkingProfile } from './domain/working';
+import type { WorkingProfile } from '../domain/working';
 
 function useFilteredCollections(working: WorkingProfile | null, selectedMember: string) {
   return useMemo(() => {
