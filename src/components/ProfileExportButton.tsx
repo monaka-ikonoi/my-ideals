@@ -1,6 +1,5 @@
 import { ProfileStorage, type ProfileEntry } from '@/storage/localStorage';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
-import { saveAs } from 'file-saver';
 
 type ProfileExportButtonProps = {
   activeProfile: ProfileEntry | null;
@@ -17,7 +16,10 @@ export function ProfileExportButton({ activeProfile }: ProfileExportButtonProps)
     }
 
     const blob = new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' });
-    saveAs(blob, `my-ideals-profile-${profile.name}.json`);
+    const filename = `my-ideals-profile-${profile.name}.json`;
+    const url = URL.createObjectURL(blob);
+    Object.assign(document.createElement('a'), { href: url, download: filename }).click();
+    URL.revokeObjectURL(url);
   };
 
   return (
