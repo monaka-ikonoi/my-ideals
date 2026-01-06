@@ -12,7 +12,7 @@ export function ImageCheckCard({ src, text, checked, onChange }: ImageCheckCardP
       <input type="checkbox" className="peer sr-only" checked={checked} onChange={onChange} />
 
       {/* Image */}
-      <img src={src} alt={text} className="aspect-[3/4] w-full rounded-md object-cover transition peer-not-checked:opacity-50"/>
+      <img src={src} alt={text} className="aspect-[7/10] w-full rounded-md object-cover transition peer-not-checked:opacity-50"/>
 
       {/* Bottom bar */}
       <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-black/50
