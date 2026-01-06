@@ -45,9 +45,11 @@ export function CollectionPage({ profileId }: CollectionPageProps) {
   console.log('Active Working Profile:', working);
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-6 space-y-6">
+    <main className="mx-auto max-w-7xl space-y-6 px-4 py-6">
       {/* Filter */}
-      <div className="flex items-center gap-3 rounded-lg bg-white border border-gray-200 p-4 shadow-sm">
+      <div
+        className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
+      >
         <label htmlFor="member-filter" className="text-sm font-medium text-gray-700">
           メンバーで絞り込み:
         </label>
@@ -55,11 +57,8 @@ export function CollectionPage({ profileId }: CollectionPageProps) {
           id="member-filter"
           value={selectedMember}
           onChange={e => setSelectedMember(e.target.value)}
-          className="
-            rounded-md border border-gray-300 
-            bg-white px-3 py-2 text-sm
-            shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500
-          "
+          className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm
+            focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
         >
           <option value="all">すべて</option>
           {working.template.members.map(member => (

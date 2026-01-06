@@ -19,11 +19,8 @@ export function ProfileDrawer({
       {/* Hamburger Button */}
       <button
         onClick={onOpen}
-        className="
-          rounded-lg border border-gray-300 p-2 text-gray-700
-          hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500
-          lg:hidden
-        "
+        className="rounded-lg border border-gray-300 p-2 text-gray-700 hover:bg-gray-50 focus:ring-2
+          focus:ring-blue-500 focus:outline-none lg:hidden"
       >
         <Bars3Icon className="h-5 w-5" />
       </button>
@@ -47,7 +44,7 @@ export function ProfileDrawer({
             {/* Current Profile */}
             {activeProfile && (
               <div className="border-b border-gray-200 px-4 py-3">
-                <div className="text-xs font-semibold uppercase text-gray-500">Current Profile</div>
+                <div className="text-xs font-semibold text-gray-500 uppercase">Current Profile</div>
                 <div className="mt-1 truncate font-medium text-gray-900">{activeProfile.name}</div>
               </div>
             )}

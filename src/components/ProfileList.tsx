@@ -20,19 +20,16 @@ export function ProfileList({
     <>
       {profiles.length > 0 && (
         <div className="py-1">
-          <div className="px-3 py-2 text-xs font-semibold uppercase text-gray-500">Profiles</div>
+          <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">Profiles</div>
           {profiles.map(profile => (
             <button
               key={profile.id}
               onClick={() => onSelect(profile.id)}
-              className={`
-                flex w-full items-center gap-2 px-3 py-2 text-left text-sm
-                ${
-                  profile.id === activeProfile?.id
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }
-              `}
+              className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm ${
+                profile.id === activeProfile?.id
+                  ? 'bg-blue-50 text-blue-700'
+                  : 'text-gray-700 hover:bg-gray-100'
+              } `}
             >
               {profile.id === activeProfile?.id ? (
                 <CheckIcon className="h-4 w-4" />
@@ -50,14 +47,16 @@ export function ProfileList({
       <div className="py-1">
         <button
           onClick={onCreate}
-          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
+            hover:bg-gray-100"
         >
           <PlusIcon className="h-4 w-4" />
           New Profile
         </button>
         <button
           onClick={onImport}
-          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
+            hover:bg-gray-100"
         >
           <ArrowUpTrayIcon className="h-4 w-4" />
           Import Profile

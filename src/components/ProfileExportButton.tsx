@@ -24,11 +24,8 @@ export function ProfileExportButton({ activeProfile }: ProfileExportButtonProps)
     <button
       onClick={handleExport}
       disabled={!activeProfile}
-      className="
-                flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2
-                text-sm font-medium text-white
-                    hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50
-                  "
+      className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium
+        text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
     >
       <ArrowDownTrayIcon className="h-4 w-4" />
       <span className="hidden sm:inline">Save</span>

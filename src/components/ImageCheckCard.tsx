@@ -15,13 +15,14 @@ export function ImageCheckCard({ src, text, checked, onChange }: ImageCheckCardP
       <img
         src={src}
         alt={text}
-        className="aspect-[7/10] w-full rounded-md object-cover transition peer-not-checked:opacity-50"
+        className="aspect-[7/10] w-full rounded-md object-cover transition
+          peer-not-checked:opacity-50"
       />
 
       {/* Bottom bar */}
       <div
-        className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-black/50
-                      px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-xs text-white rounded-b-md"
+        className="absolute inset-x-0 bottom-0 flex items-center justify-between rounded-b-md
+          bg-black/50 px-1.5 py-0.5 text-[10px] text-white sm:px-2 sm:py-1 sm:text-xs"
       >
         <span className="truncate">{text}</span>
         {/* Visual checkbox (mirrors state) */}

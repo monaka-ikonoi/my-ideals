@@ -22,12 +22,8 @@ export function CollectionPanel({ id: _id, name, items, onToggle }: CollectionPa
       {/* Grid of cards */}
       <div className="p-4">
         <div
-          className="
-            grid grid-cols-3 lg:grid-cols-6 
-            gap-2 lg:gap-4
-            max-w-[360px] lg:max-w-[960px]
-            mx-auto
-          "
+          className="mx-auto grid max-w-[360px] grid-cols-3 gap-2 lg:max-w-[960px] lg:grid-cols-6
+            lg:gap-4"
         >
           {items.map(item => (
             <ImageCheckCard
