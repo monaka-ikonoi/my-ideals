@@ -3,15 +3,19 @@ import { CollectionPage } from '@/components/CollectionPage';
 import { useProfileManager } from '@/hooks/useProfileManager';
 
 export default function App() {
-  const { profileIndex, setActiveProfile } = useProfileManager();
+  const { profiles, activeProfile, setActiveProfile } = useProfileManager();
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar profileIndex={profileIndex} onSelectProfile={setActiveProfile} />
+      <Navbar
+        profiles={profiles}
+        activeProfile={activeProfile}
+        onSelectProfile={setActiveProfile}
+      />
 
       <main>
-        {profileIndex.active ? (
-          <CollectionPage profileId={profileIndex.active} />
+        {activeProfile ? (
+          <CollectionPage profileId={activeProfile.id} />
         ) : (
           <div className="flex h-[calc(100vh-56px)] items-center justify-center">
             <div className="text-center">
