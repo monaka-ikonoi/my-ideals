@@ -20,7 +20,7 @@ export type ProfileIndex = {
 };
 
 const ProfileIndexSchema = z.object({
-  active: z.string(),
+  active: z.string().nullable(),
   profiles: z.array(
     z.object({
       id: z.nanoid(),
@@ -82,6 +82,7 @@ function getProfileIndex(): ProfileIndex {
 }
 
 function setProfileIndex(index: ProfileIndex): void {
+  console.log(index);
   ProfileIndexSchema.parse(index);
   localStorage.setItem(LOCAL_STORAGE_KEYS.index, JSON.stringify(index));
 }
