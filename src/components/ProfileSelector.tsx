@@ -145,6 +145,7 @@ export function ProfileSelector({
       <ImportConflictDialog
         isOpen={pendingImport !== null}
         profileName={pendingImport?.profile.name ?? ''}
+        profileId={pendingImport?.profile.id ?? ''}
         onAction={handleConflictAction}
       />
 

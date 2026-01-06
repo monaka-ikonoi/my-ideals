@@ -1,19 +1,31 @@
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { ConfirmDialog } from './ui/ConfirmDialog';
+import { InlineCode } from './ui/InlineCode';
 
 export type ImportConflictAction = 'overwrite' | 'duplicate' | 'cancel';
 
 type ImportConflictDialogProps = {
   isOpen: boolean;
   profileName: string;
+  profileId: string;
   onAction: (action: ImportConflictAction) => void;
 };
 
-export function ImportConflictDialog({ isOpen, profileName, onAction }: ImportConflictDialogProps) {
+export function ImportConflictDialog({
+  isOpen,
+  profileName,
+  profileId,
+  onAction,
+}: ImportConflictDialogProps) {
   return (
     <ConfirmDialog
       isOpen={isOpen}
       title="Profile Already Exists"
-      message={`A profile named "${profileName}" already exists. What would you like to do?`}
+      message={
+        <>
+          A profile named "<strong>{profileName}</strong>" with ID{' '}
+          <InlineCode>{profileId}</InlineCode> already exists. What would you like to do?
+        </>
+      }
       options={[
         {
           label: 'Create Copy',

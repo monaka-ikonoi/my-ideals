@@ -1,9 +1,10 @@
+import type { ReactNode } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 type ConfirmDialogProps = {
   isOpen: boolean;
   title: string;
-  message: string;
+  message: ReactNode;
   options: {
     label: string;
     value: string;
@@ -36,7 +37,10 @@ export function ConfirmDialog({
 
       {/* Dialog */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-md rounded-lg bg-white shadow-xl">
+        <div
+          className="w-auto max-w-[90vw] min-w-[20rem] rounded-lg bg-white shadow-xl sm:max-w-3xl
+            sm:min-w-[28rem]"
+        >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
             <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
