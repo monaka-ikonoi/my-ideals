@@ -1,11 +1,12 @@
-// components/profile/ProfileSelector.tsx
 import { useState, useRef } from 'react';
-import { type Profile } from '@/domain/profile';
+import { ZodError } from 'zod';
+import { type Profile, ProfileSchema } from '@/domain/profile';
 import { type ProfileEntry } from '@/storage/localStorage';
 import { ProfileDropdown } from './ProfileDropdown';
 import { ProfileDrawer } from './ProfileDrawer';
 import { ProfileExportButton } from './ProfileExportButton';
 import { ImportConflictDialog, type ImportConflictAction } from './ProfileImportConflictDialog';
+import { ErrorDialog } from './ui/ErrorDialog';
 
 type PendingImport = {
   profile: Profile;
@@ -29,6 +30,7 @@ export function ProfileSelector({
 }: ProfileSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [pendingImport, setPendingImport] = useState<PendingImport | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const open = () => setIsOpen(true);
@@ -49,30 +51,31 @@ export function ProfileSelector({
     close();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = event => {
-      try {
-        const profile = JSON.parse(event.target?.result as string) as Profile;
-        const existingProfile = profiles.find(p => p.id === profile.id);
+    try {
+      const profile = ProfileSchema.parse(JSON.parse(await file.text()));
 
-        if (existingProfile) {
-          setPendingImport({
-            profile,
-            existingId: existingProfile.id,
-          });
-        } else {
-          onImport(profile);
-          close();
-        }
-      } catch {
-        alert('Invalid profile file');
+      const existingIndex = profiles.findIndex(p => p.id === profile.id);
+
+      if (existingIndex >= 0) {
+        setPendingImport({ profile, existingId: profile.id });
+      } else {
+        onImport(profile, false);
+        close();
       }
-    };
-    reader.readAsText(file);
+    } catch (e) {
+      const message =
+        e instanceof SyntaxError
+          ? `Invalid JSON: ${e.message}`
+          : e instanceof ZodError
+            ? `Invalid profile:\n${e.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('\n')}`
+            : 'Failed to read file';
+
+      setImportError(message);
+    }
     e.target.value = '';
   };
 
@@ -139,11 +142,18 @@ export function ProfileSelector({
         className="hidden"
       />
 
-      {/* Import Conflict Dialog */}
       <ImportConflictDialog
         isOpen={pendingImport !== null}
         profileName={pendingImport?.profile.name ?? ''}
         onAction={handleConflictAction}
+      />
+
+      <ErrorDialog
+        isOpen={importError !== null}
+        title="Import Failed"
+        message="Could not import the selected file."
+        details={importError ?? undefined}
+        onClose={() => setImportError(null)}
       />
     </>
   );
