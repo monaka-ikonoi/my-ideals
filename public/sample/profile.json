@@ -5,10 +5,23 @@
   "name": "(For development) =ME",
   "templateLink": "/sample/template.json",
   "templateId": "equal-me",
-  "collections": [
-    {
-      "id": "2026-new-year",
-      "status": [false, false, false, true, true, true]
+  "templateRevision": 1,
+  "collections": {
+    "2026-new-year": {
+      "nanaka-hiki": true,
+      "nanaka-chuu": true,
+      "nanaka-yori": true,
+      "moeko-hiki": false,
+      "moeko-chuu": false,
+      "moeko-yori": false
+    },
+    "2025-special-live": {
+      "nanaka-hiki": true,
+      "nanaka-chuu": false,
+      "nanaka-yori": true,
+      "moeko-hiki": false,
+      "moeko-chuu": true,
+      "moeko-yori": false
     }
-  ]
+  }
 }

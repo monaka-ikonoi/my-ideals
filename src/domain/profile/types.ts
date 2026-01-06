@@ -1,8 +1,3 @@
-type ProfileCollection = {
-  id: string;
-  status: boolean[];
-};
-
 export type Profile = {
   magic: 'my-ideals-profile';
   version: 1;
@@ -10,5 +5,6 @@ export type Profile = {
   name: string;
   templateId: string;
   templateLink: string;
-  collections: ProfileCollection[];
+  templateRevision: number;
+  collections: Record<string, Record<string, boolean>>;
 };

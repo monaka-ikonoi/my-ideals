@@ -12,7 +12,8 @@ export const ProfileSchema = z.object({
   name: z.string(),
   templateId: z.string(),
   templateLink: z.url(),
-  collections: z.array(ProfileCollection),
+  templateRevision: z.number(),
+  collections: z.record(z.string(), z.record(z.string(), z.boolean())),
 });
 
 export type Profile = z.infer<typeof ProfileSchema>;

@@ -5,6 +5,7 @@ import {
   type WorkingProfile,
   buildWorkingProfile,
   extractProfileFromWorking,
+  toggleItemStatus,
 } from '../domain/working';
 
 export function useWorkingProfile(profileId: string) {
@@ -29,6 +30,7 @@ export function useWorkingProfile(profileId: string) {
 
         setWorking(buildWorkingProfile(profile, template));
       } catch (e) {
+        console.error('Error loading working profile:', e);
         setError(e instanceof Error ? e.message : 'Unknown error');
       } finally {
         if (!cancelled) setIsLoading(false);
@@ -39,7 +41,7 @@ export function useWorkingProfile(profileId: string) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [profileId]);
 
   const saveProfile = useCallback(() => {
     if (!working) return;
@@ -48,28 +50,15 @@ export function useWorkingProfile(profileId: string) {
     console.log('Saving profile:', profile);
     ProfileSchema.parse(profile);
     localStorage.setItem(`my-ideals:profile:${profileId}`, JSON.stringify(profile));
-  }, [working]);
+  }, [working, profileId]);
 
-  const toggleItemStatus = useCallback((collectionId: string, itemIndex: number) => {
+  const toggleStatus = useCallback((collectionId: string, itemId: string) => {
+    console.log(`Toggling collection ${collectionId}, item ${itemId}`);
     setWorking(prev => {
-      if (!prev) return prev;
-
-      return {
-        ...prev,
-        collections: prev.collections.map(collection => {
-          if (collection.id !== collectionId) {
-            return collection;
-          }
-
-          return {
-            ...collection,
-            items: collection.items.map((item, idx) => {
-              if (idx !== itemIndex) return item;
-              return { ...item, status: !item.status };
-            }),
-          };
-        }),
-      };
+      if (!prev) {
+        return prev;
+      }
+      return toggleItemStatus(prev, collectionId, itemId);
     });
   }, []);
 
@@ -82,7 +71,7 @@ export function useWorkingProfile(profileId: string) {
   return {
     working,
     setWorking,
-    toggleItemStatus,
+    toggleStatus,
     saveProfile,
     isLoading,
     error,

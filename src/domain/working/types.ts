@@ -1,10 +1,11 @@
 import { type Profile } from '../profile';
 import { type Template } from '../template';
 
-type WorkingCollection = {
+export type WorkingCollection = {
   id: string;
   name: string;
   items: {
+    id: string;
     member: string;
     title: string;
     status: boolean;

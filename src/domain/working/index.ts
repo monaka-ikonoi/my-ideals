@@ -1,2 +1,2 @@
 export type { WorkingProfile } from './types';
-export { buildWorkingProfile, extractProfileFromWorking } from './utilities';
+export { buildWorkingProfile, extractProfileFromWorking, toggleItemStatus } from './utilities';

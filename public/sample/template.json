@@ -1,6 +1,7 @@
 {
   "magic": "my-ideals-template",
   "version": 1,
+  "revision": 1,
   "id": "equal-me",
   "name": "=ME (イコールミー)",
   "members": [
@@ -13,28 +14,70 @@
       "name": "2026年新春",
       "items": [
         {
+          "id": "nanaka-hiki",
           "member": "noguchi-nanaka",
-          "title": "2026年新春 野口菜々風 ヒキ"
+          "title": "野口菜々風 ヒキ"
         },
         {
+          "id": "nanaka-chuu",
           "member": "noguchi-nanaka",
-          "title": "2026年新春 野口菜々風 チュウ"
+          "title": "野口菜々風 チュウ"
         },
         {
+          "id": "nanaka-yori",
           "member": "noguchi-nanaka",
-          "title": "2026年新春 野口菜々風 ヨリ"
+          "title": "野口菜々風 ヨリ"
         },
         {
+          "id": "moeko-hiki",
           "member": "yamamoto-moeko",
-          "title": "2026年新春 山本萌子 ヒキ"
+          "title": "山本萌子 ヒキ"
         },
         {
+          "id": "moeko-chuu",
           "member": "yamamoto-moeko",
-          "title": "2026年新春 山本萌子 チュウ"
+          "title": "山本萌子 チュウ"
         },
         {
+          "id": "moeko-yori",
           "member": "yamamoto-moeko",
-          "title": "2026年新春 山本萌子 ヨリ"
+          "title": "山本萌子 ヨリ"
+        }
+      ]
+    },
+    {
+      "id": "2025-special-live",
+      "name": "特別公演2025",
+      "items": [
+        {
+          "id": "nanaka-hiki",
+          "member": "noguchi-nanaka",
+          "title": "野口菜々風 ヒキ"
+        },
+        {
+          "id": "nanaka-chuu",
+          "member": "noguchi-nanaka",
+          "title": "野口菜々風 チュウ"
+        },
+        {
+          "id": "nanaka-yori",
+          "member": "noguchi-nanaka",
+          "title": "野口菜々風 ヨリ"
+        },
+        {
+          "id": "moeko-hiki",
+          "member": "yamamoto-moeko",
+          "title": "山本萌子 ヒキ"
+        },
+        {
+          "id": "moeko-chuu",
+          "member": "yamamoto-moeko",
+          "title": "山本萌子 チュウ"
+        },
+        {
+          "id": "moeko-yori",
+          "member": "yamamoto-moeko",
+          "title": "山本萌子 ヨリ"
         }
       ]
     }

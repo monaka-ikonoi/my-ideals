@@ -1,19 +1,14 @@
+import { type WorkingProfile } from '../domain/working';
 import { ImageCheckCard } from './ImageCheckCard';
-
-type CollectionItem = {
-  member: string;
-  title: string;
-  status: boolean;
-};
 
 type CollectionPanelProps = {
   id: string;
   name: string;
-  items: CollectionItem[];
-  onToggle: (itemIndex: number) => void;
+  items: WorkingProfile['collections'][0]['items'];
+  onToggle: (itemId: string) => void;
 };
 
-export function CollectionPanel({ id, name, items, onToggle }: CollectionPanelProps) {
+export function CollectionPanel({ id: _id, name, items, onToggle }: CollectionPanelProps) {
   return (
     <section className="rounded-lg border border-gray-200 bg-white shadow-sm">
       {/* Header */}
@@ -24,7 +19,7 @@ export function CollectionPanel({ id, name, items, onToggle }: CollectionPanelPr
         </p>
       </div>
 
-      {/* Grid of cards - 6 columns */}
+      {/* Grid of cards */}
       <div className="p-4">
         <div
           className="
@@ -34,13 +29,13 @@ export function CollectionPanel({ id, name, items, onToggle }: CollectionPanelPr
             mx-auto
           "
         >
-          {items.map((item, index) => (
+          {items.map(item => (
             <ImageCheckCard
               key={`${item.member}-${item.title}`}
               src={`${window.location.origin}/sample/sample_photo.png`}
               text={item.title}
               checked={item.status}
-              onChange={() => onToggle(index)}
+              onChange={() => onToggle(item.id)}
             />
           ))}
         </div>
