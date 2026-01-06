@@ -1,10 +1,10 @@
 // components/profile/ProfileSelector.tsx
 import { useState, useRef } from 'react';
 import { type Profile } from '@/domain/profile';
-import { type ProfileIndex, type ProfileEntry } from '@/storage/localStorage';
+import { type ProfileEntry } from '@/storage/localStorage';
 import { ProfileDropdown } from './ProfileDropdown';
-import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
 import { ProfileDrawer } from './ProfileDrawer';
+import { ProfileExportButton } from './ProfileExportButton';
 
 type ProfileSelectorProps = {
   profiles: ProfileEntry[];
@@ -83,18 +83,7 @@ export function ProfileSelector({
       />
 
       {/* Save Button */}
-      <button
-        onClick={() => {}}
-        disabled={!activeProfile?.id}
-        className="
-                flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2
-                text-sm font-medium text-white
-                hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50
-              "
-      >
-        <ArrowDownTrayIcon className="h-4 w-4" />
-        <span className="hidden sm:inline">Save</span>
-      </button>
+      <ProfileExportButton activeProfile={activeProfile} />
 
       {/* Mobile Drawer */}
       <ProfileDrawer

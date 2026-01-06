@@ -49,24 +49,6 @@ export function useProfileManager() {
     [setIndex]
   );
 
-  const exportProfile = useCallback((profileId: string) => {
-    const profile = ProfileStorage.getProfile(profileId);
-    if (!profile) {
-      console.error(`exportProfile: Profile ${profileId} not found`);
-      return;
-    }
-
-    const blob = new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `my-ideals-profile-${profile.name}.json`;
-    a.click();
-
-    URL.revokeObjectURL(url);
-  }, []);
-
   const activeProfile: ProfileEntry | null =
     index.profiles.find(p => p.id === index.active) || null;
 
@@ -76,6 +58,5 @@ export function useProfileManager() {
     setActiveProfile,
     deleteProfile,
     renameProfile,
-    exportProfile,
   };
 }
