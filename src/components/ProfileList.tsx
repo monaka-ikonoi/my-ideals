@@ -1,21 +1,17 @@
-import { type ProfileEntry } from '@/storage/localStorage';
+import { useProfileListStore } from '@/stores/profileListStore';
 import { ArrowUpTrayIcon, CheckIcon, PlusIcon } from '@heroicons/react/24/solid';
 
 export type ProfileListProps = {
-  profiles: ProfileEntry[];
-  activeProfile: ProfileEntry | null;
-  onSelect: (profileId: string) => void;
   onCreate: () => void;
   onImport: () => void;
 };
 
-export function ProfileList({
-  profiles,
-  activeProfile,
-  onSelect,
-  onCreate,
-  onImport,
-}: ProfileListProps) {
+export function ProfileList({ onCreate, onImport }: ProfileListProps) {
+  const profiles = useProfileListStore(state => state.profiles);
+  const activeProfileId = useProfileListStore(state => state.activeId);
+
+  const selectProfile = useProfileListStore(state => state.setActiveProfile);
+
   return (
     <>
       {profiles.length > 0 && (
@@ -24,14 +20,14 @@ export function ProfileList({
           {profiles.map(profile => (
             <button
               key={profile.id}
-              onClick={() => onSelect(profile.id)}
+              onClick={() => selectProfile(profile.id)}
               className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm ${
-                profile.id === activeProfile?.id
+                profile.id === activeProfileId
                   ? 'bg-blue-50 text-blue-700'
                   : 'text-gray-700 hover:bg-gray-100'
               } `}
             >
-              {profile.id === activeProfile?.id ? (
+              {profile.id === activeProfileId ? (
                 <CheckIcon className="h-4 w-4" />
               ) : (
                 <span className="w-4" />

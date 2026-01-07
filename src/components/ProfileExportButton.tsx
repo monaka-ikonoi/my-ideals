@@ -1,17 +1,16 @@
-import { ProfileStorage, type ProfileEntry } from '@/storage/localStorage';
+import { ProfileStorage } from '@/storage/localStorage';
+import { useProfileListStore } from '@/stores/profileListStore';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
 
-type ProfileExportButtonProps = {
-  activeProfile: ProfileEntry | null;
-};
+export function ProfileExportButton() {
+  const activeProfileId = useProfileListStore(state => state.activeId);
 
-export function ProfileExportButton({ activeProfile }: ProfileExportButtonProps) {
   const handleExport = () => {
-    if (!activeProfile) return;
+    if (!activeProfileId) return;
 
-    const profile = ProfileStorage.getProfile(activeProfile.id);
+    const profile = ProfileStorage.getProfile(activeProfileId);
     if (!profile) {
-      console.error(`exportProfile: Profile ${activeProfile.id} not found`);
+      console.error(`exportProfile: Profile ${activeProfileId} not found`);
       return;
     }
 
@@ -25,7 +24,7 @@ export function ProfileExportButton({ activeProfile }: ProfileExportButtonProps)
   return (
     <button
       onClick={handleExport}
-      disabled={!activeProfile}
+      disabled={!activeProfileId}
       className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium
         text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
     >

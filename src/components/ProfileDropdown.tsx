@@ -1,3 +1,4 @@
+import { useProfileListStore } from '@/stores/profileListStore';
 import { ProfileList, type ProfileListProps } from './ProfileList';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 
@@ -7,13 +8,11 @@ type ProfileDropdownProps = ProfileListProps & {
   onClose: () => void;
 };
 
-export function ProfileDropdown({
-  activeProfile,
-  isOpen,
-  onToggle,
-  onClose,
-  ...listProps
-}: ProfileDropdownProps) {
+export function ProfileDropdown({ isOpen, onToggle, onClose, ...listProps }: ProfileDropdownProps) {
+  const activeProfile = useProfileListStore(
+    state => state.profiles.find(p => p.id === state.activeId) ?? null
+  );
+
   return (
     <div className="relative hidden lg:block">
       {/* Trigger Button */}
@@ -37,7 +36,7 @@ export function ProfileDropdown({
             className="absolute right-0 mt-2 w-64 origin-top-right rounded-lg border border-gray-200
               bg-white shadow-lg"
           >
-            <ProfileList activeProfile={activeProfile} {...listProps} />
+            <ProfileList {...listProps} />
           </div>
         </>
       )}

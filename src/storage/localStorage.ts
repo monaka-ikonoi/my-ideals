@@ -1,5 +1,6 @@
 import z from 'zod';
 import { type Profile, ProfileSchema } from '@/domain/profile';
+import type { ProfileListEntry } from '@/stores/profileListStore';
 
 const LOCAL_STORAGE_PREFIX = 'my-ideals';
 const PROFILE_KEY_PREFIX = `${LOCAL_STORAGE_PREFIX}:profile:`;
@@ -28,6 +29,26 @@ const ProfileIndexSchema = z.object({
     })
   ),
 });
+
+function scanProfiles(): ProfileListEntry[] {
+  const scanned = Object.keys(localStorage)
+    .filter(key => key.startsWith(PROFILE_KEY_PREFIX))
+    .map(key => {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+
+      try {
+        const profile = ProfileSchema.parse(JSON.parse(raw));
+        return { id: profile.id, name: profile.name };
+      } catch {
+        console.warn(`scanProfiles: Invalid profile ${key}, skipping...`);
+        return null;
+      }
+    })
+    .filter((p): p is ProfileListEntry => p !== null);
+  console.log(`scanProfiles: Got ${scanned.length} profiles from localStorage`);
+  return scanned;
+}
 
 function generateProfileIndex(): ProfileIndex | null {
   const profiles = Object.keys(localStorage)
@@ -112,6 +133,7 @@ function deleteProfile(id: string): void {
 export const ProfileStorage = {
   getProfileIndex,
   setProfileIndex,
+  scanProfiles,
   getProfile,
   setProfile,
   deleteProfile,

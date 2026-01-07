@@ -1,22 +1,28 @@
+import { useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { CollectionPage } from '@/components/CollectionPage';
-import { useProfileManager } from '@/hooks/useProfileManager';
+import { useProfileListStore } from './stores/profileListStore';
 
 export default function App() {
-  const { profiles, activeProfile, setActiveProfile, importProfile } = useProfileManager();
+  const initialize = useProfileListStore(state => state.initialize);
+  const isInitialized = useProfileListStore(state => state.isInitialized);
+  const activeProfileId = useProfileListStore(state => state.activeId);
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
+  if (!isInitialized) {
+    return <h1>Loading</h1>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar
-        profiles={profiles}
-        activeProfile={activeProfile}
-        onSelectProfile={setActiveProfile}
-        onImportProfile={importProfile}
-      />
+      <Navbar />
 
       <main>
-        {activeProfile ? (
-          <CollectionPage profileId={activeProfile.id} />
+        {activeProfileId ? (
+          <CollectionPage profileId={activeProfileId} />
         ) : (
           <div className="flex h-[calc(100vh-56px)] items-center justify-center">
             <div className="text-center">

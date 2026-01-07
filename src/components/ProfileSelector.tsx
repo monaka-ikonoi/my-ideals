@@ -1,52 +1,37 @@
 import { useState, useRef } from 'react';
 import { ZodError } from 'zod';
 import { type Profile, ProfileSchema } from '@/domain/profile';
-import { type ProfileEntry } from '@/storage/localStorage';
 import { ProfileDropdown } from './ProfileDropdown';
 import { ProfileDrawer } from './ProfileDrawer';
 import { ProfileExportButton } from './ProfileExportButton';
 import { ImportConflictDialog, type ImportConflictAction } from './ProfileImportConflictDialog';
 import { ErrorDialog } from './ui/ErrorDialog';
+import { useProfileListStore } from '@/stores/profileListStore';
 
 type PendingImport = {
   profile: Profile;
   existingId: string;
 };
 
-type ProfileSelectorProps = {
-  profiles: ProfileEntry[];
-  activeProfile: ProfileEntry | null;
-  onSelect: (profileId: string) => void;
-  onCreate: (name: string, templateId: string, templateLink: string) => void;
-  onImport: (profile: Profile, overwrite?: boolean) => void;
-};
-
-export function ProfileSelector({
-  profiles,
-  activeProfile,
-  onSelect,
-  onCreate,
-  onImport,
-}: ProfileSelectorProps) {
+export function ProfileSelector() {
   const [isOpen, setIsOpen] = useState(false);
   const [pendingImport, setPendingImport] = useState<PendingImport | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const profiles = useProfileListStore(state => state.profiles);
+  const createProfile = useProfileListStore(state => state.createProfile);
+  const importProfile = useProfileListStore(state => state.importProfile);
+
   const open = () => setIsOpen(true);
   const close = () => setIsOpen(false);
   const toggle = () => setIsOpen(prev => !prev);
-
-  const handleSelect = (profileId: string) => {
-    onSelect(profileId);
-    close();
-  };
 
   const handleCreate = () => {
     const name = prompt('Enter profile name:');
     const templateLink = prompt('Enter template link:');
     if (name && templateLink) {
-      onCreate(name, 'template-id', templateLink);
+      createProfile(name, 'template-id', templateLink);
     }
     close();
   };
@@ -63,7 +48,7 @@ export function ProfileSelector({
       if (existingIndex >= 0) {
         setPendingImport({ profile, existingId: profile.id });
       } else {
-        onImport(profile, false);
+        importProfile(profile, false);
         close();
       }
     } catch (e) {
@@ -86,10 +71,10 @@ export function ProfileSelector({
 
     switch (action) {
       case 'overwrite':
-        onImport(profile, true);
+        importProfile(profile, true);
         break;
       case 'duplicate':
-        onImport(profile, false);
+        importProfile(profile, false);
         break;
       case 'cancel':
         break;
@@ -104,8 +89,7 @@ export function ProfileSelector({
   };
 
   const listProps = {
-    profiles,
-    onSelect: handleSelect,
+    isOpen,
     onCreate: handleCreate,
     onImport: handleImportClick,
   };
@@ -113,25 +97,13 @@ export function ProfileSelector({
   return (
     <>
       {/* Desktop Dropdown */}
-      <ProfileDropdown
-        activeProfile={activeProfile}
-        isOpen={isOpen}
-        onToggle={toggle}
-        onClose={close}
-        {...listProps}
-      />
+      <ProfileDropdown onToggle={toggle} onClose={close} {...listProps} />
 
       {/* Save Button */}
-      <ProfileExportButton activeProfile={activeProfile} />
+      <ProfileExportButton />
 
       {/* Mobile Drawer */}
-      <ProfileDrawer
-        activeProfile={activeProfile}
-        isOpen={isOpen}
-        onOpen={open}
-        onClose={close}
-        {...listProps}
-      />
+      <ProfileDrawer onOpen={open} onClose={close} {...listProps} />
 
       {/* Hidden file input */}
       <input

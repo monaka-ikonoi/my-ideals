@@ -1,5 +1,6 @@
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { ProfileList, type ProfileListProps } from './ProfileList';
+import { useProfileListStore } from '@/stores/profileListStore';
 
 type ProfileDrawerProps = ProfileListProps & {
   isOpen: boolean;
@@ -7,13 +8,11 @@ type ProfileDrawerProps = ProfileListProps & {
   onClose: () => void;
 };
 
-export function ProfileDrawer({
-  isOpen,
-  onOpen,
-  onClose,
-  activeProfile,
-  ...listProps
-}: ProfileDrawerProps) {
+export function ProfileDrawer({ isOpen, onOpen, onClose, ...listProps }: ProfileDrawerProps) {
+  const activeProfile = useProfileListStore(
+    state => state.profiles.find(p => p.id === state.activeId) ?? null
+  );
+
   return (
     <>
       {/* Hamburger Button */}
@@ -51,7 +50,7 @@ export function ProfileDrawer({
 
             {/* List */}
             <div className="overflow-y-auto">
-              <ProfileList activeProfile={activeProfile} {...listProps} />
+              <ProfileList {...listProps} />
             </div>
           </div>
         </>
