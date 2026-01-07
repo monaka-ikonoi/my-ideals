@@ -16,9 +16,6 @@ type ProfileListStore = {
   profiles: ProfileListEntry[];
   isInitialized: boolean;
 
-  // Computed
-  activeProfile: ProfileListEntry | null;
-
   // Actions
   initialize: () => void;
   setActiveProfile: (id: string | null) => void;
@@ -53,11 +50,6 @@ export const useProfileListStore = create<ProfileListStore>()(
             state.activeId = scanned[0]?.id ?? null;
             state.isInitialized = true;
           });
-        },
-
-        get activeProfile() {
-          const { profiles, activeId } = get();
-          return profiles.find(p => p.id === activeId) ?? null;
         },
 
         setActiveProfile: id => {
