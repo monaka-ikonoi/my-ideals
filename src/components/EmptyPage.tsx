@@ -1,5 +1,6 @@
 import { PlusIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import { ProfileImportButton } from './ProfileImportButton';
+import { ProfileCreateButton } from './ProfileCreateButton';
 
 export function EmptyPage() {
   return (
@@ -9,13 +10,13 @@ export function EmptyPage() {
         <p className="mt-2 text-gray-500">Create or import a profile to get started</p>
 
         <div className="mt-6 flex justify-center gap-3">
-          <button
+          <ProfileCreateButton
             className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2
               text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             <PlusIcon className="h-4 w-4" />
             New Profile
-          </button>
+          </ProfileCreateButton>
           <ProfileImportButton
             className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium
               text-white hover:bg-blue-700"

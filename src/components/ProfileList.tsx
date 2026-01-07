@@ -1,6 +1,7 @@
 import { useProfileListStore } from '@/stores/profileListStore';
 import { ArrowUpTrayIcon, CheckIcon, PlusIcon } from '@heroicons/react/24/solid';
 import { ProfileImportButton } from './ProfileImportButton';
+import { ProfileCreateButton } from './ProfileCreateButton';
 
 export function ProfileList() {
   const profiles = useProfileListStore(state => state.profiles);
@@ -43,13 +44,13 @@ export function ProfileList() {
       <div className="border-t border-gray-200" />
 
       <div className="py-1">
-        <button
+        <ProfileCreateButton
           className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
             hover:bg-gray-100"
         >
           <PlusIcon className="h-4 w-4" />
           New Profile
-        </button>
+        </ProfileCreateButton>
         <ProfileImportButton
           className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
             hover:bg-gray-100"

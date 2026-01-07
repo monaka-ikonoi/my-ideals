@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { nanoid } from 'nanoid';
-import { type Profile } from '@/domain/profile';
+import { type Profile, type ProfileTemplateInfo } from '@/domain/profile';
 import { ProfileStorage } from '@/storage/profileStorage';
 
 export type ProfileListEntry = {
@@ -22,7 +22,7 @@ type ProfileListStore = {
   // Actions
   initialize: () => void;
   setActiveProfile: (id: string | null) => void;
-  createProfile: (name: string, templateId: string, templateLink: string) => string;
+  createProfile: (name: string, templateInfo: ProfileTemplateInfo) => string;
   importProfile: (profile: Profile, overwrite: boolean) => string;
   deleteProfile: (id: string) => void;
   renameProfile: (id: string, name: string) => void;
@@ -65,8 +65,28 @@ export const useProfileListStore = create<ProfileListStore>()(
         });
       },
 
-      createProfile: (_name, _templateId, _templateLink) => {
-        return '';
+      createProfile: (name, templateInfo) => {
+        const id = nanoid();
+        const newProfile: Profile = {
+          magic: 'my-ideals-profile',
+          version: 1,
+          id,
+          name,
+          template: templateInfo,
+          collections: {},
+        };
+
+        // Reset the revision to trigger a sync later
+        newProfile.template.revision = 0;
+
+        ProfileStorage.setProfile(newProfile);
+
+        set(state => {
+          state.profiles.push({ id, name });
+          state.activeId = id;
+        });
+
+        return id;
       },
 
       importProfile: (profile, overwrite) => {
