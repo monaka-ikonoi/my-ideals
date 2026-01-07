@@ -1,4 +1,4 @@
-import { ProfileStorage } from '@/storage/localStorage';
+import { ProfileStorage } from '@/storage/profileStorage';
 import { useProfileListStore } from '@/stores/profileListStore';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
 

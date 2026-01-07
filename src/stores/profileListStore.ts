@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { nanoid } from 'nanoid';
 import { type Profile } from '@/domain/profile';
-import { ProfileStorage } from '@/storage/localStorage';
+import { ProfileStorage } from '@/storage/profileStorage';
 
 export type ProfileListEntry = {
   id: string;

@@ -7,7 +7,7 @@ import {
   buildWorkingProfile,
   extractProfileFromWorking,
 } from '@/domain/working';
-import { ProfileStorage } from '@/storage/localStorage';
+import { ProfileStorage } from '@/storage/profileStorage';
 
 export function useWorkingProfile(profileId: string) {
   const [working, setWorking] = useImmer<WorkingProfile | null>(null);
