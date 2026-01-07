@@ -7,11 +7,6 @@ import { useWorkingProfileStore } from '@/stores/workingProfileStore';
 import { ErrorDialog } from '@/components/ui/ErrorDialog';
 import { InlineCode } from '@/components/ui/InlineCode';
 
-type PendingImport = {
-  profile: Profile;
-  existingId: string;
-};
-
 type ProfileImportButtonProps = {
   children: ReactNode;
   className?: string;
@@ -20,7 +15,7 @@ type ProfileImportButtonProps = {
 export function ProfileImportButton({ children, className }: ProfileImportButtonProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
-  const [pendingImport, setPendingImport] = useState<PendingImport | null>(null);
+  const [pendingImport, setPendingImport] = useState<Profile | null>(null);
 
   const activeProfileId = useProfileListStore(state => state.activeId);
   const profiles = useProfileListStore(state => state.profiles);
@@ -42,7 +37,7 @@ export function ProfileImportButton({ children, className }: ProfileImportButton
         const exists = profiles.some(p => p.id === profile.id);
 
         if (exists) {
-          setPendingImport({ profile, existingId: profile.id });
+          setPendingImport(profile);
         } else {
           importProfile(profile, false);
         }
@@ -65,12 +60,12 @@ export function ProfileImportButton({ children, className }: ProfileImportButton
       if (!pendingImport) return;
 
       if (action !== 'cancel') {
-        importProfile(pendingImport.profile, action === 'overwrite');
+        importProfile(pendingImport, action === 'overwrite');
       }
 
       // Trigger UI reload if overwriting current profile
-      if (pendingImport.existingId === activeProfileId) {
-        useWorkingProfileStore.getState().load(pendingImport.existingId);
+      if (pendingImport.id === activeProfileId) {
+        useWorkingProfileStore.getState().load(activeProfileId);
       }
 
       setPendingImport(null);
@@ -115,8 +110,8 @@ export function ProfileImportButton({ children, className }: ProfileImportButton
 
               {/* Content */}
               <div className="px-4 py-4 text-gray-600">
-                A profile named "<strong>{pendingImport.profile.name}</strong>" with ID{' '}
-                <InlineCode>{pendingImport.profile.id}</InlineCode> already exists.
+                A profile named "<strong>{pendingImport.name}</strong>" with ID{' '}
+                <InlineCode>{pendingImport.id}</InlineCode> already exists.
               </div>
 
               {/* Actions */}
