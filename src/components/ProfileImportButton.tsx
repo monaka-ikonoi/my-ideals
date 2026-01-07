@@ -94,7 +94,7 @@ export function ProfileImportButton({ children, className }: ProfileImportButton
           />
 
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-md rounded-lg bg-white shadow-xl">
+            <div className="w-full max-w-md rounded-lg bg-white text-left shadow-xl">
               {/* Header */}
               <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
                 <h2 className="text-lg font-semibold text-gray-900">Profile Already Exists</h2>

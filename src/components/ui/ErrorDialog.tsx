@@ -17,8 +17,8 @@ export function ErrorDialog({ isOpen, title, message, details, onClose }: ErrorD
 
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
-          className="w-auto max-w-[90vw] min-w-[20rem] rounded-lg bg-white shadow-xl sm:max-w-3xl
-            sm:min-w-[28rem]"
+          className="w-auto max-w-[90vw] min-w-[20rem] rounded-lg bg-white text-left shadow-xl
+            sm:max-w-3xl sm:min-w-[28rem]"
         >
           {/* Header */}
           <div className="flex items-center gap-3 border-b border-gray-200 px-4 py-3">

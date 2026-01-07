@@ -36,7 +36,7 @@ export function ConfirmDialog({
       <div className="fixed inset-0 z-50 bg-black/50" onClick={onCancel} />
 
       {/* Dialog */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 text-left">
         <div
           className="w-auto max-w-[90vw] min-w-[20rem] rounded-lg bg-white shadow-xl sm:max-w-3xl
             sm:min-w-[28rem]"
