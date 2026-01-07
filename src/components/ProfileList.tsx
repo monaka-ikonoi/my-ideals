@@ -1,12 +1,8 @@
 import { useProfileListStore } from '@/stores/profileListStore';
 import { ArrowUpTrayIcon, CheckIcon, PlusIcon } from '@heroicons/react/24/solid';
+import { ProfileImportButton } from './ProfileImportButton';
 
-export type ProfileListProps = {
-  onCreate: () => void;
-  onImport: () => void;
-};
-
-export function ProfileList({ onCreate, onImport }: ProfileListProps) {
+export function ProfileList() {
   const profiles = useProfileListStore(state => state.profiles);
   const activeProfileId = useProfileListStore(state => state.activeId);
 
@@ -48,21 +44,19 @@ export function ProfileList({ onCreate, onImport }: ProfileListProps) {
 
       <div className="py-1">
         <button
-          onClick={onCreate}
           className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
             hover:bg-gray-100"
         >
           <PlusIcon className="h-4 w-4" />
           New Profile
         </button>
-        <button
-          onClick={onImport}
+        <ProfileImportButton
           className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
             hover:bg-gray-100"
         >
           <ArrowUpTrayIcon className="h-4 w-4" />
           Import Profile
-        </button>
+        </ProfileImportButton>
       </div>
     </>
   );

@@ -1,14 +1,14 @@
 import { useProfileListStore } from '@/stores/profileListStore';
-import { ProfileList, type ProfileListProps } from './ProfileList';
+import { ProfileList } from './ProfileList';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 
-type ProfileDropdownProps = ProfileListProps & {
+type ProfileDropdownProps = {
   isOpen: boolean;
   onToggle: () => void;
   onClose: () => void;
 };
 
-export function ProfileDropdown({ isOpen, onToggle, onClose, ...listProps }: ProfileDropdownProps) {
+export function ProfileDropdown({ isOpen, onToggle, onClose }: ProfileDropdownProps) {
   const activeProfile = useProfileListStore(
     state => state.profiles.find(p => p.id === state.activeId) ?? null
   );
@@ -36,7 +36,7 @@ export function ProfileDropdown({ isOpen, onToggle, onClose, ...listProps }: Pro
             className="absolute right-0 mt-2 w-64 origin-top-right rounded-lg border border-gray-200
               bg-white shadow-lg"
           >
-            <ProfileList {...listProps} />
+            <ProfileList />
           </div>
         </>
       )}
