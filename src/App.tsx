@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { CollectionPage } from '@/components/CollectionPage';
 import { useProfileListStore } from './stores/profileListStore';
+import { LoadingPage } from './components/ui/LoadingPage';
 import { EmptyPage } from './components/EmptyPage';
 
 export default function App() {
@@ -14,7 +15,7 @@ export default function App() {
   }, [initialize]);
 
   if (!isInitialized) {
-    return <h1>Loading</h1>;
+    return <LoadingPage />;
   }
 
   return (

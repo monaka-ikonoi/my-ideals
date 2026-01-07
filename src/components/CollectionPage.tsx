@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import type { WorkingProfile } from '@/domain/working';
 import { useWorkingProfileStore } from '@/stores/workingProfileStore';
 import { CollectionPanel } from './CollectionPanel';
+import { LoadingPage } from './ui/LoadingPage';
 
 function useFilteredCollections(working: WorkingProfile | null, selectedMember: string) {
   return useMemo(() => {
@@ -30,7 +31,7 @@ export function CollectionPage() {
   const filteredCollections = useFilteredCollections(working, selectedMember);
 
   if (isLoading) {
-    return <div className="p-4">Loading…</div>;
+    return <LoadingPage />;
   }
 
   if (error) {
@@ -38,7 +39,7 @@ export function CollectionPage() {
   }
 
   if (!working) {
-    return <div className="p-4 text-red-600">No working profile loaded.</div>;
+    return; // This should never reached
   }
 
   console.log('Active Working Profile:', working);
