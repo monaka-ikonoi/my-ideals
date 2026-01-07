@@ -2,8 +2,8 @@
   "magic": "my-ideals-profile",
   "version": 1,
   "id": "development-profile00",
-  "name": "(For development) =ME",
-  "templateLink": "/sample/template.json",
+  "name": "=ME 生写真",
+  "templateLink": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/template.json",
   "templateId": "equal-me",
   "templateRevision": 1,
   "collections": {
