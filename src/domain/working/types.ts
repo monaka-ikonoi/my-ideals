@@ -1,19 +1,17 @@
-import { type Profile } from '@/domain/profile';
-import { type Template } from '@/domain/template';
+import type { Profile } from '@/domain/profile';
+import type { Template, TemplateCollection, TemplateCollectionItem } from '@/domain/template';
 
-export type WorkingCollection = {
-  id: string;
-  name: string;
-  items: {
-    id: string;
-    member: string;
-    title: string;
-    status: boolean;
-  }[];
+export type WorkingProfileMeta = Omit<Profile, 'collections'>;
+export type WorkingTemplateMeta = Omit<Template, 'collections'>;
+
+export type WorkingCollectionItem = TemplateCollectionItem & { status: boolean };
+
+export type WorkingCollection = Omit<TemplateCollection, 'items'> & {
+  items: WorkingCollectionItem[];
 };
 
 export type WorkingProfile = {
-  profile: Omit<Profile, 'collections'>;
-  template: Omit<Template, 'collections'>;
+  profile: WorkingProfileMeta;
+  template: WorkingTemplateMeta;
   collections: WorkingCollection[];
 };

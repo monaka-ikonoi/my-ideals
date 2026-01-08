@@ -1,15 +1,26 @@
-import { type WorkingProfile } from '@/domain/working';
+import { type WorkingCollectionItem, type WorkingTemplateMeta } from '@/domain/working';
+import { urlFromBaseUrl } from '@/domain/template';
 import { useWorkingProfileStore } from '@/stores/workingProfileStore';
 import { ImageCheckCard } from './ImageCheckCard';
 
 type CollectionPanelProps = {
   id: string;
   name: string;
-  items: WorkingProfile['collections'][0]['items'];
+  items: WorkingCollectionItem[];
 };
 
 export function CollectionPanel({ id, name, items }: CollectionPanelProps) {
   const toggleStatus = useWorkingProfileStore(state => state.toggleStatus);
+  const template = useWorkingProfileStore(state => state.working!.template);
+
+  const getImageUrl = (
+    collectionId: string,
+    item: WorkingCollectionItem,
+    template: WorkingTemplateMeta
+  ): string =>
+    template.imageResourceType === 'inline'
+      ? item.image!
+      : urlFromBaseUrl(`${collectionId}/${item.id}`, template.imageBaseUrl!);
 
   return (
     <section className="rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -30,7 +41,7 @@ export function CollectionPanel({ id, name, items }: CollectionPanelProps) {
           {items.map(item => (
             <ImageCheckCard
               key={`${item.member}-${item.title}`}
-              src={`${window.location.origin}/sample/sample-image.webp`}
+              src={getImageUrl(id, item, template)}
               text={item.title}
               checked={item.status}
               onChange={() => toggleStatus(id, item.id)}

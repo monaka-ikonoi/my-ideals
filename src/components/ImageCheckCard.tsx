@@ -15,6 +15,8 @@ export function ImageCheckCard({ src, text, checked, onChange }: ImageCheckCardP
       <img
         src={src}
         alt={text}
+        loading="lazy"
+        decoding="async"
         className="aspect-[7/10] w-full rounded-md object-cover transition
           peer-not-checked:opacity-50"
       />

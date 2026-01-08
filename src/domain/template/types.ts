@@ -1,10 +1,13 @@
-type TemplateCollectionItem = {
+import { type TemplateResourceBaseUrl } from './imageBaseUrl';
+
+export type TemplateCollectionItem = {
   id: string;
   member: string;
   title: string;
+  image?: string;
 };
 
-type TemplateCollection = {
+export type TemplateCollection = {
   id: string;
   name: string;
   items: TemplateCollectionItem[];
@@ -23,6 +26,8 @@ export type Template = {
   name: string;
   description?: string;
   author?: string;
+  imageResourceType: 'inline' | 'baseUrl';
+  imageBaseUrl?: TemplateResourceBaseUrl;
   members: TemplateMember[];
   collections: TemplateCollection[];
 };

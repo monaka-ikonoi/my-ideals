@@ -13,9 +13,7 @@ export function buildWorkingProfile(profile: Profile, template: Template): Worki
       id: tc.id,
       name: tc.name,
       items: tc.items.map(item => ({
-        id: item.id,
-        member: item.member,
-        title: item.title,
+        ...item,
         status: statusMap[item.id] ?? false,
       })),
     };

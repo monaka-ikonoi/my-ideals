@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { TemplateResourceBaseUrlSchema } from './imageBaseUrl';
 
 const TemplateMember = z.object({
   id: z.string(),
@@ -9,6 +10,7 @@ const TemplateCollectionItem = z.object({
   id: z.string(),
   member: z.string(),
   title: z.string(),
+  image: z.string().optional(),
 });
 
 const TemplateCollection = z.object({
@@ -25,6 +27,8 @@ export const TemplateSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
   author: z.string().optional(),
+  imageResourceType: z.enum(['inline', 'baseUrl']),
+  imageBaseUrl: TemplateResourceBaseUrlSchema.optional(),
   members: z.array(TemplateMember),
   collections: z.array(TemplateCollection),
 });
