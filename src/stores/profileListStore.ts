@@ -34,20 +34,34 @@ export const useProfileListStore = create<ProfileListStore>()(
         isInitialized: false,
 
         initialize: () => {
-          const { profiles, isInitialized } = get();
+          const { profiles, activeId, isInitialized } = get();
           if (isInitialized) return;
 
-          if (profiles.length > 0) {
-            set(state => {
-              state.isInitialized = true;
-            });
-            return;
+          const existingIds = new Set(ProfileStorage.listProfiles());
+          const validProfiles = profiles.filter(p => {
+            if (existingIds.has(p.id)) {
+              existingIds.delete(p.id);
+              return true;
+            }
+            console.warn(`Missing expected profile ${p.id}`);
+            return false;
+          });
+
+          for (const id of existingIds) {
+            const profile = ProfileStorage.getProfile(id);
+            if (profile) {
+              validProfiles.push({ id, name: profile.name });
+              console.log(`Found unrecorded profile ${id}`);
+            }
           }
 
-          const scanned = ProfileStorage.scanProfiles();
+          const validActiveId = validProfiles.some(p => p.id === activeId)
+            ? activeId
+            : (validProfiles[0]?.id ?? null);
+
           set(state => {
-            state.profiles = scanned;
-            state.activeId = scanned[0]?.id ?? null;
+            state.profiles = validProfiles;
+            state.activeId = validActiveId;
             state.isInitialized = true;
           });
         },
