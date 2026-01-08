@@ -32,7 +32,6 @@ export const useWorkingProfileStore = create<WorkingProfileStore>()(
       if (!working) return;
 
       const profile = extractProfileFromWorking(working);
-      ProfileSchema.parse(profile);
       ProfileStorage.setProfile(profile);
       console.log(`Profile ${profile.id} saved`);
     }, 500);

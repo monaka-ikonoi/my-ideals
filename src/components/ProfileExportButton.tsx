@@ -1,19 +1,14 @@
-import { ProfileStorage } from '@/storage/profileStorage';
-import { useProfileListStore } from '@/stores/profileListStore';
+import { extractProfileFromWorking } from '@/domain/working';
+import { useWorkingProfileStore } from '@/stores/workingProfileStore';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
 
 export function ProfileExportButton() {
-  const activeProfileId = useProfileListStore(state => state.activeId);
+  const working = useWorkingProfileStore(state => state.working);
 
   const handleExport = () => {
-    if (!activeProfileId) return;
+    if (!working) return;
 
-    const profile = ProfileStorage.getProfile(activeProfileId);
-    if (!profile) {
-      console.error(`exportProfile: Profile ${activeProfileId} not found`);
-      return;
-    }
-
+    const profile = extractProfileFromWorking(working);
     const blob = new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' });
     const filename = `my-ideals-profile-${profile.name}.json`;
     const url = URL.createObjectURL(blob);
@@ -24,7 +19,7 @@ export function ProfileExportButton() {
   return (
     <button
       onClick={handleExport}
-      disabled={!activeProfileId}
+      disabled={!working}
       className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium
         text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
     >
