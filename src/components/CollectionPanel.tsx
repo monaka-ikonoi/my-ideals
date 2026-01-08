@@ -30,7 +30,7 @@ export function CollectionPanel({ id, name, items }: CollectionPanelProps) {
           {items.map(item => (
             <ImageCheckCard
               key={`${item.member}-${item.title}`}
-              src={`${window.location.origin}/sample/sample_photo.png`}
+              src={`${window.location.origin}/sample/sample-image.webp`}
               text={item.title}
               checked={item.status}
               onChange={() => toggleStatus(id, item.id)}
