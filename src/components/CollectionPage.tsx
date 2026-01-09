@@ -7,26 +7,23 @@ import { LoadingPage } from './ui/LoadingPage';
 import { ErrorPage } from './ui/ErrorPage';
 import { ConfirmDialog } from './ui/ConfirmDialog';
 import { ProfileTemplateDiffContent } from './ProfileTemplateDiffContent';
+import { MemberFilter } from './MemberFilter';
 
-function useFilteredCollections(working: WorkingProfile | null, selectedMember: string) {
+function useFilteredCollections(working: WorkingProfile | null, selectedMembers: Set<string>) {
   return useMemo(() => {
-    if (!working) {
-      return [];
-    }
+    if (!working) return [];
 
-    if (selectedMember === 'all') {
-      return working.collections;
-    }
+    if (selectedMembers.size === 0) return working.collections;
 
     return working.collections.map(collection => ({
       ...collection,
-      items: collection.items.filter(item => item.member === selectedMember),
+      items: collection.items.filter(item => selectedMembers.has(item.member)),
     }));
-  }, [working, selectedMember]);
+  }, [working, selectedMembers]);
 }
 
 export function CollectionPage() {
-  const [selectedMember, setSelectedMember] = useState<string>('all');
+  const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
 
   const working = useWorkingProfileStore(state => state.working);
   const isLoading = useWorkingProfileStore(state => state.isLoading);
@@ -35,7 +32,7 @@ export function CollectionPage() {
   const changes = useWorkingProfileStore(state => state.changes);
   const hasChanges = changes && (changes.added.length > 0 || changes.removed.length > 0);
 
-  const filteredCollections = useFilteredCollections(working, selectedMember);
+  const filteredCollections = useFilteredCollections(working, selectedMembers);
 
   if (isLoading) {
     return <LoadingPage />;
@@ -53,27 +50,14 @@ export function CollectionPage() {
 
   return (
     <main className="mx-auto max-w-7xl space-y-6 px-4 py-6">
-      {/* Filter */}
       <div
         className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
       >
-        <label htmlFor="member-filter" className="text-sm font-medium text-gray-700">
-          メンバーで絞り込み:
-        </label>
-        <select
-          id="member-filter"
-          value={selectedMember}
-          onChange={e => setSelectedMember(e.target.value)}
-          className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm
-            focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
-        >
-          <option value="all">すべて</option>
-          {working.template.members.map(member => (
-            <option key={member.id} value={member.id}>
-              {member.name}
-            </option>
-          ))}
-        </select>
+        <MemberFilter
+          members={working.template.members}
+          selectedMembers={selectedMembers}
+          onChange={setSelectedMembers}
+        />
       </div>
 
       {/* Collections */}

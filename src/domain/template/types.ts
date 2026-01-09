@@ -13,7 +13,7 @@ export type TemplateCollection = {
   items: TemplateCollectionItem[];
 };
 
-type TemplateMember = {
+export type TemplateMember = {
   id: string;
   name: string;
 };
