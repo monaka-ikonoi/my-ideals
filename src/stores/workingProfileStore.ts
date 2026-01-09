@@ -62,7 +62,7 @@ export const useWorkingProfileStore = create<WorkingProfileStore>()(
           const template = TemplateSchema.parse(await res.json());
 
           let changes: ProfileTemplateDiff | null = null;
-          if (profile.template.revision !== template.revision) {
+          if (profile.template.revision !== 0 && profile.template.revision !== template.revision) {
             changes = diffProfileTemplate(profile, template);
             console.log('Calculated diff', changes);
           }

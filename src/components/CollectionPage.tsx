@@ -1,9 +1,12 @@
 import { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import type { WorkingProfile } from '@/domain/working';
 import { useWorkingProfileStore } from '@/stores/workingProfileStore';
 import { CollectionPanel } from './CollectionPanel';
 import { LoadingPage } from './ui/LoadingPage';
 import { ErrorPage } from './ui/ErrorPage';
+import { ConfirmDialog } from './ui/ConfirmDialog';
+import { ProfileTemplateDiffContent } from './ProfileTemplateDiffContent';
 
 function useFilteredCollections(working: WorkingProfile | null, selectedMember: string) {
   return useMemo(() => {
@@ -28,6 +31,9 @@ export function CollectionPage() {
   const working = useWorkingProfileStore(state => state.working);
   const isLoading = useWorkingProfileStore(state => state.isLoading);
   const error = useWorkingProfileStore(state => state.error);
+
+  const changes = useWorkingProfileStore(state => state.changes);
+  const hasChanges = changes && (changes.added.length > 0 || changes.removed.length > 0);
 
   const filteredCollections = useFilteredCollections(working, selectedMember);
 
@@ -79,6 +85,20 @@ export function CollectionPage() {
           items={collection.items}
         />
       ))}
+
+      {/* Diff Dialog */}
+      {createPortal(
+        <ConfirmDialog
+          isOpen={!!hasChanges}
+          title="Template Updated"
+          message={<ProfileTemplateDiffContent working={working} changes={changes} />}
+          options={[{ label: 'Got it', value: 'ok', variant: 'primary' }]}
+          showCancel={false}
+          onSelect={() => useWorkingProfileStore.setState({ changes: null })}
+          onCancel={() => useWorkingProfileStore.setState({ changes: null })}
+        />,
+        document.body
+      )}
     </main>
   );
 }

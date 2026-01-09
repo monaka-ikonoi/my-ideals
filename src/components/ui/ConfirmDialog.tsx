@@ -12,6 +12,7 @@ type ConfirmDialogProps = {
   }[];
   onSelect: (value: string) => void;
   onCancel: () => void;
+  showCancel?: boolean;
 };
 
 export function ConfirmDialog({
@@ -21,6 +22,7 @@ export function ConfirmDialog({
   options,
   onSelect,
   onCancel,
+  showCancel = true,
 }: ConfirmDialogProps) {
   if (!isOpen) return null;
 
@@ -50,18 +52,18 @@ export function ConfirmDialog({
           </div>
 
           {/* Content */}
-          <div className="px-4 py-4">
-            <p className="text-gray-600">{message}</p>
-          </div>
+          <div className="px-4 py-4 text-gray-600">{message}</div>
 
           {/* Actions */}
           <div className="flex justify-end gap-2 border-t border-gray-200 px-4 py-3">
-            <button
-              onClick={onCancel}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-            >
-              Cancel
-            </button>
+            {showCancel && (
+              <button
+                onClick={onCancel}
+                className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+            )}
             {options.map(option => (
               <button
                 key={option.value}

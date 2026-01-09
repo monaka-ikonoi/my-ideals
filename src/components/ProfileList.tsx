@@ -89,11 +89,11 @@ export function ProfileList() {
             isOpen={deleteTarget !== null}
             title="Delete Profile"
             message={
-              <>
+              <p>
                 Are you sure you want to delete <strong>{deleteTarget?.name}</strong>?
                 <br />
                 This action cannot be undone.
-              </>
+              </p>
             }
             options={[{ label: 'Delete', value: 'delete', variant: 'danger' }]}
             onSelect={handleConfirmDelete}
