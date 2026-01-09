@@ -133,16 +133,10 @@ export const useProfileListStore = create<ProfileListStore>()(
         },
 
         renameProfile: (id, name) => {
-          const profile = ProfileStorage.getProfile(id);
-          if (profile) {
-            profile.name = name;
-            ProfileStorage.setProfile(profile);
-          }
-
           set(state => {
-            const summary = state.profiles.find(p => p.id === id);
-            if (summary) {
-              summary.name = name;
+            const entry = state.profiles.find(p => p.id === id);
+            if (entry) {
+              entry.name = name;
             }
           });
         },

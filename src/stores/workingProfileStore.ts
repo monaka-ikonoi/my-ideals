@@ -23,6 +23,7 @@ type WorkingProfileStore = {
   clear: () => void;
   flush: () => void;
   toggleStatus: (collectionId: string, itemId: string) => void;
+  updateName: (name: string) => void;
 };
 
 export const useWorkingProfileStore = create<WorkingProfileStore>()(
@@ -117,6 +118,15 @@ export const useWorkingProfileStore = create<WorkingProfileStore>()(
           item.status = !item.status;
         });
 
+        debouncedSave();
+      },
+
+      updateName: (name: string) => {
+        set(state => {
+          if (state.working) {
+            state.working.profile.name = name;
+          }
+        });
         debouncedSave();
       },
     };

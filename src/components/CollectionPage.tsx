@@ -8,6 +8,8 @@ import { ErrorPage } from './ui/ErrorPage';
 import { ConfirmDialog } from './ui/ConfirmDialog';
 import { ProfileTemplateDiffContent } from './ProfileTemplateDiffContent';
 import { CollectionFilter } from './CollectionFilter';
+import { ProfileInfo } from './ProfileInfo';
+import { useProfileListStore } from '@/stores/profileListStore';
 
 function useFilteredCollections(
   working: WorkingProfile | null,
@@ -65,6 +67,14 @@ export function CollectionPage() {
   return (
     <main className="mx-auto max-w-7xl space-y-6 px-4 py-6">
       <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+        <ProfileInfo
+          working={working}
+          renameFn={name => {
+            useWorkingProfileStore.getState().updateName(name);
+            useProfileListStore.getState().renameProfile(working.profile.id, name);
+          }}
+        />
+        <div className="my-4 border-t border-gray-200" />
         <CollectionFilter
           members={working.template.members}
           selectedMembers={selectedMembers}
