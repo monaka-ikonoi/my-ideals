@@ -7,24 +7,36 @@ import { LoadingPage } from './ui/LoadingPage';
 import { ErrorPage } from './ui/ErrorPage';
 import { ConfirmDialog } from './ui/ConfirmDialog';
 import { ProfileTemplateDiffContent } from './ProfileTemplateDiffContent';
-import { MemberFilter } from './MemberFilter';
+import { CollectionFilter } from './CollectionFilter';
 
-function useFilteredCollections(working: WorkingProfile | null, selectedMembers: Set<string>) {
+function useFilteredCollections(
+  working: WorkingProfile | null,
+  selectedMembers: Set<string>,
+  searchQuery: string
+) {
   return useMemo(() => {
     if (!working) return [];
 
-    if (selectedMembers.size === 0) return working.collections;
+    const query = searchQuery.trim().toLowerCase();
 
-    return working.collections.map(collection => ({
-      ...collection,
-      items: collection.items.filter(item => selectedMembers.has(item.member)),
-    }));
-  }, [working, selectedMembers]);
+    if (selectedMembers.size === 0 && !searchQuery) return working.collections;
+
+    return working.collections
+      .filter(collection => {
+        if (!query) return true;
+        return collection.name.toLowerCase().includes(query);
+      })
+      .map(collection => ({
+        ...collection,
+        items:
+          selectedMembers.size === 0
+            ? collection.items
+            : collection.items.filter(item => selectedMembers.has(item.member)),
+      }));
+  }, [working, selectedMembers, searchQuery]);
 }
 
 export function CollectionPage() {
-  const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
-
   const working = useWorkingProfileStore(state => state.working);
   const isLoading = useWorkingProfileStore(state => state.isLoading);
   const error = useWorkingProfileStore(state => state.error);
@@ -32,7 +44,9 @@ export function CollectionPage() {
   const changes = useWorkingProfileStore(state => state.changes);
   const hasChanges = changes && (changes.added.length > 0 || changes.removed.length > 0);
 
-  const filteredCollections = useFilteredCollections(working, selectedMembers);
+  const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = useState('');
+  const filteredCollections = useFilteredCollections(working, selectedMembers, searchQuery);
 
   if (isLoading) {
     return <LoadingPage />;
@@ -50,13 +64,13 @@ export function CollectionPage() {
 
   return (
     <main className="mx-auto max-w-7xl space-y-6 px-4 py-6">
-      <div
-        className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
-      >
-        <MemberFilter
+      <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+        <CollectionFilter
           members={working.template.members}
           selectedMembers={selectedMembers}
-          onChange={setSelectedMembers}
+          onMemberChange={setSelectedMembers}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
         />
       </div>
 
