@@ -63,8 +63,6 @@ export function CollectionPage() {
     return; // This should never reached
   }
 
-  console.log('Active Working Profile:', working);
-
   return (
     <main className="mx-auto max-w-7xl space-y-6 px-4 py-6">
       <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
