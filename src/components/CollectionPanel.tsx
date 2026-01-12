@@ -40,10 +40,10 @@ export function CollectionPanel({ id, name, items }: CollectionPanelProps) {
         >
           {items.map(item => (
             <ImageCheckCard
-              key={`${item.member}-${item.title}`}
+              key={`${item.member}-${item.name}`}
               src={getImageUrl(id, item, template)}
               fallbackSrc={template.imageBaseUrl?.fallback}
-              text={item.title}
+              text={item.name}
               checked={item.status}
               onChange={() => toggleStatus(id, item.id)}
             />

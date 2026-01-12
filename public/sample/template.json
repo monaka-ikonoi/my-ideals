@@ -20,37 +20,37 @@
         {
           "id": "nanaka-hiki",
           "member": "noguchi-nanaka",
-          "title": "野口菜々風 ヒキ",
+          "name": "野口菜々風 ヒキ",
           "image": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/sample-image.webp"
         },
         {
           "id": "nanaka-chuu",
           "member": "noguchi-nanaka",
-          "title": "野口菜々風 チュウ",
+          "name": "野口菜々風 チュウ",
           "image": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/sample-image.webp"
         },
         {
           "id": "nanaka-yori",
           "member": "noguchi-nanaka",
-          "title": "野口菜々風 ヨリ",
+          "name": "野口菜々風 ヨリ",
           "image": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/sample-image.webp"
         },
         {
           "id": "moeko-hiki",
           "member": "yamamoto-moeko",
-          "title": "山本萌子 ヒキ",
+          "name": "山本萌子 ヒキ",
           "image": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/sample-image.webp"
         },
         {
           "id": "moeko-chuu",
           "member": "yamamoto-moeko",
-          "title": "山本萌子 チュウ",
+          "name": "山本萌子 チュウ",
           "image": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/sample-image.webp"
         },
         {
           "id": "moeko-yori",
           "member": "yamamoto-moeko",
-          "title": "山本萌子 ヨリ",
+          "name": "山本萌子 ヨリ",
           "image": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/sample-image.webp"
         }
       ]
@@ -62,37 +62,37 @@
         {
           "id": "nanaka-hiki",
           "member": "noguchi-nanaka",
-          "title": "野口菜々風 ヒキ",
+          "name": "野口菜々風 ヒキ",
           "image": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/sample-image.webp"
         },
         {
           "id": "nanaka-chuu",
           "member": "noguchi-nanaka",
-          "title": "野口菜々風 チュウ",
+          "name": "野口菜々風 チュウ",
           "image": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/sample-image.webp"
         },
         {
           "id": "nanaka-yori",
           "member": "noguchi-nanaka",
-          "title": "野口菜々風 ヨリ",
+          "name": "野口菜々風 ヨリ",
           "image": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/sample-image.webp"
         },
         {
           "id": "moeko-hiki",
           "member": "yamamoto-moeko",
-          "title": "山本萌子 ヒキ",
+          "name": "山本萌子 ヒキ",
           "image": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/sample-image.webp"
         },
         {
           "id": "moeko-chuu",
           "member": "yamamoto-moeko",
-          "title": "山本萌子 チュウ",
+          "name": "山本萌子 チュウ",
           "image": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/sample-image.webp"
         },
         {
           "id": "moeko-yori",
           "member": "yamamoto-moeko",
-          "title": "山本萌子 ヨリ",
+          "name": "山本萌子 ヨリ",
           "image": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/sample-image.webp"
         }
       ]

@@ -9,7 +9,7 @@ const TemplateMember = z.object({
 const TemplateCollectionItem = z.object({
   id: z.string(),
   member: z.string(),
-  title: z.string(),
+  name: z.string(),
   image: z.string().optional(),
 });
 

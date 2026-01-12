@@ -49,7 +49,7 @@ export function diffProfileTemplate(profile: Profile, template: Template): Chang
         }
         addedMap.get(collection.id)!.items.push({
           id: item.id,
-          name: item.title,
+          name: item.name,
         });
       }
     }
