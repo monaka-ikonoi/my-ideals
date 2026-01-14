@@ -7,6 +7,7 @@ import { ErrorPage } from './ui/ErrorPage';
 import { CollectionFilter } from './CollectionFilter';
 import { ProfileInfo } from './ProfileInfo';
 import { useFilteredCollections } from '@/hooks/useFilteredCollection';
+import { ScrollToTop } from './ui/ScrollToTop';
 
 export function CollectionPage() {
   const profile = useActiveProfileStore(state => state.profile);
@@ -59,6 +60,8 @@ export function CollectionPage() {
           ),
         }}
       />
+
+      <ScrollToTop />
 
       {/* Diff Dialog */}
       {/* {createPortal(
