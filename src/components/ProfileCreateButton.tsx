@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect, useRef, type ReactNode } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo, type ReactNode } from 'react';
+import { debounce } from 'lodash-es';
 import { z, ZodError } from 'zod';
 import {
   XMarkIcon,
@@ -83,6 +84,17 @@ export function ProfileCreateButton({ children, className }: ProfileCreateButton
     [templateUrl]
   );
 
+  const debouncedFetch = useMemo(
+    () =>
+      debounce((url: string) => {
+        abortControllerRef.current?.abort();
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
+        fetchTemplate(url, controller.signal);
+      }, 500),
+    [fetchTemplate]
+  );
+
   useEffect(() => {
     const trimmed = templateUrl.trim();
 
@@ -97,20 +109,13 @@ export function ProfileCreateButton({ children, className }: ProfileCreateButton
       return;
     }
 
-    // Debounce fetch
-    abortControllerRef.current?.abort();
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
-
-    const timer = setTimeout(() => {
-      fetchTemplate(trimmed, controller.signal);
-    }, 500); // 500ms debounce
+    debouncedFetch(trimmed);
 
     return () => {
-      clearTimeout(timer);
-      controller.abort();
+      debouncedFetch.cancel();
+      abortControllerRef.current?.abort();
     };
-  }, [templateUrl, fetchTemplate]);
+  }, [templateUrl, debouncedFetch]);
 
   const handleCreate = () => {
     const name = profileName.trim();
