@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useDeferredValue, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { CollectionPanel } from './CollectionPanel';
@@ -18,7 +18,8 @@ export function CollectionPage() {
   // const hasChanges = changes && (changes.added.length > 0 || changes.removed.length > 0);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const filteredCollections = useFilteredCollections(searchQuery);
+  const deferredQuery = useDeferredValue(searchQuery);
+  const filteredCollections = useFilteredCollections(deferredQuery);
 
   if (isLoading) {
     return <LoadingPage />;
