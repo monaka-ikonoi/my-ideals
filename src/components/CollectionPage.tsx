@@ -1,42 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
-import type { Template } from '@/domain/template';
 import { CollectionPanel } from './CollectionPanel';
 import { LoadingPage } from './ui/LoadingPage';
 import { ErrorPage } from './ui/ErrorPage';
 import { CollectionFilter } from './CollectionFilter';
 import { ProfileInfo } from './ProfileInfo';
-import { debugLog } from '@/utils/debug';
-
-function useFilteredCollections(
-  template: Template | null,
-  selectedMembers: Set<string>,
-  searchQuery: string
-) {
-  return useMemo(() => {
-    if (!template) return [];
-
-    debugLog.store.log('Apply filter');
-
-    const query = searchQuery.trim().toLowerCase();
-
-    if (selectedMembers.size === 0 && !searchQuery) return template.collections;
-
-    return template.collections
-      .filter(collection => {
-        if (!query) return true;
-        return collection.name.toLowerCase().includes(query);
-      })
-      .map(collection => ({
-        ...collection,
-        items:
-          selectedMembers.size === 0
-            ? collection.items
-            : collection.items.filter(item => selectedMembers.has(item.member)),
-      }))
-      .filter(collection => collection.items.length > 0);
-  }, [template, selectedMembers, searchQuery]);
-}
+import { useFilteredCollections } from '@/hooks/useFilteredCollection';
 
 export function CollectionPage() {
   const profile = useActiveProfileStore(state => state.profile);
@@ -49,7 +18,7 @@ export function CollectionPage() {
 
   const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
-  const filteredCollections = useFilteredCollections(template, selectedMembers, searchQuery);
+  const filteredCollections = useFilteredCollections(selectedMembers, searchQuery);
 
   if (isLoading) {
     return <LoadingPage />;
