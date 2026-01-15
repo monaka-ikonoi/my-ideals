@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import type { ProfileTemplateDiff, CollectionChange } from '@/utils/diffProfileTemplate';
+import { createPortal } from 'react-dom';
 import type { Template } from '@/domain/template';
+import type { ProfileTemplateDiff, CollectionChange } from '@/utils/syncProfile';
+import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ConfirmDialog } from './ui/ConfirmDialog';
 
 function CollectionTree({
   collection,
@@ -60,7 +63,7 @@ function CollectionTree({
   );
 }
 
-export function ProfileTemplateDiffContent({
+function ProfileTemplateDiffContent({
   template,
   changes,
 }: {
@@ -107,5 +110,24 @@ export function ProfileTemplateDiffContent({
         </div>
       )}
     </div>
+  );
+}
+
+export function ProfileTemplateDiffDialog() {
+  const template = useActiveProfileStore(state => state.template!);
+  const changes = useActiveProfileStore(state => state.changes);
+  const hasChanges = changes && (changes.added.length > 0 || changes.removed.length > 0);
+
+  return createPortal(
+    <ConfirmDialog
+      isOpen={!!hasChanges}
+      title="Template Updated"
+      message={<ProfileTemplateDiffContent template={template} changes={changes} />}
+      options={[{ label: 'Got it', value: 'ok', variant: 'primary' }]}
+      showCancel={false}
+      onSelect={() => useActiveProfileStore.setState({ changes: null })}
+      onCancel={() => useActiveProfileStore.setState({ changes: null })}
+    />,
+    document.body
   );
 }

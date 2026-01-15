@@ -6,36 +6,17 @@ import { TemplateSchema, type Template } from '@/domain/template';
 import { ProfileStorage } from '@/storage/profileStorage';
 import { useProfileListStore } from './profileListStore';
 import { debugLog } from '@/utils/debug';
-
-function syncProfileWithTemplate(profile: Profile, template: Template): Profile {
-  const collections = { ...profile.collections };
-
-  for (const tc of template.collections) {
-    if (!collections[tc.id]) {
-      collections[tc.id] = {};
-    }
-
-    for (const item of tc.items) {
-      if (!(item.id in collections[tc.id])) {
-        collections[tc.id][item.id] = false;
-      }
-    }
-  }
-
-  return {
-    ...profile,
-    collections,
-    template: {
-      ...profile.template,
-      revision: template.revision,
-    },
-  };
-}
+import {
+  diffProfileWithTemplate,
+  syncProfileWithTemplate,
+  type ProfileTemplateDiff,
+} from '@/utils/syncProfile';
 
 type activeProfileStore = {
   // State
   profile: Profile | null;
   template: Template | null;
+  changes: ProfileTemplateDiff | null;
   isLoading: boolean;
   error: string | null;
 
@@ -61,6 +42,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
     return {
       profile: null,
       template: null,
+      changes: null,
       isLoading: false,
       error: null,
 
@@ -70,6 +52,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
         set(state => {
           state.profile = null;
           state.template = null;
+          state.changes = null;
           state.isLoading = true;
           state.error = null;
         });
@@ -88,7 +71,11 @@ export const useActiveProfileStore = create<activeProfileStore>()(
             );
           }
 
+          let changes: ProfileTemplateDiff | null = null;
           if (profile.template.revision !== template.revision) {
+            if (profile.template.revision !== 0) {
+              changes = diffProfileWithTemplate(profile, template);
+            }
             profile = syncProfileWithTemplate(profile, template);
             ProfileStorage.setProfile(profile);
             console.log(`Profile updated to template rev ${template.revision}`);
@@ -97,6 +84,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           set(state => {
             state.profile = profile;
             state.template = template;
+            state.changes = changes;
             state.isLoading = false;
           });
         } catch (e) {

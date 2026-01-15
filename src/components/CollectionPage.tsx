@@ -1,22 +1,20 @@
 import { useDeferredValue, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useFilteredCollections } from '@/hooks/useFilteredCollection';
 import { CollectionPanel } from './CollectionPanel';
 import { LoadingPage } from './ui/LoadingPage';
 import { ErrorPage } from './ui/ErrorPage';
 import { CollectionFilter } from './CollectionFilter';
 import { ProfileInfo } from './ProfileInfo';
-import { useFilteredCollections } from '@/hooks/useFilteredCollection';
 import { ScrollToTop } from './ui/ScrollToTop';
+import { ProfileTemplateDiffDialog } from './ProfileTemplateDiffDialog';
 
 export function CollectionPage() {
   const profile = useActiveProfileStore(state => state.profile);
   const template = useActiveProfileStore(state => state.template);
   const isLoading = useActiveProfileStore(state => state.isLoading);
   const error = useActiveProfileStore(state => state.error);
-
-  // const changes = useWorkingProfileStore(state => state.changes);
-  // const hasChanges = changes && (changes.added.length > 0 || changes.removed.length > 0);
 
   const [searchQuery, setSearchQuery] = useState('');
   const deferredQuery = useDeferredValue(searchQuery);
@@ -64,18 +62,7 @@ export function CollectionPage() {
       <ScrollToTop />
 
       {/* Diff Dialog */}
-      {/* {createPortal(
-        <ConfirmDialog
-          isOpen={!!hasChanges}
-          title="Template Updated"
-          message={<ProfileTemplateDiffContent working={working} changes={changes} />}
-          options={[{ label: 'Got it', value: 'ok', variant: 'primary' }]}
-          showCancel={false}
-          onSelect={() => useWorkingProfileStore.setState({ changes: null })}
-          onCancel={() => useWorkingProfileStore.setState({ changes: null })}
-        />,
-        document.body
-      )} */}
+      <ProfileTemplateDiffDialog />
     </main>
   );
 }
