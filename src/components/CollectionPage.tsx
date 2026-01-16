@@ -8,7 +8,6 @@ import { ErrorPage } from './ui/ErrorPage';
 import { CollectionFilter } from './CollectionFilter';
 import { ProfileInfo } from './ProfileInfo';
 import { ScrollToTop } from './ui/ScrollToTop';
-import { ProfileTemplateDiffDialog } from './ProfileTemplateDiffDialog';
 
 export function CollectionPage() {
   const profile = useActiveProfileStore(state => state.profile);
@@ -60,9 +59,6 @@ export function CollectionPage() {
       />
 
       <ScrollToTop />
-
-      {/* Diff Dialog */}
-      <ProfileTemplateDiffDialog />
     </main>
   );
 }
