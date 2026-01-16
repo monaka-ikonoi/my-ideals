@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { CheckIcon } from '@heroicons/react/24/outline';
+import { useSettingsStore } from '@/stores/settingsStore';
 
 const languages = [
   { code: 'en', label: 'English' },
@@ -15,7 +16,7 @@ export function SettingsPanel({ onSelect }: SettingsPanelProps) {
   const { t, i18n } = useTranslation();
 
   const handleSelectLanguage = (code: string) => {
-    i18n.changeLanguage(code);
+    useSettingsStore.getState().setLanguage(code);
     onSelect?.();
   };
 

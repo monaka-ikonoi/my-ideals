@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import en from './locales/en.json';
 import ja from './locales/ja.json';
 import zh from './locales/zh.json';
+import { useSettingsStore } from '@/stores/settingsStore';
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -10,7 +11,7 @@ i18n.use(initReactI18next).init({
     ja: { translation: ja },
     zh: { translation: zh },
   },
-  lng: navigator.language.split('-')[0],
+  lng: useSettingsStore.getState().language,
   fallbackLng: 'en',
   interpolation: {
     escapeValue: false,
