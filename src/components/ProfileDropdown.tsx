@@ -36,7 +36,7 @@ export function ProfileDropdown({ isOpen, onToggle, onClose }: ProfileDropdownPr
             className="absolute right-0 mt-2 w-72 origin-top-right rounded-lg border border-gray-200
               bg-white shadow-lg"
           >
-            <ProfileList />
+            <ProfileList onSelect={onClose} />
           </div>
         </>
       )}

@@ -7,14 +7,21 @@ import { ArrowUpTrayIcon, CheckIcon, PlusIcon, TrashIcon } from '@heroicons/reac
 import { ProfileImportButton } from './ProfileImportButton';
 import { ProfileCreateButton } from './ProfileCreateButton';
 
-export function ProfileList() {
+type ProfileListProps = {
+  onSelect?: () => void;
+};
+
+export function ProfileList({ onSelect }: ProfileListProps) {
   const { t } = useTranslation();
   const profiles = useProfileListStore(state => state.profiles);
   const activeProfileId = useProfileListStore(state => state.activeId);
-  const selectProfile = useProfileListStore(state => state.setActiveProfile);
-  const deleteProfile = useProfileListStore(state => state.deleteProfile);
 
   const [deleteTarget, setDeleteTarget] = useState<ProfileListEntry | null>(null);
+
+  const handleSelect = (id: string) => {
+    useProfileListStore.getState().setActiveProfile(id);
+    onSelect?.();
+  };
 
   const handleDeleteClick = (e: React.MouseEvent, profile: ProfileListEntry) => {
     e.stopPropagation();
@@ -23,7 +30,7 @@ export function ProfileList() {
 
   const handleConfirmDelete = (value: string) => {
     if (value === 'delete' && deleteTarget) {
-      deleteProfile(deleteTarget.id);
+      useProfileListStore.getState().deleteProfile(deleteTarget.id);
       // TODO: toast.success(`Profile "${deleteTarget.name}" deleted`);
     }
     setDeleteTarget(null);
@@ -37,7 +44,7 @@ export function ProfileList() {
           {profiles.map(profile => (
             <button
               key={profile.id}
-              onClick={() => selectProfile(profile.id)}
+              onClick={() => handleSelect(profile.id)}
               className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm ${
                 profile.id === activeProfileId
                   ? 'bg-blue-50 text-blue-700'
