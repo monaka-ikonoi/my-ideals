@@ -6,6 +6,7 @@ import { useActiveProfileStore } from './stores/activeProfileStore';
 import { LoadingPage } from './components/ui/LoadingPage';
 import { EmptyPage } from './components/EmptyPage';
 import { DisclaimerDialog } from './components/DisclaimerDialog';
+import { GlobalDialogs } from './components/GlobalDialogs';
 
 export default function App() {
   const isInitialized = useProfileListStore(state => state.isInitialized);
@@ -37,6 +38,8 @@ export default function App() {
       <Navbar />
 
       <main>{activeProfileId ? <CollectionPage /> : <EmptyPage />}</main>
+
+      <GlobalDialogs />
     </div>
   );
 }

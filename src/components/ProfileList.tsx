@@ -5,7 +5,7 @@ import { useProfileListStore, type ProfileListEntry } from '@/stores/profileList
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { ArrowUpTrayIcon, CheckIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { ProfileImportButton } from './ProfileImportButton';
-import { ProfileCreateButton } from './ProfileCreateButton';
+import { useDialogStore } from '@/stores/dialogStore';
 
 type ProfileListProps = {
   onSelect?: () => void;
@@ -77,13 +77,17 @@ export function ProfileList({ onSelect }: ProfileListProps) {
       <div className="border-t border-gray-200" />
 
       <div className="py-1">
-        <ProfileCreateButton
+        <button
+          onClick={() => {
+            useDialogStore.getState().openCreateProfile();
+            onSelect?.();
+          }}
           className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
             hover:bg-gray-100"
         >
           <PlusIcon className="h-4 w-4" />
           {t('profile.create')}
-        </ProfileCreateButton>
+        </button>
         <ProfileImportButton
           className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
             hover:bg-gray-100"
