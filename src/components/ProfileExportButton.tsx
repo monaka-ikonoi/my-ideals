@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
 
 export function ProfileExportButton() {
+  const { t } = useTranslation();
   const profile = useActiveProfileStore(state => state.profile);
 
   const handleExport = () => {
@@ -22,7 +24,7 @@ export function ProfileExportButton() {
         text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
     >
       <ArrowDownTrayIcon className="h-4 w-4" />
-      <span className="hidden sm:inline">Save</span>
+      <span className="hidden sm:inline">{t('profile.export')}</span>
     </button>
   );
 }

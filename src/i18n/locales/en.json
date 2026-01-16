@@ -1,0 +1,19 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error-title": "Something went wrong",
+    "try-again": "Try Again",
+    "delete": "Delete",
+    "cancel": "Cancel"
+  },
+  "profile": {
+    "create": "New Profile",
+    "import": "Import Profile",
+    "export": "Export to File",
+    "delete-dialog": {
+      "title": "Delete Profile",
+      "content-confim": "Are you sure you want to delete <strong>{{name}}</strong> ?",
+      "content-warn": "This action cannot be undone."
+    }
+  }
+}

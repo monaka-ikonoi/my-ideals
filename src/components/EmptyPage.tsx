@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next';
 import { PlusIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import { ProfileImportButton } from './ProfileImportButton';
 import { ProfileCreateButton } from './ProfileCreateButton';
 
 export function EmptyPage() {
+  const { t } = useTranslation();
   return (
     <div className="flex h-[calc(100vh-56px)] items-center justify-center">
       <div className="text-center">
@@ -15,14 +17,14 @@ export function EmptyPage() {
               text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             <PlusIcon className="h-4 w-4" />
-            New Profile
+            {t('profile.create')}
           </ProfileCreateButton>
           <ProfileImportButton
             className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium
               text-white hover:bg-blue-700"
           >
             <ArrowUpTrayIcon className="h-4 w-4" />
-            Import Profile
+            {t('profile.import')}
           </ProfileImportButton>
         </div>
       </div>

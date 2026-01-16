@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 type ConfirmDialogProps = {
@@ -24,6 +25,8 @@ export function ConfirmDialog({
   onCancel,
   showCancel = true,
 }: ConfirmDialogProps) {
+  const { t } = useTranslation();
+
   if (!isOpen) return null;
 
   const variantStyles = {
@@ -61,7 +64,7 @@ export function ConfirmDialog({
                 onClick={onCancel}
                 className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
             )}
             {options.map(option => (

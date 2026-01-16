@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
+import { Trans, useTranslation } from 'react-i18next';
 import { useProfileListStore, type ProfileListEntry } from '@/stores/profileListStore';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { ArrowUpTrayIcon, CheckIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
@@ -7,6 +8,7 @@ import { ProfileImportButton } from './ProfileImportButton';
 import { ProfileCreateButton } from './ProfileCreateButton';
 
 export function ProfileList() {
+  const { t } = useTranslation();
   const profiles = useProfileListStore(state => state.profiles);
   const activeProfileId = useProfileListStore(state => state.activeId);
   const selectProfile = useProfileListStore(state => state.setActiveProfile);
@@ -73,29 +75,33 @@ export function ProfileList() {
             hover:bg-gray-100"
         >
           <PlusIcon className="h-4 w-4" />
-          New Profile
+          {t('profile.create')}
         </ProfileCreateButton>
         <ProfileImportButton
           className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
             hover:bg-gray-100"
         >
           <ArrowUpTrayIcon className="h-4 w-4" />
-          Import Profile
+          {t('profile.import')}
         </ProfileImportButton>
 
         {/* Delete Confirm Dialog */}
         {createPortal(
           <ConfirmDialog
             isOpen={deleteTarget !== null}
-            title="Delete Profile"
+            title={t('profile.delete-dialog.title')}
             message={
               <p>
-                Are you sure you want to delete <strong>{deleteTarget?.name}</strong>?
+                <Trans
+                  i18nKey="profile.delete-dialog.content-confim"
+                  values={{ name: deleteTarget?.name }}
+                  components={{ strong: <strong /> }}
+                />
                 <br />
-                This action cannot be undone.
+                {t('profile.delete-dialog.content-warn')}
               </p>
             }
-            options={[{ label: 'Delete', value: 'delete', variant: 'danger' }]}
+            options={[{ label: t('common.delete'), value: 'delete', variant: 'danger' }]}
             onSelect={handleConfirmDelete}
             onCancel={() => setDeleteTarget(null)}
           />,
