@@ -1,5 +1,6 @@
 import { type Profile } from '@/domain/profile';
 import { type Template } from '@/domain/template';
+import { debugLog } from './debug';
 
 export type ItemChange = {
   id: string;
@@ -86,21 +87,51 @@ export function diffProfileWithTemplate(profile: Profile, template: Template): C
   };
 }
 
-export function syncProfileWithTemplate(profile: Profile, template: Template): Profile {
-  const syncedCollections: Profile['collections'] = {};
+export function syncProfileWithTemplate(
+  profile: Profile,
+  template: Template,
+  cleanup: boolean
+): Profile {
+  debugLog.sync.log(
+    `Sync template ${template.id} from ${profile.template.revision} to ${template.revision}`
+  );
 
-  for (const tc of template.collections) {
-    const existing = profile.collections[tc.id] ?? {};
-    syncedCollections[tc.id] = {};
+  if (template.revision < profile.template.revision) {
+    console.warn(
+      `SyncProfile: Template revision ${template.revision} is less than profile recorded ${profile.template.revision}`
+    );
+  }
 
-    for (const item of tc.items) {
-      syncedCollections[tc.id][item.id] = existing[item.id] ?? false;
+  let collections: Profile['collections'] = {};
+
+  if (cleanup) {
+    // Remove entries not in template and add new entries
+    for (const tc of template.collections) {
+      const existing = profile.collections[tc.id] ?? {};
+      collections[tc.id] = {};
+
+      for (const item of tc.items) {
+        collections[tc.id][item.id] = existing[item.id] ?? false;
+      }
+    }
+  } else {
+    // Add new entries only
+    collections = { ...profile.collections };
+    for (const tc of template.collections) {
+      if (!collections[tc.id]) {
+        collections[tc.id] = {};
+      }
+      for (const item of tc.items) {
+        if (!(item.id in collections[tc.id])) {
+          collections[tc.id][item.id] = false;
+        }
+      }
     }
   }
 
   return {
     ...profile,
-    collections: syncedCollections,
+    collections,
     template: {
       ...profile.template,
       revision: template.revision,

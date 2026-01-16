@@ -17,6 +17,7 @@ type activeProfileStore = {
   profile: Profile | null;
   template: Template | null;
   changes: ProfileTemplateDiff | null;
+  pendingSync: boolean;
   isLoading: boolean;
   error: string | null;
 
@@ -24,6 +25,7 @@ type activeProfileStore = {
   load: (profileId: string) => Promise<void>;
   clear: () => void;
   flush: () => void;
+  confirmSyncChanges: (cleanup: boolean) => void;
   toggleStatus: (collectionId: string, itemId: string) => void;
   toggleMember: (member: string) => void;
   updateName: (name: string) => void;
@@ -44,6 +46,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
       template: null,
       changes: null,
       isLoading: false,
+      pendingSync: false,
       error: null,
 
       load: async (profileId: string) => {
@@ -53,6 +56,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           state.profile = null;
           state.template = null;
           state.changes = null;
+          state.pendingSync = false;
           state.isLoading = true;
           state.error = null;
         });
@@ -72,19 +76,23 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           }
 
           let changes: ProfileTemplateDiff | null = null;
+          let pendingSync = false;
           if (profile.template.revision !== template.revision) {
             if (profile.template.revision !== 0) {
               changes = diffProfileWithTemplate(profile, template);
+              pendingSync = changes.removed.length > 0;
             }
-            profile = syncProfileWithTemplate(profile, template);
-            ProfileStorage.setProfile(profile);
-            console.log(`Profile updated to template rev ${template.revision}`);
+            if (!pendingSync) {
+              profile = syncProfileWithTemplate(profile, template, false);
+              ProfileStorage.setProfile(profile);
+            }
           }
 
           set(state => {
             state.profile = profile;
             state.template = template;
             state.changes = changes;
+            state.pendingSync = pendingSync;
             state.isLoading = false;
           });
         } catch (e) {
@@ -101,12 +109,36 @@ export const useActiveProfileStore = create<activeProfileStore>()(
         set(state => {
           state.profile = null;
           state.template = null;
+          state.changes = null;
+          state.pendingSync = false;
           state.isLoading = false;
           state.error = null;
         });
       },
 
       flush: () => debouncedSave.flush(),
+
+      confirmSyncChanges(cleanup: boolean) {
+        const { profile, template, pendingSync } = get();
+
+        if (!profile || !template) return;
+
+        if (!pendingSync) {
+          set(state => {
+            state.changes = null;
+          });
+          return;
+        }
+
+        const synced = syncProfileWithTemplate(profile, template, cleanup);
+        ProfileStorage.setProfile(synced);
+
+        set(state => {
+          state.profile = synced;
+          state.changes = null;
+          state.pendingSync = false;
+        });
+      },
 
       toggleStatus: (collectionId: string, itemId: string) => {
         set(state => {

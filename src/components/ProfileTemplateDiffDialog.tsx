@@ -53,8 +53,8 @@ function CollectionTree({
           {collection.items.map(item => (
             <li key={item.id} className={`${style.text} truncate`}>
               {type === 'added' ? '+' : '-'}
-              {item.name && <>{item.name} / </>}
-              <span className="font-mono">{item.id}</span>
+              {item.name && <>{item.name} /</>}
+              <span className="font-mono"> {item.id}</span>
             </li>
           ))}
         </ul>
@@ -98,16 +98,21 @@ function ProfileTemplateDiffContent({
 
       {/* Removed */}
       {changes.removed.length > 0 && (
-        <div>
-          <div className="mb-2 text-sm font-medium text-red-700">
-            - {totalRemoved} item(s) removed
+        <>
+          <div>
+            <div className="mb-2 text-sm font-medium text-red-700">
+              - {totalRemoved} item(s) removed
+            </div>
+            <div className="max-h-60 space-y-1 overflow-y-auto">
+              {changes.removed.map(collection => (
+                <CollectionTree key={collection.id} collection={collection} type="removed" />
+              ))}
+            </div>
           </div>
-          <div className="max-h-60 space-y-1 overflow-y-auto">
-            {changes.removed.map(collection => (
-              <CollectionTree key={collection.id} collection={collection} type="removed" />
-            ))}
+          <div className="text-sm text-gray-500">
+            Choose whether to keep removed items in your profile or clean them up.
           </div>
-        </div>
+        </>
       )}
     </div>
   );
@@ -116,17 +121,35 @@ function ProfileTemplateDiffContent({
 export function ProfileTemplateDiffDialog() {
   const template = useActiveProfileStore(state => state.template!);
   const changes = useActiveProfileStore(state => state.changes);
+  const confirmSyncChanges = useActiveProfileStore(state => state.confirmSyncChanges);
+
   const hasChanges = changes && (changes.added.length > 0 || changes.removed.length > 0);
+  const hasRemovals = changes && changes.removed.length > 0;
+
+  const handleSelect = (value: string) => {
+    if (value === 'cleanup') {
+      confirmSyncChanges(true);
+    } else {
+      confirmSyncChanges(false);
+    }
+  };
+
+  const options = hasRemovals
+    ? [
+        { label: 'Keep removed data', value: 'keep', variant: 'secondary' as const },
+        { label: 'Clean up', value: 'cleanup', variant: 'danger' as const },
+      ]
+    : [{ label: 'Got it', value: 'ok', variant: 'primary' as const }];
 
   return createPortal(
     <ConfirmDialog
       isOpen={!!hasChanges}
       title="Template Updated"
       message={<ProfileTemplateDiffContent template={template} changes={changes} />}
-      options={[{ label: 'Got it', value: 'ok', variant: 'primary' }]}
+      options={options}
       showCancel={false}
-      onSelect={() => useActiveProfileStore.setState({ changes: null })}
-      onCancel={() => useActiveProfileStore.setState({ changes: null })}
+      onSelect={handleSelect}
+      onCancel={() => confirmSyncChanges(false)}
     />,
     document.body
   );
