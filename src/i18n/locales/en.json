@@ -7,7 +7,14 @@
     "error-title": "Something went wrong",
     "try-again": "Try Again",
     "delete": "Delete",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "create": "Create",
+    "menu": "Menu",
+    "save": "Save",
+    "import": "Import",
+    "overwrite": "Overwrite",
+    "create-copy": "Create Copy",
+    "template": "Template"
   },
   "profile": {
     "create": "New Profile",
@@ -17,10 +24,21 @@
       "title": "Delete Profile",
       "content-confim": "Are you sure you want to delete <strong>{{name}}</strong> ?",
       "content-warn": "This action cannot be undone."
-    }
+    },
+    "select-placeholder": "Select Profile",
+    "current": "Current Profile",
+    "list": "Profiles",
+    "copy-template-link": "Copy template link",
+    "not-selected": "No Profile Selected",
+    "not-selected-hint": "Create or import a profile to get started"
   },
   "settings": {
     "language": "Language"
+  },
+  "collection": {
+    "collected": "{{count}} / {{total}} Collected",
+    "search-placeholder": "Search collections...",
+    "no-result": "No collections found"
   },
   "dialog": {
     "disclaimer": {
@@ -33,6 +51,22 @@
       },
       "checkbox": "I have read and understood the above",
       "confirm": "Confirm"
+    },
+    "profile-create": {
+      "title": "New Profile",
+      "template-url": "Template URL",
+      "template-url-placeholder": "Paste template link here..",
+      "invalid-url": "Invalid URL format",
+      "profile-name": "Profile Name"
+    },
+    "profile-import": {
+      "title": "Import Profile",
+      "select-file": "Click to select file",
+      "select-file-hint": "JSON file exported from this app",
+      "conflict-message": "A profile with this ID already exists. You can overwrite it or create a copy.",
+      "collections-count": "{{count}} collection(s)",
+      "stats": "{{count}} / {{total}} collected",
+      "template-info": "Template: {{id}} (rev. {{revision}})"
     }
   }
 }

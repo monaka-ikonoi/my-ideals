@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PencilIcon, LinkIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline';
 import { InlineCode } from './ui/InlineCode';
 import { ConfirmDialog } from './ui/ConfirmDialog';
@@ -6,6 +7,8 @@ import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { useProfileListStore } from '@/stores/profileListStore';
 
 export function ProfileInfo() {
+  const { t } = useTranslation();
+
   const profile = useActiveProfileStore(state => state.profile!);
   const template = useActiveProfileStore(state => state.template!);
 
@@ -57,12 +60,12 @@ export function ProfileInfo() {
       {/* Template */}
       <div className="flex items-center gap-1 text-sm text-gray-500">
         <span>
-          Template: {template.name} / <span className="font-mono">{template.id}</span>
+          {t('common.template')}: {template.name} / <span className="font-mono">{template.id}</span>
         </span>
         <button
           onClick={handleCopyLink}
           className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-          title="Copy template link"
+          title={t('profile.copy-template-link')}
         >
           {copied ? (
             <ClipboardDocumentCheckIcon className="h-4 w-4 text-green-500" />
@@ -92,7 +95,7 @@ export function ProfileInfo() {
             autoFocus
           />
         }
-        options={[{ label: 'Save', value: 'save', variant: 'primary' }]}
+        options={[{ label: t('common.save'), value: 'save', variant: 'primary' }]}
         onSelect={handleSaveName}
         onCancel={() => setIsEditingName(false)}
       />

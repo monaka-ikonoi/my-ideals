@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { ZodError } from 'zod';
 import {
   ArrowPathIcon,
@@ -32,6 +33,8 @@ const FileSelectorBoarderStyles = {
 };
 
 export function ProfileImportDialog({ isOpen, onClose }: ProfileImportDialogProps) {
+  const { t } = useTranslation();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useState<ImportState>({ status: 'idle' });
 
@@ -116,7 +119,9 @@ export function ProfileImportDialog({ isOpen, onClose }: ProfileImportDialogProp
         >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-            <h2 className="text-lg font-semibold text-gray-900">Import Profile</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              {t('dialog.profile-import.title')}
+            </h2>
             <button
               onClick={handleClose}
               className="rounded-lg p-1 text-gray-500 hover:bg-gray-100"
@@ -145,8 +150,12 @@ export function ProfileImportDialog({ isOpen, onClose }: ProfileImportDialogProp
                   hover:bg-blue-50 hover:text-blue-600"
               >
                 <DocumentArrowUpIcon className="h-10 w-10" />
-                <span className="text-sm font-medium">Click to select file</span>
-                <span className="text-xs text-gray-400">JSON file exported from this app</span>
+                <span className="text-sm font-medium">
+                  {t('dialog.profile-import.select-file')}
+                </span>
+                <span className="text-xs text-gray-400">
+                  {t('dialog.profile-import.select-file-hint')}
+                </span>
               </button>
             ) : (
               <button
@@ -186,7 +195,7 @@ export function ProfileImportDialog({ isOpen, onClose }: ProfileImportDialogProp
                   <div className="flex items-start gap-2 rounded-lg bg-amber-50 p-3">
                     <ExclamationTriangleIcon className="h-5 w-5 shrink-0 text-amber-500" />
                     <div className="text-sm text-amber-800">
-                      A profile with this ID already exists. You can overwrite it or create a copy.
+                      {t('dialog.profile-import.conflict-message')}
                     </div>
                   </div>
                 )}
@@ -201,13 +210,20 @@ export function ProfileImportDialog({ isOpen, onClose }: ProfileImportDialogProp
                     </div>
 
                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
-                      <span>{collectionsCount} collections</span>
-                      <span>{itemsCount} items</span>
-                      <span>{checkedCount} checked</span>
+                      <span>
+                        {t('dialog.profile-import.collections-count', { count: collectionsCount })}
+                      </span>
+                      <span>
+                        {t('dialog.profile-import.stats', {
+                          count: checkedCount,
+                          total: itemsCount,
+                        })}
+                      </span>
                     </div>
 
                     <div className="text-xs text-gray-400">
-                      Template: {state.profile.template.id} (rev. {state.profile.template.revision})
+                      {t('common.template')}: {state.profile.template.id} (rev.{' '}
+                      {state.profile.template.revision})
                     </div>
                   </div>
                 </div>
@@ -221,7 +237,7 @@ export function ProfileImportDialog({ isOpen, onClose }: ProfileImportDialogProp
               onClick={handleClose}
               className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
 
             {state.status === 'success' &&
@@ -232,14 +248,14 @@ export function ProfileImportDialog({ isOpen, onClose }: ProfileImportDialogProp
                     className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white
                       hover:bg-red-700"
                   >
-                    Overwrite
+                    {t('common.overwrite')}
                   </button>
                   <button
                     onClick={() => handleImport(false)}
                     className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
                       hover:bg-blue-700"
                   >
-                    Create Copy
+                    {t('common.create-copy')}
                   </button>
                 </>
               ) : (
@@ -248,7 +264,7 @@ export function ProfileImportDialog({ isOpen, onClose }: ProfileImportDialogProp
                   className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
                     hover:bg-blue-700"
                 >
-                  Import
+                  {t('common.import')}
                 </button>
               ))}
           </div>

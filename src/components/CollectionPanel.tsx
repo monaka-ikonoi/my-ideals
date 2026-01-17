@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { type TemplateCollection } from '@/domain/template';
 import { ImageCheckCard } from './ImageCheckCard';
 import { debugLog } from '@/utils/debug';
@@ -10,6 +11,8 @@ type CollectionPanelProps = {
 
 export const CollectionPanel = memo(function CollectionPanel({ collection }: CollectionPanelProps) {
   debugLog.render.log(`CollectionPanel render: ${collection.id}`);
+
+  const { t } = useTranslation();
 
   const statusMap = useActiveProfileStore(state => state.profile?.collections[collection.id]);
   const stats = useMemo(() => {
@@ -28,7 +31,7 @@ export const CollectionPanel = memo(function CollectionPanel({ collection }: Col
       <div className="border-b border-gray-200 px-4 py-3">
         <h2 className="text-lg font-semibold text-gray-800">{collection.name}</h2>
         <p className="text-sm text-gray-500">
-          {stats.checked} / {stats.total} 収集済み
+          {t('collection.collected', { count: stats.checked, total: stats.total })}
         </p>
       </div>
 

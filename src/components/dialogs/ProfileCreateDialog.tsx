@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash-es';
 import { z, ZodError } from 'zod';
 import {
@@ -27,6 +28,8 @@ type ProfileCreateDialogProps = {
 };
 
 export function ProfileCreateDialog({ isOpen, onClose }: ProfileCreateDialogProps) {
+  const { t } = useTranslation();
+
   const [templateUrl, setTemplateUrl] = useState('');
   const [profileName, setProfileName] = useState('');
   const [templateInfo, setTemplateInfo] = useState<ProfileTemplateInfo | null>(null);
@@ -134,7 +137,9 @@ export function ProfileCreateDialog({ isOpen, onClose }: ProfileCreateDialogProp
         >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-            <h2 className="text-lg font-semibold text-gray-900">New Profile</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              {t('dialog.profile-create.title')}
+            </h2>
             <button onClick={onClose} className="rounded-lg p-1 text-gray-500 hover:bg-gray-100">
               <XMarkIcon className="h-5 w-5" />
             </button>
@@ -144,13 +149,15 @@ export function ProfileCreateDialog({ isOpen, onClose }: ProfileCreateDialogProp
           <div className="space-y-4 px-4 py-4">
             {/* Template URL */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Template URL</label>
+              <label className="block text-sm font-medium text-gray-700">
+                {t('dialog.profile-create.template-url')}
+              </label>
               <div className="relative mt-1">
                 <input
                   type="url"
                   value={templateUrl}
                   onChange={e => setTemplateUrl(e.target.value)}
-                  placeholder="Paste template link here.."
+                  placeholder={t('dialog.profile-create.template-url-placeholder')}
                   className={`w-full rounded-lg border px-3 py-2 pr-10 text-sm focus:ring-1
                     focus:outline-none ${
                       fetchState.status === 'invalid-url' || fetchState.status === 'error'
@@ -177,7 +184,9 @@ export function ProfileCreateDialog({ isOpen, onClose }: ProfileCreateDialogProp
 
               {/* Inline hint/error */}
               {fetchState.status === 'invalid-url' && (
-                <p className="mt-1 text-xs text-red-500">Invalid URL format</p>
+                <p className="mt-1 text-xs text-red-500">
+                  {t('dialog.profile-create.invalid-url')}
+                </p>
               )}
             </div>
 
@@ -223,13 +232,14 @@ export function ProfileCreateDialog({ isOpen, onClose }: ProfileCreateDialogProp
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Profile Name</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    {t('dialog.profile-create.profile-name')}
+                  </label>
                   <input
                     type="text"
                     value={profileName}
                     onChange={e => setProfileName(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleCreate()}
-                    placeholder="My Profile"
                     className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2
                       text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500
                       focus:outline-none"
@@ -245,7 +255,7 @@ export function ProfileCreateDialog({ isOpen, onClose }: ProfileCreateDialogProp
               onClick={onClose}
               className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
             <button
               onClick={handleCreate}
@@ -253,7 +263,7 @@ export function ProfileCreateDialog({ isOpen, onClose }: ProfileCreateDialogProp
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
                 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Create
+              {t('common.create')}
             </button>
           </div>
         </div>

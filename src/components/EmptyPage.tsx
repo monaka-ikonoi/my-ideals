@@ -4,11 +4,12 @@ import { useDialogStore } from '@/stores/dialogStore';
 
 export function EmptyPage() {
   const { t } = useTranslation();
+
   return (
     <div className="flex h-[calc(100vh-56px)] items-center justify-center">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-gray-700">No Profile Selected</h2>
-        <p className="mt-2 text-gray-500">Create or import a profile to get started</p>
+        <h2 className="text-xl font-semibold text-gray-700">{t('profile.not-selected')}</h2>
+        <p className="mt-2 text-gray-500">{t('profile.not-selected-hint')}</p>
 
         <div className="mt-6 flex justify-center gap-3">
           <button

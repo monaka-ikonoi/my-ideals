@@ -11,6 +11,7 @@ type ProfileListProps = {
 
 export function ProfileList({ onSelect }: ProfileListProps) {
   const { t } = useTranslation();
+
   const profiles = useProfileListStore(state => state.profiles);
   const activeProfileId = useProfileListStore(state => state.activeId);
 
@@ -38,7 +39,9 @@ export function ProfileList({ onSelect }: ProfileListProps) {
     <>
       {profiles.length > 0 && (
         <div className="py-1">
-          <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">Profiles</div>
+          <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">
+            {t('profile.list')}
+          </div>
           {profiles.map(profile => (
             <button
               key={profile.id}

@@ -7,7 +7,14 @@
     "error-title": "問題が発生しました",
     "try-again": "もう一度試す",
     "delete": "削除",
-    "cancel": "キャンセル"
+    "cancel": "キャンセル",
+    "create": "作成",
+    "menu": "メニュー",
+    "save": "保存",
+    "import": "インポート",
+    "overwrite": "上書き",
+    "create-copy": "コピーを作成",
+    "template": "テンプレート"
   },
   "profile": {
     "create": "新規プロファイル",
@@ -17,10 +24,21 @@
       "title": "プロファイルを削除",
       "content-confim": "<strong>{{name}}</strong> を削除しますか？",
       "content-warn": "この操作は取り消せません。"
-    }
+    },
+    "select-placeholder": "プロファイルを選択",
+    "current": "現在のプロファイル",
+    "list": "プロファイル",
+    "copy-template-link": "テンプレートリンクをコピー",
+    "not-selected": "プロファイル未選択",
+    "not-selected-hint": "プロファイルを作成またはインポートしはじめる"
   },
   "settings": {
     "language": "言語"
+  },
+  "collection": {
+    "collected": "{{count}} / {{total}} 収集済み",
+    "search-placeholder": "セットを検索...",
+    "no-result": "セットが見つかりません"
   },
   "dialog": {
     "disclaimer": {
@@ -33,6 +51,21 @@
       },
       "checkbox": "上記の内容を読み、理解しました",
       "confirm": "確認"
+    },
+    "profile-create": {
+      "title": "新規プロファイル作成",
+      "template-url": "テンプレートURL",
+      "template-url-placeholder": "テンプレートのリンクを貼り付け",
+      "invalid-url": "無効なURL形式です",
+      "profile-name": "プロファイル名"
+    },
+    "profile-import": {
+      "title": "プロファイルをインポート",
+      "select-file": "クリックしてファイルを選択",
+      "select-file-hint": "このアプリからエクスポートしたJSONファイル",
+      "conflict-message": "このIDのプロファイルは既に存在します。上書きするか、コピーを作成できます。",
+      "collections-count": "{{count}} セット",
+      "stats": "{{count}} / {{total}} 収集済み"
     }
   }
 }

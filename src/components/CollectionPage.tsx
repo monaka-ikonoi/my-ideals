@@ -1,5 +1,6 @@
 import { useDeferredValue, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
+import { useTranslation } from 'react-i18next';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { useFilteredCollections } from '@/hooks/useFilteredCollection';
 import { CollectionPanel } from './CollectionPanel';
@@ -10,6 +11,8 @@ import { ProfileInfo } from './ProfileInfo';
 import { ScrollToTop } from './ui/ScrollToTop';
 
 export function CollectionPage() {
+  const { t } = useTranslation();
+
   const profile = useActiveProfileStore(state => state.profile);
   const template = useActiveProfileStore(state => state.template);
   const isLoading = useActiveProfileStore(state => state.isLoading);
@@ -52,7 +55,7 @@ export function CollectionPage() {
         components={{
           EmptyPlaceholder: () => (
             <div className="flex h-40 items-center justify-center text-gray-500">
-              No collections found
+              {t('collection.no-result')}
             </div>
           ),
         }}

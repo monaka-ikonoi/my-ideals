@@ -7,7 +7,14 @@
     "error-title": "发生了意外错误",
     "try-again": "重试",
     "delete": "删除",
-    "cancel": "取消"
+    "cancel": "取消",
+    "create": "创建",
+    "menu": "菜单",
+    "save": "保存",
+    "import": "导入",
+    "overwrite": "覆盖",
+    "create-copy": "创建副本",
+    "template": "模板"
   },
   "profile": {
     "import": "导入档案",
@@ -17,10 +24,21 @@
       "title": "删除档案",
       "content-confim": "确定要删除 <strong>{{name}}</strong> 吗？",
       "content-warn": "此操作无法撤销。"
-    }
+    },
+    "select-placeholder": "选择档案",
+    "current": "当前档案",
+    "list": "全部档案",
+    "copy-template-link": "复制模板链接",
+    "not-selected": "未选择档案",
+    "not-selected-hint": "创建或导入档案以开始使用"
   },
   "settings": {
     "language": "语言"
+  },
+  "collection": {
+    "collected": "已收集 {{count}} / {{total}}",
+    "search-placeholder": "搜索合集...",
+    "no-result": "未找到合集"
   },
   "dialog": {
     "disclaimer": {
@@ -33,6 +51,21 @@
       },
       "checkbox": "我已阅读并理解上述内容",
       "confirm": "确认"
+    },
+    "profile-create": {
+      "title": "新建档案",
+      "template-url": "模板链接",
+      "template-url-placeholder": "在此粘贴模板链接",
+      "invalid-url": "链接格式无效",
+      "profile-name": "档案名称"
+    },
+    "profile-import": {
+      "title": "导入档案",
+      "select-file": "点击选择文件",
+      "select-file-hint": "从本应用导出的 JSON 文件",
+      "conflict-message": "已存在相同 ID 的档案。你可以选择覆盖或创建副本。",
+      "collections-count": "{{count}} 个合集",
+      "stats": "已收集 {{count}} / {{total}}"
     }
   }
 }
