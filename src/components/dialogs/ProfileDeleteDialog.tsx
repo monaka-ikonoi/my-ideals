@@ -3,18 +3,12 @@ import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useProfileListStore } from '@/stores/profileListStore';
 
 type ProfileDeleteDialogProps = {
-  isOpen: boolean;
   onClose: () => void;
   profileId: string;
   profileName: string;
 };
 
-export function ProfileDeleteDialog({
-  isOpen,
-  onClose,
-  profileId,
-  profileName,
-}: ProfileDeleteDialogProps) {
+export function ProfileDeleteDialog({ onClose, profileId, profileName }: ProfileDeleteDialogProps) {
   const { t } = useTranslation();
 
   const handleConfirmDelete = (value: string) => {
@@ -25,10 +19,9 @@ export function ProfileDeleteDialog({
     onClose();
   };
 
-  if (!isOpen) return;
   return (
     <ConfirmDialog
-      isOpen={isOpen}
+      isOpen
       title={t('dialog.profile-delete.title')}
       message={
         <p>

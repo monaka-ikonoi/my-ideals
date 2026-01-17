@@ -20,11 +20,6 @@ type ImportState =
   | { status: 'success'; fileName: string; profile: Profile; isConflict: boolean }
   | { status: 'error'; fileName: string; message: string };
 
-type ProfileImportDialogProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
-
 const FileSelectorBoarderStyles = {
   idle: 'border-gray-300 hover:border-blue-400 hover:bg-blue-50',
   loading: 'border-blue-300',
@@ -32,7 +27,11 @@ const FileSelectorBoarderStyles = {
   error: 'border-red-300',
 };
 
-export function ProfileImportDialog({ isOpen, onClose }: ProfileImportDialogProps) {
+type ProfileImportDialogProps = {
+  onClose: () => void;
+};
+
+export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
   const { t } = useTranslation();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -86,8 +85,6 @@ export function ProfileImportDialog({ isOpen, onClose }: ProfileImportDialogProp
 
     handleClose();
   };
-
-  if (!isOpen) return null;
 
   const collectionsCount =
     state.status === 'success' ? Object.keys(state.profile.collections).length : 0;

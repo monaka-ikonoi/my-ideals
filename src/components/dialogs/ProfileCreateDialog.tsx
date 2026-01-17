@@ -23,11 +23,10 @@ type FetchState =
   | { status: 'error'; message: string };
 
 type ProfileCreateDialogProps = {
-  isOpen: boolean;
   onClose: () => void;
 };
 
-export function ProfileCreateDialog({ isOpen, onClose }: ProfileCreateDialogProps) {
+export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
   const { t } = useTranslation();
 
   const [templateUrl, setTemplateUrl] = useState('');
@@ -39,15 +38,10 @@ export function ProfileCreateDialog({ isOpen, onClose }: ProfileCreateDialogProp
   const createProfile = useProfileListStore(state => state.createProfile);
 
   useEffect(() => {
-    if (isOpen) {
-      setTemplateUrl('');
-      setProfileName('');
-      setFetchState({ status: 'idle' });
-      setTemplateInfo(null);
-    } else {
+    return () => {
       abortControllerRef.current?.abort();
-    }
-  }, [isOpen]);
+    };
+  }, []);
 
   const fetchTemplate = useCallback(
     async (url: string, signal: AbortSignal) => {
@@ -124,8 +118,6 @@ export function ProfileCreateDialog({ isOpen, onClose }: ProfileCreateDialogProp
   };
 
   const canCreate = fetchState.status === 'success' && profileName.trim();
-
-  if (!isOpen) return null;
 
   return createPortal(
     <>
