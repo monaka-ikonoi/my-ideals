@@ -1,7 +1,5 @@
-import { useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useProfileListStore, type ProfileListEntry } from '@/stores/profileListStore';
-import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { ArrowUpTrayIcon, CheckIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useDialogStore } from '@/stores/dialogStore';
 
@@ -15,8 +13,6 @@ export function ProfileList({ onSelect }: ProfileListProps) {
   const profiles = useProfileListStore(state => state.profiles);
   const activeProfileId = useProfileListStore(state => state.activeId);
 
-  const [deleteTarget, setDeleteTarget] = useState<ProfileListEntry | null>(null);
-
   const handleSelect = (id: string) => {
     useProfileListStore.getState().setActiveProfile(id);
     onSelect?.();
@@ -24,15 +20,8 @@ export function ProfileList({ onSelect }: ProfileListProps) {
 
   const handleDeleteClick = (e: React.MouseEvent, profile: ProfileListEntry) => {
     e.stopPropagation();
-    setDeleteTarget(profile);
-  };
-
-  const handleConfirmDelete = (value: string) => {
-    if (value === 'delete' && deleteTarget) {
-      useProfileListStore.getState().deleteProfile(deleteTarget.id);
-      // TODO: toast.success(`Profile "${deleteTarget.name}" deleted`);
-    }
-    setDeleteTarget(null);
+    useDialogStore.getState().openDeleteProfile(profile.id, profile.name);
+    onSelect?.();
   };
 
   return (
@@ -100,26 +89,6 @@ export function ProfileList({ onSelect }: ProfileListProps) {
           <ArrowUpTrayIcon className="h-4 w-4" />
           {t('profile.import')}
         </button>
-
-        {/* Delete Confirm Dialog */}
-        <ConfirmDialog
-          isOpen={deleteTarget !== null}
-          title={t('profile.delete-dialog.title')}
-          message={
-            <p>
-              <Trans
-                i18nKey="profile.delete-dialog.content-confim"
-                values={{ name: deleteTarget?.name }}
-                components={{ strong: <strong /> }}
-              />
-              <br />
-              {t('profile.delete-dialog.content-warn')}
-            </p>
-          }
-          options={[{ label: t('common.delete'), value: 'delete', variant: 'danger' }]}
-          onSelect={handleConfirmDelete}
-          onCancel={() => setDeleteTarget(null)}
-        />
       </div>
     </>
   );

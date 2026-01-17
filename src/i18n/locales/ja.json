@@ -20,11 +20,6 @@
     "create": "新規プロファイル",
     "import": "プロファイルインポート",
     "export": "ファイルにエクスポート",
-    "delete-dialog": {
-      "title": "プロファイルを削除",
-      "content-confim": "<strong>{{name}}</strong> を削除しますか？",
-      "content-warn": "この操作は取り消せません。"
-    },
     "select-placeholder": "プロファイルを選択",
     "current": "現在のプロファイル",
     "list": "プロファイル",
@@ -66,6 +61,11 @@
       "conflict-message": "このIDのプロファイルは既に存在します。上書きするか、コピーを作成できます。",
       "collections-count": "{{count}} セット",
       "stats": "{{count}} / {{total}} 収集済み"
+    },
+    "profile-delete": {
+      "title": "プロファイルを削除",
+      "content-confim": "<strong>{{name}}</strong> を削除しますか？",
+      "content-warn": "この操作は取り消せません。"
     }
   }
 }

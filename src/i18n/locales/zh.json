@@ -20,11 +20,6 @@
     "import": "导入档案",
     "create": "新建档案",
     "export": "导出文件",
-    "delete-dialog": {
-      "title": "删除档案",
-      "content-confim": "确定要删除 <strong>{{name}}</strong> 吗？",
-      "content-warn": "此操作无法撤销。"
-    },
     "select-placeholder": "选择档案",
     "current": "当前档案",
     "list": "全部档案",
@@ -66,6 +61,11 @@
       "conflict-message": "已存在相同 ID 的档案。你可以选择覆盖或创建副本。",
       "collections-count": "{{count}} 个合集",
       "stats": "已收集 {{count}} / {{total}}"
+    },
+    "profile-delete": {
+      "title": "删除档案",
+      "content-confim": "确定要删除 <strong>{{name}}</strong> 吗？",
+      "content-warn": "此操作无法撤销。"
     }
   }
 }
