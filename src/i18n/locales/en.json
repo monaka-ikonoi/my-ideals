@@ -21,5 +21,18 @@
   },
   "settings": {
     "language": "Language"
+  },
+  "dialog": {
+    "disclaimer": {
+      "title": "Important Notice",
+      "content": {
+        "p1": "This application does not upload any data to a server. All data is stored locally in your browser only.",
+        "p2": "Clearing browser data, using private/incognito mode, or switching devices may result in permanent data loss.",
+        "p3": "Please make sure to regularly back up your data using the \"$t(profile.export)\" button in the top-right corner.",
+        "p4": "The developer is not responsible for any data loss and cannot assist with data recovery."
+      },
+      "checkbox": "I have read and understood the above",
+      "confirm": "Confirm"
+    }
   }
 }

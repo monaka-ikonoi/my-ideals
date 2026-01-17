@@ -5,7 +5,6 @@ import { useProfileListStore } from './stores/profileListStore';
 import { useActiveProfileStore } from './stores/activeProfileStore';
 import { LoadingPage } from './components/ui/LoadingPage';
 import { EmptyPage } from './components/EmptyPage';
-import { DisclaimerDialog } from './components/DisclaimerDialog';
 import { GlobalDialogs } from './components/GlobalDialogs';
 
 export default function App() {
@@ -33,8 +32,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <DisclaimerDialog />
-
       <Navbar />
 
       <main>{activeProfileId ? <CollectionPage /> : <EmptyPage />}</main>

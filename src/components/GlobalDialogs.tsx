@@ -1,4 +1,5 @@
 import { useDialogStore } from '@/stores/dialogStore';
+import { DisclaimerDialog } from './dialogs/DisclaimerDialog';
 import { ProfileCreateDialog } from './dialogs/ProfileCreateDialog';
 import { ProfileImportDialog } from './dialogs/ProfileImportDialog';
 import { ProfileTemplateDiffDialog } from './ProfileTemplateDiffDialog';
@@ -9,6 +10,7 @@ export function GlobalDialogs() {
 
   return (
     <>
+      <DisclaimerDialog />
       <ProfileCreateDialog isOpen={activeDialog === 'create-profile'} onClose={closeDialog} />
       <ProfileImportDialog isOpen={activeDialog === 'import-profile'} onClose={closeDialog} />
       <ProfileTemplateDiffDialog />
