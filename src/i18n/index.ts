@@ -5,17 +5,21 @@ import ja from './locales/ja.json';
 import zh from './locales/zh.json';
 import { useSettingsStore } from '@/stores/settingsStore';
 
+const resources = {
+  en: { translation: en },
+  ja: { translation: ja },
+  zh: { translation: zh },
+};
+
 i18n.use(initReactI18next).init({
-  resources: {
-    en: { translation: en },
-    ja: { translation: ja },
-    zh: { translation: zh },
-  },
+  resources,
   lng: useSettingsStore.getState().language,
   fallbackLng: 'en',
   interpolation: {
     escapeValue: false,
   },
 });
+
+export const supportedLanguages = Object.keys(resources) as (keyof typeof resources)[];
 
 export default i18n;

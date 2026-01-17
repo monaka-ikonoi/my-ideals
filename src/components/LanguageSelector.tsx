@@ -1,11 +1,6 @@
 import { CheckIcon } from '@heroicons/react/24/outline';
+import i18n, { supportedLanguages } from '@/i18n';
 import { useSettingsStore } from '@/stores/settingsStore';
-
-const languages = [
-  { code: 'en', label: 'English' },
-  { code: 'ja', label: '日本語' },
-  { code: 'zh', label: '中文' },
-];
 
 export function LanguageSelector({ onSelect }: { onSelect?: () => void }) {
   const currentLanguage = useSettingsStore(state => state.language);
@@ -17,22 +12,18 @@ export function LanguageSelector({ onSelect }: { onSelect?: () => void }) {
 
   return (
     <>
-      {languages.map(lang => (
+      {supportedLanguages.map(lang => (
         <button
-          key={lang.code}
-          onClick={() => handleSelectLanguage(lang.code)}
+          key={lang}
+          onClick={() => handleSelectLanguage(lang)}
           className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm ${
-            lang.code === currentLanguage
+            lang === currentLanguage
               ? 'bg-blue-50 text-blue-700'
               : 'text-gray-700 hover:bg-gray-100'
           }`}
         >
-          {lang.code === currentLanguage ? (
-            <CheckIcon className="h-4 w-4" />
-          ) : (
-            <span className="w-4" />
-          )}
-          <span>{lang.label}</span>
+          {lang === currentLanguage ? <CheckIcon className="h-4 w-4" /> : <span className="w-4" />}
+          <span>{i18n.getFixedT(lang)('language.name')}</span>
         </button>
       ))}
     </>

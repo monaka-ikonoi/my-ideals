@@ -1,4 +1,7 @@
 {
+  "language": {
+    "name": "English"
+  },
   "common": {
     "loading": "Loading...",
     "error-title": "Something went wrong",
