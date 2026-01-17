@@ -2,6 +2,10 @@
   "language": {
     "name": "日本語"
   },
+  "app": {
+    "name": "My Ideals",
+    "tagline": "生写真コレクション記録"
+  },
   "common": {
     "loading": "読み込み中...",
     "error-title": "問題が発生しました",

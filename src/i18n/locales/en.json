@@ -2,6 +2,10 @@
   "language": {
     "name": "English"
   },
+  "app": {
+    "name": "My Ideals",
+    "tagline": "Namashashin Collection Tracker"
+  },
   "common": {
     "loading": "Loading...",
     "error-title": "Something went wrong",
