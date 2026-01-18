@@ -18,7 +18,8 @@
     "import": "Import",
     "overwrite": "Overwrite",
     "create-copy": "Create Copy",
-    "template": "Template"
+    "template": "Template",
+    "close": "Close"
   },
   "profile": {
     "create": "New Profile",
@@ -74,6 +75,9 @@
     },
     "profile-rename": {
       "title": "Edit Profile Name"
+    },
+    "about": {
+      "title": "About"
     }
   }
 }

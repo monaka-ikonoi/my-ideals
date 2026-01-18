@@ -5,6 +5,7 @@ import { ProfileCreateDialog } from './dialogs/ProfileCreateDialog';
 import { ProfileImportDialog } from './dialogs/ProfileImportDialog';
 import { ProfileDeleteDialog } from './dialogs/ProfileDeleteDialog';
 import { ProfileRenameDialog } from './dialogs/ProfileRenameDialog';
+import { AboutDialog } from './dialogs/AboutDialog';
 
 export function GlobalDialogs() {
   const activeDialog = useDialogStore(state => state.activeDialog);
@@ -31,6 +32,7 @@ export function GlobalDialogs() {
           onClose={closeDialog}
         />
       )}
+      {activeDialog.type === 'about' && <AboutDialog onClose={closeDialog} />}
     </>
   );
 }

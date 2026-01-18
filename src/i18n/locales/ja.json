@@ -18,7 +18,8 @@
     "import": "インポート",
     "overwrite": "上書き",
     "create-copy": "コピーを作成",
-    "template": "テンプレート"
+    "template": "テンプレート",
+    "close": "閉じる"
   },
   "profile": {
     "create": "新規プロファイル",
@@ -74,6 +75,9 @@
     },
     "profile-rename": {
       "title": "プロファイル名編集"
+    },
+    "about": {
+      "title": "概要"
     }
   }
 }

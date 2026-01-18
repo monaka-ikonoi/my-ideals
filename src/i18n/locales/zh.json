@@ -18,7 +18,8 @@
     "import": "导入",
     "overwrite": "覆盖",
     "create-copy": "创建副本",
-    "template": "模板"
+    "template": "模板",
+    "close": "关闭"
   },
   "profile": {
     "import": "导入档案",
@@ -74,6 +75,9 @@
     },
     "profile-rename": {
       "title": "编辑档案名"
+    },
+    "about": {
+      "title": "关于"
     }
   }
 }
