@@ -78,6 +78,16 @@
     },
     "about": {
       "title": "关于"
+    },
+    "template-diff": {
+      "title": "模板已更新",
+      "description": "模板 <strong>{{name}}</strong> 已更新至版本 {{revision}}，包含以下变更:",
+      "items-added": "+ {{count}} 个条目已添加",
+      "items-removed": "- {{count}} 个条目已移除",
+      "cleanup-hint": "请选择是保留已移除的条目还是清理它们。",
+      "keep": "保留数据",
+      "cleanup": "清理",
+      "confirm": "知道了"
     }
   }
 }

@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import type { Template } from '@/domain/template';
 import type { ProfileTemplateDiff, CollectionChange } from '@/utils/syncProfile';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { ConfirmDialog } from './ui/ConfirmDialog';
+import { ConfirmDialog } from '../ui/ConfirmDialog';
 
 function CollectionTree({
   collection,
@@ -69,6 +70,8 @@ function ProfileTemplateDiffContent({
   template: Template;
   changes: ProfileTemplateDiff | null;
 }) {
+  const { t } = useTranslation();
+
   if (!changes) return null;
 
   const totalAdded = changes.added.reduce((sum, c) => sum + c.items.length, 0);
@@ -77,15 +80,18 @@ function ProfileTemplateDiffContent({
   return (
     <div className="space-y-4">
       <p className="text-gray-600">
-        Template <strong>{template.name}</strong> has been updated to revision {template.revision}{' '}
-        with following changes
+        <Trans
+          i18nKey="dialog.template-diff.description"
+          values={{ name: template.name, revision: template.revision }}
+          components={{ strong: <strong /> }}
+        />
       </p>
 
       {/* Added */}
       {changes.added.length > 0 && (
         <div>
           <div className="mb-2 text-sm font-medium text-green-700">
-            + {totalAdded} item(s) added
+            {t('dialog.template-diff.items-added', { count: totalAdded })}
           </div>
           <div className="max-h-60 space-y-1 overflow-y-auto">
             {changes.added.map(collection => (
@@ -100,7 +106,7 @@ function ProfileTemplateDiffContent({
         <>
           <div>
             <div className="mb-2 text-sm font-medium text-red-700">
-              - {totalRemoved} item(s) removed
+              {t('dialog.template-diff.items-removed', { count: totalRemoved })}
             </div>
             <div className="max-h-60 space-y-1 overflow-y-auto">
               {changes.removed.map(collection => (
@@ -108,9 +114,7 @@ function ProfileTemplateDiffContent({
               ))}
             </div>
           </div>
-          <div className="text-sm text-gray-500">
-            Choose whether to keep removed items in your profile or clean them up.
-          </div>
+          <div className="text-sm text-gray-500">{t('dialog.template-diff.cleanup-hint')}</div>
         </>
       )}
     </div>
@@ -118,6 +122,8 @@ function ProfileTemplateDiffContent({
 }
 
 export function ProfileTemplateDiffDialog() {
+  const { t } = useTranslation();
+
   const template = useActiveProfileStore(state => state.template!);
   const changes = useActiveProfileStore(state => state.changes);
   const confirmSyncChanges = useActiveProfileStore(state => state.confirmSyncChanges);
@@ -135,15 +141,15 @@ export function ProfileTemplateDiffDialog() {
 
   const options = hasRemovals
     ? [
-        { label: 'Keep removed data', value: 'keep', variant: 'secondary' as const },
-        { label: 'Clean up', value: 'cleanup', variant: 'danger' as const },
+        { label: t('dialog.template-diff.keep'), value: 'keep', variant: 'secondary' as const },
+        { label: t('dialog.template-diff.cleanup'), value: 'cleanup', variant: 'danger' as const },
       ]
-    : [{ label: 'Got it', value: 'ok', variant: 'primary' as const }];
+    : [{ label: t('dialog.template-diff.confirm'), value: 'ok', variant: 'primary' as const }];
 
   return (
     <ConfirmDialog
       isOpen={!!hasChanges}
-      title="Template Updated"
+      title={t('dialog.template-diff.title')}
       options={options}
       showCancel={false}
       onSelect={handleSelect}

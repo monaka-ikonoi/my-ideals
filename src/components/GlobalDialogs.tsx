@@ -1,6 +1,6 @@
 import { useDialogStore } from '@/stores/dialogStore';
 import { DisclaimerDialog } from './dialogs/DisclaimerDialog';
-import { ProfileTemplateDiffDialog } from './ProfileTemplateDiffDialog';
+import { ProfileTemplateDiffDialog } from './dialogs/ProfileTemplateDiffDialog';
 import { ProfileCreateDialog } from './dialogs/ProfileCreateDialog';
 import { ProfileImportDialog } from './dialogs/ProfileImportDialog';
 import { ProfileDeleteDialog } from './dialogs/ProfileDeleteDialog';

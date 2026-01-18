@@ -78,6 +78,16 @@
     },
     "about": {
       "title": "概要"
+    },
+    "template-diff": {
+      "title": "テンプレートが更新されました",
+      "description": "テンプレート <strong>{{name}}</strong> がリビジョン {{revision}} に更新されました。以下の変更があります:",
+      "items-added": "+ {{count}} 件追加",
+      "items-removed": "- {{count}} 件削除",
+      "cleanup-hint": "削除されたアイテムをプロファイルに残すか、クリーンアップするかを選択してください。",
+      "keep": "データを保持",
+      "cleanup": "クリーンアップ",
+      "confirm": "OK"
     }
   }
 }

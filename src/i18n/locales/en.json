@@ -78,6 +78,16 @@
     },
     "about": {
       "title": "About"
+    },
+    "template-diff": {
+      "title": "Template Updated",
+      "description": "Template <strong>{{name}}</strong> has been updated to revision {{revision}} with following changes:",
+      "items-added": "+ {{count}} item(s) added",
+      "items-removed": "- {{count}} item(s) removed",
+      "cleanup-hint": "Choose whether to keep removed items in your profile or clean them up.",
+      "keep": "Keep removed data",
+      "cleanup": "Clean up",
+      "confirm": "Got it"
     }
   }
 }
