@@ -3,10 +3,16 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
+const ButtonStyles = {
+  primary: 'bg-blue-600 text-white hover:bg-blue-700',
+  secondary: 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+  danger: 'bg-red-600 text-white hover:bg-red-700',
+};
+
 type ConfirmDialogProps = {
   isOpen: boolean;
   title: string;
-  message: ReactNode;
+  children: ReactNode;
   options: {
     label: string;
     value: string;
@@ -20,7 +26,7 @@ type ConfirmDialogProps = {
 export function ConfirmDialog({
   isOpen,
   title,
-  message,
+  children,
   options,
   onSelect,
   onCancel,
@@ -29,12 +35,6 @@ export function ConfirmDialog({
   const { t } = useTranslation();
 
   if (!isOpen) return null;
-
-  const variantStyles = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
-    secondary: 'bg-gray-100 text-gray-700 hover:bg-gray-200',
-    danger: 'bg-red-600 text-white hover:bg-red-700',
-  };
 
   return createPortal(
     <>
@@ -59,7 +59,7 @@ export function ConfirmDialog({
           </div>
 
           {/* Content */}
-          <div className="px-4 py-4 text-gray-600">{message}</div>
+          <div className="px-4 py-4 text-gray-600">{children}</div>
 
           {/* Actions */}
           <div className="flex justify-end gap-2 border-t border-gray-200 px-4 py-3">
@@ -75,7 +75,7 @@ export function ConfirmDialog({
               <button
                 key={option.value}
                 onClick={() => onSelect(option.value)}
-                className={`rounded-lg px-4 py-2 text-sm font-medium ${ variantStyles[option.variant
+                className={`rounded-lg px-4 py-2 text-sm font-medium ${ ButtonStyles[option.variant
                 ?? 'secondary'] } `}
               >
                 {option.label}

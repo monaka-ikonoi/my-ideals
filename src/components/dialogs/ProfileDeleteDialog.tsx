@@ -23,20 +23,19 @@ export function ProfileDeleteDialog({ onClose, profileId, profileName }: Profile
     <ConfirmDialog
       isOpen
       title={t('dialog.profile-delete.title')}
-      message={
-        <p>
-          <Trans
-            i18nKey="dialog.profile-delete.content-confim"
-            values={{ name: profileName }}
-            components={{ strong: <strong /> }}
-          />
-          <br />
-          {t('dialog.profile-delete.content-warn')}
-        </p>
-      }
       options={[{ label: t('common.delete'), value: 'delete', variant: 'danger' }]}
       onSelect={handleConfirmDelete}
       onCancel={onClose}
-    />
+    >
+      <p>
+        <Trans
+          i18nKey="dialog.profile-delete.content-confim"
+          values={{ name: profileName }}
+          components={{ strong: <strong /> }}
+        />
+        <br />
+        {t('dialog.profile-delete.content-warn')}
+      </p>
+    </ConfirmDialog>
   );
 }

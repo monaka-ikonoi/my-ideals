@@ -144,11 +144,12 @@ export function ProfileTemplateDiffDialog() {
     <ConfirmDialog
       isOpen={!!hasChanges}
       title="Template Updated"
-      message={<ProfileTemplateDiffContent template={template} changes={changes} />}
       options={options}
       showCancel={false}
       onSelect={handleSelect}
       onCancel={() => confirmSyncChanges(false)}
-    />
+    >
+      <ProfileTemplateDiffContent template={template} changes={changes} />
+    </ConfirmDialog>
   );
 }
