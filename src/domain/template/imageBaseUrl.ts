@@ -13,4 +13,4 @@ export const TemplateResourceBaseUrlSchema = z.object({
 });
 
 export const urlFromBaseUrl = (id: string, config: TemplateResourceBaseUrl): string =>
-  `${config.root}/${id}.${config.format}`;
+  `${config.root}/${id}.${config.format}?v=cors`;

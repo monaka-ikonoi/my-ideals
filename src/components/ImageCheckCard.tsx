@@ -74,6 +74,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
           <img
             src={imgSrc}
             alt={item.name}
+            crossOrigin="anonymous"
             loading={lazyLoading ? 'lazy' : 'eager'}
             decoding="async"
             onError={() =>
