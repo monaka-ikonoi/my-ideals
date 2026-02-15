@@ -35,7 +35,7 @@ export function CollectionImagePreviewDialog({
       const file = new File([blob], fileName, { type: blob.type || 'image/jpeg' });
 
       if (navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: fileName });
+        await navigator.share({ files: [file] });
       }
     }
     onClose();
