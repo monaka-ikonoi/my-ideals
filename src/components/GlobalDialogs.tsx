@@ -6,6 +6,7 @@ import { ProfileImportDialog } from './dialogs/ProfileImportDialog';
 import { ProfileDeleteDialog } from './dialogs/ProfileDeleteDialog';
 import { ProfileRenameDialog } from './dialogs/ProfileRenameDialog';
 import { ProfileEditTemplateUrlDialog } from './dialogs/ProfileEditTemplateUrl';
+import { CollectionImagePreviewDialog } from './dialogs/CollectionImagePreviewDialog';
 import { AboutDialog } from './dialogs/AboutDialog';
 
 export function GlobalDialogs() {
@@ -38,6 +39,13 @@ export function GlobalDialogs() {
           profileId={activeDialog.profileId}
           templateId={activeDialog.templateId}
           currentUrl={activeDialog.currentUrl}
+          onClose={closeDialog}
+        />
+      )}
+      {activeDialog.type === 'collection-image-preview' && (
+        <CollectionImagePreviewDialog
+          imageUrl={activeDialog.imageUrl}
+          fileName={activeDialog.fileName}
           onClose={closeDialog}
         />
       )}

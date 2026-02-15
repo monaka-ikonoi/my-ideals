@@ -19,7 +19,9 @@
     "overwrite": "覆盖",
     "create-copy": "创建副本",
     "template": "模板",
-    "close": "关闭"
+    "close": "关闭",
+    "download": "下载",
+    "share": "分享"
   },
   "profile": {
     "import": "导入档案",
@@ -93,6 +95,11 @@
     },
     "profile-edit-template-url": {
       "title": "编辑模板链接"
+    },
+    "collection-image-preview": {
+      "image-alt": "导出图片预览：{{name}}",
+      "hint": "长按或右键下方图片进行保存",
+      "title": "图片已生成"
     }
   },
   "input": {

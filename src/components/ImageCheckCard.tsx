@@ -9,12 +9,14 @@ import { ItemCounter } from './ItemCounter';
 type ImageCheckCardProps = {
   collectionId: string;
   item: TemplateCollectionItem;
+  lazyLoading?: boolean;
   aspectRatio?: [number, number];
 };
 
 export const ImageCheckCard = memo(function ImageCheckCard({
   collectionId,
   item,
+  lazyLoading = true,
   aspectRatio,
 }: ImageCheckCardProps) {
   debugLog.render.log(`ImageCheckCard render: ${collectionId} ${item.id}`);
@@ -72,7 +74,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
           <img
             src={imgSrc}
             alt={item.name}
-            loading="lazy"
+            loading={lazyLoading ? 'lazy' : 'eager'}
             decoding="async"
             onError={() =>
               fallbackSrc && imgSrc !== fallbackSrc ? setImgSrc(fallbackSrc) : setShowAlt(true)

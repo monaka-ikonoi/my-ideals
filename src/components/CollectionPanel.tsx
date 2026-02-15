@@ -4,6 +4,7 @@ import { type TemplateCollection } from '@/domain/template';
 import { debugLog } from '@/utils/debug';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { CollectionGrid } from './CollectionGrid';
+import { CollectionImageButton } from './CollectionImageButton';
 
 type CollectionPanelProps = {
   collection: TemplateCollection;
@@ -28,10 +29,18 @@ export const CollectionPanel = memo(function CollectionPanel({ collection }: Col
   return (
     <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
       <div className="border-b border-gray-200 px-4 py-3">
-        <h2 className="text-md font-semibold text-gray-800 sm:text-lg">{collection.name}</h2>
-        <p className="text-sm text-gray-500">
-          {t('collection.collected', { count: stats.checked, total: stats.total })}
-        </p>
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <h2 className="text-md font-semibold text-gray-800 sm:text-lg">{collection.name}</h2>
+            <p className="text-sm text-gray-500">
+              {t('collection.collected', { count: stats.checked, total: stats.total })}
+            </p>
+          </div>
+
+          <div className="shrink-0">
+            <CollectionImageButton collection={collection} />
+          </div>
+        </div>
       </div>
 
       <div className="p-4 2xl:px-8 2xl:pt-4 2xl:pb-6">

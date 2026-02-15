@@ -12,6 +12,7 @@ type DialogState =
       templateId: string;
       currentUrl: string;
     }
+  | { type: 'collection-image-preview'; imageUrl: string; fileName: string }
   | { type: 'about' };
 
 type DialogStore = {
@@ -23,6 +24,7 @@ type DialogStore = {
   openDeleteProfile: (profileId: string, profileName: string) => void;
   openRenameProfile: (profileId: string, profileName: string) => void;
   openEditProfileTemplateUrl: (profileId: string, templateId: string, currentUrl: string) => void;
+  openCollectionImagePreview: (imageUrl: string, fileName: string) => void;
   openAbout: () => void;
 };
 
@@ -43,6 +45,14 @@ export const useDialogStore = create<DialogStore>(set => ({
         profileId,
         templateId,
         currentUrl,
+      },
+    }),
+  openCollectionImagePreview: (imageUrl, fileName) =>
+    set({
+      activeDialog: {
+        type: 'collection-image-preview',
+        imageUrl,
+        fileName,
       },
     }),
   openAbout: () => set({ activeDialog: { type: 'about' } }),

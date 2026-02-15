@@ -19,7 +19,9 @@
     "overwrite": "Overwrite",
     "create-copy": "Create Copy",
     "template": "Template",
-    "close": "Close"
+    "close": "Close",
+    "download": "Download",
+    "share": "Share"
   },
   "profile": {
     "create": "New Profile",
@@ -93,6 +95,11 @@
     },
     "profile-edit-template-url": {
       "title": "Edit Template URL"
+    },
+    "collection-image-preview": {
+      "title": "Image Ready",
+      "image-alt": "Export image preview: {{name}}",
+      "hint": "Long-press or right-click the image below to save it"
     }
   },
   "input": {

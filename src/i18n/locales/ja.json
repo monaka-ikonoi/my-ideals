@@ -19,7 +19,9 @@
     "overwrite": "上書き",
     "create-copy": "コピーを作成",
     "template": "テンプレート",
-    "close": "閉じる"
+    "close": "閉じる",
+    "share": "共有",
+    "download": "ダウンロード"
   },
   "profile": {
     "create": "新規プロファイル",
@@ -93,6 +95,11 @@
     },
     "profile-edit-template-url": {
       "title": "テンプレートURLを編集"
+    },
+    "collection-image-preview": {
+      "image-alt": "出力画像プレビュー：{{name}}",
+      "hint": "下の画像を長押しまたは右クリックして保存してください",
+      "title": "画像を作成しました"
     }
   },
   "input": {
