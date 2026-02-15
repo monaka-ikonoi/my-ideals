@@ -76,7 +76,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
             alt={item.name}
             crossOrigin="anonymous"
             loading={lazyLoading ? 'lazy' : 'eager'}
-            decoding="async"
+            decoding={lazyLoading ? 'async' : 'sync'}
             onError={() =>
               fallbackSrc && imgSrc !== fallbackSrc ? setImgSrc(fallbackSrc) : setShowAlt(true)
             }
