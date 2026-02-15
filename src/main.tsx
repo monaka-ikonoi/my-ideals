@@ -3,12 +3,9 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import './i18n';
 import App from './App.tsx';
+import { APP_NAME, LONG_VERSION, BUILD_TIME_RAW, MODE } from './utils/appInfo.ts';
 
-console.log(
-  `${import.meta.env.VITE_APP_NAME} v${import.meta.env.VITE_APP_VERSION} ` +
-    `git-${import.meta.env.VITE_GIT_BRANCH}-${import.meta.env.VITE_GIT_REVISION} ` +
-    `build at ${import.meta.env.VITE_BUILD_TIME}`
-);
+console.log(`${APP_NAME} ${LONG_VERSION} (${MODE}) build at ${BUILD_TIME_RAW}`);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -1,6 +1,7 @@
 // components/AboutDialog.tsx
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { LONG_VERSION, APP_NAME, BUILD_TIME_RAW } from '@/utils/appInfo';
 
 const GITHUB_REPO = 'monaka-ikonoi/my-ideals';
 const GITHUB_URL = `https://github.com/${GITHUB_REPO}`;
@@ -26,8 +27,7 @@ function XIcon({ className }: { className?: string }) {
 export function AboutDialog({ onClose }: { onClose: () => void }) {
   const { t, i18n } = useTranslation();
 
-  const gitVersion = `git-${import.meta.env.VITE_GIT_BRANCH}-${import.meta.env.VITE_GIT_REVISION}`;
-  const buildTime = new Date(import.meta.env.VITE_BUILD_TIME);
+  const buildTime = new Date(BUILD_TIME_RAW);
 
   return (
     <ConfirmDialog
@@ -40,10 +40,8 @@ export function AboutDialog({ onClose }: { onClose: () => void }) {
     >
       <>
         <div className="space-y-1">
-          <div className="text-lg font-bold text-gray-900">{import.meta.env.VITE_APP_NAME}</div>
-          <div className="font-mono text-sm text-gray-600">
-            v{import.meta.env.VITE_APP_VERSION} {gitVersion}
-          </div>
+          <div className="text-lg font-bold text-gray-900">{APP_NAME}</div>
+          <div className="font-mono text-sm text-gray-600">{LONG_VERSION}</div>
           <div className="text-sm text-gray-600">
             Build at {buildTime.toLocaleString(i18n.language)}
           </div>

@@ -6,6 +6,7 @@ import { useActiveProfileStore } from './stores/activeProfileStore';
 import { LoadingPage } from './components/ui/LoadingPage';
 import { GlobalDialogs } from './components/GlobalDialogs';
 import { MainContent } from './components/MainContent';
+import { DEV_MODE } from './utils/appInfo';
 
 export default function App() {
   const { t } = useTranslation();
@@ -14,7 +15,7 @@ export default function App() {
 
   useEffect(() => {
     document.title = `${t('app.name')} - ${t('app.tagline')}`;
-    if (import.meta.env.DEV) document.title = `[DEV] ${document.title}`;
+    if (DEV_MODE) document.title = `[DEV] ${document.title}`;
   }, [t]);
 
   useEffect(() => {

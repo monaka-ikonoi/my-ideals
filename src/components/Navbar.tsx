@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { ProfileSelector } from './ProfileSelector';
+import { DEV_MODE } from '@/utils/appInfo';
 
 export function Navbar() {
   const { t } = useTranslation();
@@ -12,11 +13,11 @@ export function Navbar() {
           <div className="flex items-center">
             <h1 className="text-lg font-bold text-gray-900">
               <span className="sm:hidden">
-                {import.meta.env.DEV && <span className="mr-1">[DEV]</span>}
+                {DEV_MODE && <span className="mr-1">[DEV]</span>}
                 {t('app.name')}
               </span>
               <span className="hidden sm:inline">
-                {import.meta.env.DEV && <span className="mr-1">[DEV]</span>}
+                {DEV_MODE && <span className="mr-1">[DEV]</span>}
                 {t('app.name')} - {t('app.tagline')}
               </span>
             </h1>
