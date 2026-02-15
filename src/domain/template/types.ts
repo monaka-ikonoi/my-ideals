@@ -2,7 +2,7 @@ import { type TemplateResourceBaseUrl } from './imageBaseUrl';
 
 export type TemplateLayout = {
   aspectRatio?: [number, number];
-  columns?: [number, number];
+  columns?: [number, number?, number?];
 };
 
 export type TemplateCollectionItem = {

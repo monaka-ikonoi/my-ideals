@@ -12,7 +12,7 @@ export function CollectionPage() {
   const { filteredCollections, filterProps } = useCollectionFilter();
 
   return (
-    <main className="mx-auto max-w-7xl space-y-6 px-4 py-6">
+    <main className="mx-auto max-w-[512px] space-y-6 px-4 py-6 md:max-w-[1024px] 2xl:max-w-[1664px]">
       <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
         <ProfileInfo />
         <div className="my-4 border-t border-gray-200" />

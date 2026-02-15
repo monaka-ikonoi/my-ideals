@@ -38,16 +38,18 @@ export const CollectionPanel = memo(function CollectionPanel({ collection }: Col
       </div>
 
       {/* Grid of cards */}
-      <div className="p-4">
+      <div className="p-4 2xl:px-8 2xl:pt-4 2xl:pb-6">
         <div
           className="mx-auto grid max-w-[480px] grid-cols-[repeat(var(--cols),minmax(0,1fr))]
-            gap-[var(--gap)] [--cols:var(--cols-sm)] [--gap:calc(6*var(--spacing)/var(--cols))]
-            lg:max-w-[960px] lg:[--cols:var(--cols-lg)]
-            lg:[--gap:calc(24*var(--spacing)/var(--cols))]"
+            gap-[var(--gap)] [--cols:var(--cols-xs)] [--gap:calc(6*var(--spacing)/var(--cols))]
+            md:max-w-[960px] md:[--cols:var(--cols-md)]
+            md:[--gap:calc(18*var(--spacing)/var(--cols))] 2xl:max-w-[1600px]
+            2xl:[--cols:var(--cols-2xl)] 2xl:[--gap:calc(36*var(--spacing)/var(--cols))]"
           style={
             {
-              '--cols-sm': layout?.columns?.[0] ?? 3,
-              '--cols-lg': layout?.columns?.[1] ?? 6,
+              '--cols-xs': layout?.columns?.[0] ?? 3,
+              '--cols-md': layout?.columns?.[1] ?? (layout?.columns?.[0] ?? 3) * 2,
+              '--cols-2xl': layout?.columns?.[2] ?? (layout?.columns?.[0] ?? 3) * 3,
             } as React.CSSProperties
           }
         >

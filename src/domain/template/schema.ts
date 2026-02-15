@@ -3,7 +3,9 @@ import { TemplateResourceBaseUrlSchema } from './imageBaseUrl';
 
 const TemplateLayoutSchema = z.object({
   aspectRatio: z.tuple([z.int(), z.int().min(1)]).optional(),
-  columns: z.tuple([z.int(), z.int()]).optional(),
+  columns: z
+    .tuple([z.int().min(1), z.int().min(1).optional(), z.int().min(1).optional()])
+    .optional(),
 });
 
 const TemplateMember = z.object({

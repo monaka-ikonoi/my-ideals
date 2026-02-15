@@ -6,7 +6,7 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white shadow-sm">
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="mx-auto px-4 lg:max-w-[1024px] 2xl:max-w-[1664px]">
         <div className="flex h-14 items-center justify-between">
           {/* Left: Title */}
           <div className="flex items-center">
