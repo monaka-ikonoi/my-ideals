@@ -61,7 +61,7 @@ type CollectionImageButtonProps = {
 };
 
 export function CollectionImageButton({ collection, quality = 0.9 }: CollectionImageButtonProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [mountCapture, setMountCapture] = useState(false);
   const [captureNode, setCaptureNode] = useState<HTMLDivElement | null>(null);
@@ -124,6 +124,7 @@ export function CollectionImageButton({ collection, quality = 0.9 }: CollectionI
         onClick={handleGenerate}
         disabled={generating}
         className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        title={t('collection.generate-image')}
       >
         {generating ? (
           <div

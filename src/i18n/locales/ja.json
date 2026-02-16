@@ -45,7 +45,8 @@
     "collected": "{{count}} / {{total}} 収集済み",
     "search-placeholder": "セットを検索...",
     "no-result": "セットが見つかりません",
-    "hide-completed": "コンプリートセットを非表示"
+    "hide-completed": "コンプリートセットを非表示",
+    "generate-image": "画像を作成"
   },
   "dialog": {
     "disclaimer": {
@@ -98,7 +99,7 @@
     },
     "collection-image-preview": {
       "image-alt": "出力画像プレビュー：{{name}}",
-      "hint": "下の画像を長押しまたは右クリックして保存してください",
+      "hint": "下の画像を長押しまたは右クリックして保存できます",
       "title": "画像を作成しました"
     }
   },

@@ -45,7 +45,8 @@
     "collected": "已收集 {{count}} / {{total}}",
     "search-placeholder": "搜索合集...",
     "no-result": "未找到合集",
-    "hide-completed": "隐藏已完成的合集"
+    "hide-completed": "隐藏已完成的合集",
+    "generate-image": "生成图片"
   },
   "dialog": {
     "disclaimer": {
