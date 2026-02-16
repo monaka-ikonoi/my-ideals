@@ -158,7 +158,7 @@ export function CollectionImageButton({ collection, quality = 0.9 }: CollectionI
                   </div>
                   <div className="text-right whitespace-nowrap">
                     {APP_NAME} {LONG_VERSION} / {window.location.hostname} /{' '}
-                    {new Date().toLocaleString(i18n.language)}
+                    {new Date().toLocaleString(i18n.language, { timeZoneName: 'short' })}
                   </div>
                 </div>
               </div>
