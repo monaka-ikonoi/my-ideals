@@ -42,7 +42,7 @@ export function ItemCounter({ value, setValue, immutable = false }: ItemCounterP
     <div className="flex items-center justify-between bg-gray-100 p-1">
       {immutable ? (
         <div
-          className="mx-1.5 flex h-auto flex-1 items-center justify-center text-center text-lg
+          className="mx-1.5 flex h-auto flex-1 items-center justify-center text-center text-xl
             font-semibold text-gray-700 tabular-nums"
         >
           {value}
