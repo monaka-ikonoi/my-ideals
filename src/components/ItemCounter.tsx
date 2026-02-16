@@ -39,11 +39,11 @@ export function ItemCounter({ value, setValue, immutable = false }: ItemCounterP
   );
 
   return (
-    <div className="flex items-center justify-between bg-gray-100 px-1 py-1 sm:px-1.5">
+    <div className="flex items-center justify-between bg-gray-100 p-1">
       {immutable ? (
         <div
-          className="mx-1 flex h-auto min-w-0 flex-1 items-center justify-center text-center text-sm
-            font-semibold text-gray-700 tabular-nums sm:mx-1.5 sm:text-base"
+          className="mx-1.5 flex h-auto flex-1 items-center justify-center text-center text-lg
+            font-semibold text-gray-700 tabular-nums"
         >
           {value}
         </div>
@@ -51,18 +51,18 @@ export function ItemCounter({ value, setValue, immutable = false }: ItemCounterP
         <>
           <button
             type="button"
-            className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-gray-500
+            className="flex h-4 w-4 shrink-0 items-center justify-center rounded text-gray-500
               transition hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed
-              disabled:opacity-30 sm:h-7 sm:w-7"
+              disabled:opacity-30 sm:h-6 sm:w-6"
             onClick={() => setValue(value - 1)}
             disabled={value === 0}
           >
-            <MinusIcon className="h-4 w-4" />
+            <MinusIcon className="h-3 w-3 sm:h-4 sm:w-4" />
           </button>
 
           <div
             className="mx-1 min-w-0 flex-1 items-center justify-center text-sm font-semibold
-              text-gray-700 tabular-nums sm:mx-1.5 sm:h-7 sm:text-base"
+              text-gray-700 tabular-nums sm:mx-1.5 sm:h-6 sm:text-base"
           >
             {editorActive ? (
               <input
@@ -90,11 +90,11 @@ export function ItemCounter({ value, setValue, immutable = false }: ItemCounterP
 
           <button
             type="button"
-            className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-gray-500
-              transition hover:bg-gray-200 active:bg-gray-300 sm:h-7 sm:w-7"
+            className="flex h-4 w-4 shrink-0 items-center justify-center rounded text-gray-500
+              transition hover:bg-gray-200 active:bg-gray-300 sm:h-6 sm:w-6"
             onClick={() => setValue(value + 1)}
           >
-            <PlusIcon className="h-4 w-4" />
+            <PlusIcon className="h-3 w-3 sm:h-4 sm:w-4" />
           </button>
         </>
       )}
