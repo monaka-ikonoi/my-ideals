@@ -44,7 +44,7 @@ export function GlobalDialogs() {
       )}
       {activeDialog.type === 'collection-image-preview' && (
         <CollectionImagePreviewDialog
-          imageUrl={activeDialog.imageUrl}
+          image={activeDialog.image}
           fileName={activeDialog.fileName}
           onClose={closeDialog}
         />

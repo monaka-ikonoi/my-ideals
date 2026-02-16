@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import { toJpeg } from 'html-to-image';
+import { toBlob } from 'html-to-image';
 import type { TemplateCollection } from '@/domain/template';
 import { CollectionGrid } from './CollectionGrid';
 import { useDialogStore } from '@/stores/dialogStore';
@@ -57,10 +57,9 @@ async function waitForImagesSettled(root: HTMLElement, maxRounds = 6) {
 
 type CollectionImageButtonProps = {
   collection: TemplateCollection;
-  quality?: number;
 };
 
-export function CollectionImageButton({ collection, quality = 0.9 }: CollectionImageButtonProps) {
+export function CollectionImageButton({ collection }: CollectionImageButtonProps) {
   const { t, i18n } = useTranslation();
 
   const [mountCapture, setMountCapture] = useState(false);
@@ -70,7 +69,7 @@ export function CollectionImageButton({ collection, quality = 0.9 }: CollectionI
   const templateName = useActiveProfileStore(state => state.template!.name);
   const templateId = useActiveProfileStore(state => state.template!.id);
   const profileId = useActiveProfileStore(state => state.profile!.id);
-  const fileName = `${templateId}-${collection.id}.jpg`;
+  const fileName = `${templateId}-${collection.id}.png`;
 
   const runningRef = useRef(false);
 
@@ -92,13 +91,10 @@ export function CollectionImageButton({ collection, quality = 0.9 }: CollectionI
       await waitForImagesSettled(captureNode);
       if (cancelled) return;
 
-      const dataUrl = await toJpeg(captureNode, {
-        quality,
-      });
+      const blob = await toBlob(captureNode);
+      if (cancelled || !blob) return;
 
-      if (cancelled) return;
-
-      useDialogStore.getState().openCollectionImagePreview(dataUrl, fileName);
+      useDialogStore.getState().openCollectionImagePreview(blob, fileName);
     })()
       .catch(e => {
         if (!cancelled) console.error(e);
@@ -115,7 +111,7 @@ export function CollectionImageButton({ collection, quality = 0.9 }: CollectionI
     return () => {
       cancelled = true;
     };
-  }, [mountCapture, captureNode, quality, fileName]);
+  }, [mountCapture, captureNode, fileName]);
 
   return (
     <>

@@ -1,19 +1,32 @@
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
-import { useMemo } from 'react';
 
 type CollectionImagePreviewDialogProps = {
   onClose: () => void;
-  imageUrl: string;
+  image: Blob;
   fileName: string;
 };
 
 export function CollectionImagePreviewDialog({
   onClose,
-  imageUrl,
+  image,
   fileName,
 }: CollectionImagePreviewDialogProps) {
   const { t } = useTranslation();
+
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  useLayoutEffect(() => {
+    const url = URL.createObjectURL(image);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setImageUrl(url);
+
+    return () => {
+      URL.revokeObjectURL(url);
+      setImageUrl(null);
+    };
+  }, [image]);
 
   const canUseWebShare = useMemo(() => {
     if (typeof navigator === 'undefined') return false;
@@ -22,18 +35,12 @@ export function CollectionImagePreviewDialog({
 
   const handleImageActions = async (value: string) => {
     if (value === 'download') {
-      const a = document.createElement('a');
-      a.href = imageUrl;
-      a.download = fileName;
-      a.click();
+      Object.assign(document.createElement('a'), { href: imageUrl, download: fileName }).click();
     }
     if (value === 'share') {
       if (!canUseWebShare) return;
 
-      const res = await fetch(imageUrl);
-      const blob = await res.blob();
-      const file = new File([blob], fileName, { type: blob.type || 'image/jpeg' });
-
+      const file = new File([image], fileName, { type: image.type });
       if (navigator.canShare({ files: [file] })) {
         await navigator.share({ files: [file] });
       }
@@ -61,12 +68,15 @@ export function CollectionImagePreviewDialog({
     >
       <div className="max-h-[70vh] overflow-auto">
         <p className="mb-2 text-sm text-gray-500">{t('dialog.collection-image-preview.hint')}</p>
-        <img
-          src={imageUrl}
-          alt={t('dialog.collection-image-preview.image-alt', { name: fileName })}
-          className="mx-auto h-auto max-w-full rounded-md border border-gray-200 bg-white shadow-lg"
-          style={{ WebkitTouchCallout: 'default' }}
-        />
+        {imageUrl && (
+          <img
+            src={imageUrl}
+            alt={t('dialog.collection-image-preview.image-alt', { name: fileName })}
+            className="mx-auto h-auto max-w-full rounded-md border border-gray-200 bg-white
+              shadow-lg"
+            style={{ WebkitTouchCallout: 'default' }}
+          />
+        )}
       </div>
     </ConfirmDialog>
   );
