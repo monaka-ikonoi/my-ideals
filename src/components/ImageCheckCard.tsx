@@ -9,14 +9,14 @@ import { ItemCounter } from './ItemCounter';
 type ImageCheckCardProps = {
   collectionId: string;
   item: TemplateCollectionItem;
-  lazyLoading?: boolean;
+  mode?: 'normal' | 'export';
   aspectRatio?: [number, number];
 };
 
 export const ImageCheckCard = memo(function ImageCheckCard({
   collectionId,
   item,
-  lazyLoading = true,
+  mode = 'normal',
   aspectRatio,
 }: ImageCheckCardProps) {
   debugLog.render.log(`ImageCheckCard render: ${collectionId} ${item.id}`);
@@ -75,8 +75,8 @@ export const ImageCheckCard = memo(function ImageCheckCard({
             src={imgSrc}
             alt={item.name}
             crossOrigin="anonymous"
-            loading={lazyLoading ? 'lazy' : 'eager'}
-            decoding={lazyLoading ? 'async' : 'sync'}
+            loading={mode === 'export' ? 'eager' : 'lazy'}
+            decoding={mode === 'export' ? 'sync' : 'async'}
             onError={() =>
               fallbackSrc && imgSrc !== fallbackSrc ? setImgSrc(fallbackSrc) : setShowAlt(true)
             }
@@ -105,7 +105,11 @@ export const ImageCheckCard = memo(function ImageCheckCard({
 
       {/* Counter */}
       {enableCount && typeof status === 'number' && (
-        <ItemCounter value={status} setValue={val => setCount(collectionId, item.id, val)} />
+        <ItemCounter
+          value={status}
+          setValue={val => setCount(collectionId, item.id, val)}
+          immutable={mode === 'export'}
+        />
       )}
     </div>
   );

@@ -50,7 +50,7 @@ export const CollectionGrid = memo(function CollectionGrid({
           key={`${collection.id}-${item.id}`}
           collectionId={collection.id}
           item={item}
-          lazyLoading={mode === 'normal'}
+          mode={mode}
           aspectRatio={layout?.aspectRatio}
         />
       ))}
