@@ -30,9 +30,9 @@
     "select-placeholder": "Select Profile",
     "current": "Current Profile",
     "list": "Profiles",
-    "copy-template-link": "Copy template link",
+    "copy-template-link": "Copy Template Link",
     "not-selected": "No Profile Selected",
-    "not-selected-hint": "Create or import a profile to get started",
+    "not-selected-hint": "Create or Import a profile to get started",
     "rename": "Rename Profile",
     "edit-template-url": "Edit Template URL",
     "save-backup": "Save Backup"
