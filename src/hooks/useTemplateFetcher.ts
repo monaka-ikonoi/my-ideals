@@ -3,6 +3,7 @@ import { debounce } from 'lodash-es';
 import { z } from 'zod';
 import { type Template } from '@/domain/template';
 import { fetchTemplate, formatTemplateError } from '@/utils/fetchTemplate';
+import { extractTwitterShortenedLink, isTwitterShortenedLink } from '@/utils/twitterShortenedLink';
 
 export type TemplateFetchState =
   | { status: 'idle' }
@@ -52,6 +53,16 @@ export function useTemplateFetcher({
 
       abortController?.abort();
       abortController = new AbortController();
+
+      if (isTwitterShortenedLink(url)) {
+        const result = await extractTwitterShortenedLink(url);
+        if (!result.success) {
+          setState({ status: 'error', message: result.error });
+          return;
+        }
+        setUrl(result.url);
+        return;
+      }
 
       try {
         const result = await fetchTemplate(url, expectedId, abortController.signal);
