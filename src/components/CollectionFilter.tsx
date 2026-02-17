@@ -7,6 +7,7 @@ type CollectionFilterProps = {
   setSearchQuery: (query: string) => void;
   hideCompleted: boolean;
   setHideCompleted: (enabled: boolean) => void;
+  hiddenCount: number;
 };
 
 export function CollectionFilter({
@@ -14,6 +15,7 @@ export function CollectionFilter({
   setSearchQuery,
   hideCompleted,
   setHideCompleted,
+  hiddenCount,
 }: CollectionFilterProps) {
   const { t } = useTranslation();
 
@@ -77,7 +79,12 @@ export function CollectionFilter({
             onChange={e => setHideCompleted(e.target.checked)}
             className="h-4 w-4 rounded border-gray-300 accent-blue-600 focus:ring-blue-500"
           />
-          <span className="text-sm text-gray-700">{t('collection.hide-completed')}</span>
+          <span className="text-sm text-gray-700">
+            {t('collection.hide-completed')}
+            <span
+              className={`tabular-nums ${hiddenCount > 0 ? 'visible' : 'invisible'}`}
+            >{` (${hiddenCount})`}</span>
+          </span>
         </label>
       </div>
     </div>
