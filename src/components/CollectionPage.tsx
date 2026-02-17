@@ -5,6 +5,7 @@ import { CollectionPanel } from './CollectionPanel';
 import { CollectionFilter } from './CollectionFilter';
 import { ProfileInfo } from './ProfileInfo';
 import { ScrollToTop } from './ui/ScrollToTop';
+import { ProfileStats } from './ProfileStats';
 
 export function CollectionPage() {
   const { t } = useTranslation();
@@ -17,6 +18,8 @@ export function CollectionPage() {
         <ProfileInfo />
         <div className="my-4 border-t border-gray-200" />
         <CollectionFilter hiddenCount={hiddenCount} {...filterProps} />
+        <div className="my-4 border-t border-gray-200" />
+        <ProfileStats filteredCollections={filteredCollections} />
       </div>
 
       {/* Collections - Virtualized*/}

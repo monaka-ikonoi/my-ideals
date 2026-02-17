@@ -65,3 +65,44 @@ export function useCollectionStats(collection: TemplateCollection) {
     return stats;
   }, [collection, statusMap]);
 }
+
+type AggreatedCollectionStats = {
+  totalCollections: number;
+  totalItems: number;
+  collectedItems: number;
+  ownedItems: number;
+  ownedComps: number;
+};
+
+function calculateAggreatedCollectionStats(
+  collections: TemplateCollection[],
+  statusMaps: Profile['collections']
+): AggreatedCollectionStats {
+  const result: AggreatedCollectionStats = {
+    totalCollections: collections.length,
+    totalItems: 0,
+    collectedItems: 0,
+    ownedItems: 0,
+    ownedComps: 0,
+  };
+
+  for (const collection of collections) {
+    const stats = calculateCollectionStats(collection, statusMaps[collection.id] ?? {});
+    result.totalItems += stats.totalItems;
+    result.collectedItems += stats.collectedItems;
+    result.ownedItems += stats.ownedItems;
+    result.ownedComps += stats.ownedComps;
+  }
+
+  return result;
+}
+
+export function useAggreatedCollectionStats(collections: TemplateCollection[]) {
+  const statusMaps = useActiveProfileStore(state => state.profile?.collections);
+  return useMemo(() => {
+    debugLog.perf.time(`calculateAggreatedCollectionStats`);
+    const stats = calculateAggreatedCollectionStats(collections, statusMaps ?? {});
+    debugLog.perf.timeEnd(`calculateAggreatedCollectionStats`);
+    return stats;
+  }, [collections, statusMaps]);
+}

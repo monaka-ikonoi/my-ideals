@@ -113,6 +113,11 @@
   "stats": {
     "item-collected": "{{count}} / {{total}} Collected",
     "member-completed": "{{count}} / {{total}} Members Completed",
-    "owned": "{{items}} Items, {{comps}} Sets Owned"
+    "owned": "{{items}} Items, {{comps}} Sets Owned",
+    "collections": "{{count}} Sets",
+    "global": {
+      "view": "Current",
+      "total": "Total"
+    }
   }
 }

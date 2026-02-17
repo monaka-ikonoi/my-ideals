@@ -113,6 +113,11 @@
   "stats": {
     "item-collected": "{{count}} / {{total}} 収集済み",
     "member-completed": "{{count}} / {{total}} メンバーコンプ",
-    "owned": "所持: {{items}} 枚、{{comps}} コンプ"
+    "owned": "所持: {{items}} 枚、{{comps}} コンプ",
+    "collections": "{{count}} セット",
+    "global": {
+      "view": "表示中",
+      "total": "全体"
+    }
   }
 }

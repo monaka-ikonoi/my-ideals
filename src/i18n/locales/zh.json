@@ -113,6 +113,11 @@
   "stats": {
     "item-collected": "已收集 {{count}} / {{total}}",
     "member-completed": "成员完成 {{count}} / {{total}}",
-    "owned": "持有 {{items}} 枚，{{comps}} 套"
+    "owned": "持有 {{items}} 枚，{{comps}} 套",
+    "collections": "{{count}} 个合集",
+    "global": {
+      "view": "当前",
+      "total": "总计"
+    }
   }
 }
