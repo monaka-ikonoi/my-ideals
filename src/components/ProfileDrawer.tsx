@@ -35,9 +35,14 @@ export function ProfileDrawer({ isOpen, onOpen, onClose }: ProfileDrawerProps) {
           <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />
 
           {/* Panel */}
-          <div className="fixed inset-y-0 right-0 z-50 w-72 bg-white shadow-xl lg:hidden">
+          <div
+            className="fixed inset-y-0 right-0 z-50 flex w-72 flex-col bg-white shadow-xl lg:hidden"
+          >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
+            <div
+              className="flex flex-shrink-0 items-center justify-between border-b border-gray-200
+                px-4 py-3"
+            >
               <h2 className="font-semibold text-gray-900">{t('common.menu')}</h2>
               <button onClick={onClose} className="rounded-lg p-1 text-gray-500 hover:bg-gray-100">
                 <XMarkIcon className="h-5 w-5" />
@@ -55,7 +60,7 @@ export function ProfileDrawer({ isOpen, onOpen, onClose }: ProfileDrawerProps) {
             )}
 
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto overscroll-contain">
               {/* Profile List */}
               <ProfileList />
 
