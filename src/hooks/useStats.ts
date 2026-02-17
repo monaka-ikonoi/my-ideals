@@ -8,9 +8,9 @@ import { debugLog } from '@/utils/debug';
 type CollectionStats = {
   totalItems: number;
   collectedItems: number;
-  totalMembers: number;
-  completedMembers: number;
   ownedItems: number;
+  totalComps: number;
+  collectedComps: number;
   ownedComps: number;
 };
 
@@ -22,8 +22,8 @@ function calculateCollectionStats(
     totalItems: collection.items.length,
     collectedItems: 0,
     ownedItems: 0,
-    totalMembers: 0,
-    completedMembers: 0,
+    totalComps: 0,
+    collectedComps: 0,
     ownedComps: 0,
   };
 
@@ -44,10 +44,10 @@ function calculateCollectionStats(
     }
   }
 
-  result.totalMembers = memberMinCounts.size;
+  result.totalComps = memberMinCounts.size;
   for (const count of memberMinCounts.values()) {
     if (count > 0) {
-      result.completedMembers++;
+      result.collectedComps++;
       result.ownedComps += count;
     }
   }
@@ -71,6 +71,8 @@ type AggreatedCollectionStats = {
   totalItems: number;
   collectedItems: number;
   ownedItems: number;
+  totalComps: number;
+  collectedComps: number;
   ownedComps: number;
 };
 
@@ -83,6 +85,8 @@ function calculateAggreatedCollectionStats(
     totalItems: 0,
     collectedItems: 0,
     ownedItems: 0,
+    totalComps: 0,
+    collectedComps: 0,
     ownedComps: 0,
   };
 
@@ -91,6 +95,8 @@ function calculateAggreatedCollectionStats(
     result.totalItems += stats.totalItems;
     result.collectedItems += stats.collectedItems;
     result.ownedItems += stats.ownedItems;
+    result.totalComps += stats.totalComps;
+    result.collectedComps += stats.collectedComps;
     result.ownedComps += stats.ownedComps;
   }
 

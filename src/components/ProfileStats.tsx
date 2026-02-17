@@ -22,16 +22,18 @@ export function ProfileStats({ filteredCollections }: ProfileStatsProps) {
   const renderStatRow = (label: string, stats: typeof currentStats, isTotal?: boolean) => (
     <div
       className={`flex flex-wrap items-center justify-between gap-y-1 text-sm
-        ${isTotal ? 'text-gray-500' : 'text-gray-600'}`}
+        ${isTotal ? 'text-gray-500' : 'text-gray-600'} tabular-nums`}
     >
       <span className="min-w-[64px] font-medium">{label}</span>
 
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <span>{t('stats.collections', { count: stats.totalCollections })}</span>
         <span>
-          {t('stats.item-collected', {
-            count: stats.collectedItems,
-            total: stats.totalItems,
+          {t('stats.collected', {
+            item: stats.collectedItems,
+            totalItem: stats.totalItems,
+            comp: stats.collectedComps,
+            totalComp: stats.totalComps,
           })}
         </span>
         {enableCount && (

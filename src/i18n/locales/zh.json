@@ -111,8 +111,7 @@
     }
   },
   "stats": {
-    "item-collected": "已收集 {{count}} / {{total}}",
-    "member-completed": "成员完成 {{count}} / {{total}}",
+    "collected": "已收集 {{item}}/{{totalItem}} ({{comp}}/{{totalComp}} 套)",
     "owned": "持有 {{items}} 枚，{{comps}} 套",
     "collections": "{{count}} 个合集",
     "global": {

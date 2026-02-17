@@ -30,17 +30,16 @@ export const CollectionPanel = memo(function CollectionPanel({ collection }: Col
           <div className="min-w-0 space-y-1">
             <h2 className="text-md font-semibold text-gray-800 sm:text-lg">{collection.name}</h2>
 
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-500">
+            <div
+              className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-gray-500
+                tabular-nums"
+            >
               <span>
-                {t('stats.item-collected', {
-                  count: stats.collectedItems,
-                  total: stats.totalItems,
-                })}
-              </span>
-              <span>
-                {t('stats.member-completed', {
-                  count: stats.completedMembers,
-                  total: stats.totalMembers,
+                {t('stats.collected', {
+                  item: stats.collectedItems,
+                  totalItem: stats.totalItems,
+                  comp: stats.collectedComps,
+                  totalComp: stats.totalComps,
                 })}
               </span>
               {enableCount && (
