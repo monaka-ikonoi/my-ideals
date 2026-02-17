@@ -42,7 +42,6 @@
     "help": "使い方"
   },
   "collection": {
-    "collected": "{{count}} / {{total}} 収集済み",
     "search-placeholder": "セットを検索...",
     "no-result": "セットが見つかりません",
     "hide-completed": "コンプリートセットを非表示",
@@ -110,5 +109,10 @@
       "invalid-url": "無効なURL形式です",
       "id-mismatch": "テンプレートIDが一致しません。期待値「{{expected}}」、実際「{{actual}}」。"
     }
+  },
+  "stats": {
+    "item-collected": "{{count}} / {{total}} 収集済み",
+    "member-completed": "{{count}} / {{total}} メンバーコンプ",
+    "owned": "所持: {{items}} 枚、{{comps}} コンプ"
   }
 }

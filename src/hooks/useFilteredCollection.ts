@@ -2,7 +2,7 @@ import { useMemo, useState, useDeferredValue } from 'react';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { type TemplateCollection } from '@/domain/template';
 import { debugLog } from '@/utils/debug';
-import { normalizeStatus } from '@/utils/utils';
+import { normalizeStatusBoolean } from '@/utils/utils';
 
 type FilteredCollectionsResult = {
   filteredCollections: TemplateCollection[];
@@ -50,7 +50,7 @@ function useFilteredCollections(searchQuery: string, hideCompleted: boolean) {
 
         if (hideCompleted && cachedStatus) {
           const status = cachedStatus[collection.id] ?? {};
-          if (items.every(item => normalizeStatus(status[item.id]) === true)) {
+          if (items.every(item => normalizeStatusBoolean(status[item.id]) === true)) {
             acc.hiddenCount++;
             return acc;
           }

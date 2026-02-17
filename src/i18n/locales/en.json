@@ -42,7 +42,6 @@
     "help": "User Guide"
   },
   "collection": {
-    "collected": "{{count}} / {{total}} Collected",
     "search-placeholder": "Search collections...",
     "no-result": "No collections found",
     "hide-completed": "Hide completed collections",
@@ -110,5 +109,10 @@
       "invalid-url": "Invalid URL format",
       "id-mismatch": "Template ID mismatch. Expected \\\"{{expected}}\\\", got \\\"{{actual}}\\\"."
     }
+  },
+  "stats": {
+    "item-collected": "{{count}} / {{total}} Collected",
+    "member-completed": "{{count}} / {{total}} Members Completed",
+    "owned": "{{items}} Items, {{comps}} Sets Owned"
   }
 }

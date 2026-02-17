@@ -42,7 +42,6 @@
     "help": "使用说明"
   },
   "collection": {
-    "collected": "已收集 {{count}} / {{total}}",
     "search-placeholder": "搜索合集...",
     "no-result": "未找到合集",
     "hide-completed": "隐藏已完成的合集",
@@ -110,5 +109,10 @@
       "invalid-url": "链接格式无效",
       "id-mismatch": "模板 ID 不匹配。期望 \\\"{{expected}}\\\"，实际 \\\"{{actual}}\\\"。"
     }
+  },
+  "stats": {
+    "item-collected": "已收集 {{count}} / {{total}}",
+    "member-completed": "成员完成 {{count}} / {{total}}",
+    "owned": "持有 {{items}} 枚，{{comps}} 套"
   }
 }

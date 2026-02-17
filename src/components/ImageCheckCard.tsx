@@ -3,7 +3,7 @@ import { urlFromBaseUrl, type TemplateCollectionItem } from '@/domain/template';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { debugLog } from '@/utils/debug';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
-import { normalizeStatus } from '@/utils/utils';
+import { normalizeStatusBoolean } from '@/utils/utils';
 import { ItemCounter } from './ItemCounter';
 
 type ImageCheckCardProps = {
@@ -65,7 +65,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
           <div
             className={`flex h-full w-full items-center justify-center bg-gray-200 p-2 text-center
               text-sm whitespace-pre-line text-gray-600 transition ${
-                !normalizeStatus(status) && 'opacity-50'
+                !normalizeStatusBoolean(status) && 'opacity-50'
               }`}
           >
             {item.name.split(' ').join('\n')}
@@ -81,7 +81,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
               fallbackSrc && imgSrc !== fallbackSrc ? setImgSrc(fallbackSrc) : setShowAlt(true)
             }
             className={`h-full w-full object-cover transition
-              ${!normalizeStatus(status) && 'opacity-50'}`}
+              ${!normalizeStatusBoolean(status) && 'opacity-50'}`}
           />
         )}
 
@@ -96,7 +96,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
               id={`dummy-${collectionId}-${item.id}`}
               readOnly
               type="checkbox"
-              checked={normalizeStatus(status)}
+              checked={normalizeStatusBoolean(status)}
               className="pointer-events-none accent-blue-600"
             />
           )}
