@@ -23,7 +23,7 @@ function useFilteredCollections(searchQuery: string, hideCompleted: boolean) {
       return { filteredCollections: collections, hiddenCount: 0 };
 
     debugLog.store.log('Apply filter');
-    debugLog.store.time('filter');
+    debugLog.perf.time('Apply filter');
 
     const cachedStatus = hideCompleted
       ? useActiveProfileStore.getState().profile?.collections
@@ -62,7 +62,7 @@ function useFilteredCollections(searchQuery: string, hideCompleted: boolean) {
       { filteredCollections: [], hiddenCount: 0 }
     );
 
-    debugLog.store.timeEnd('filter');
+    debugLog.perf.timeEnd('Apply filter');
     return result;
   }, [collections, selectedMembers, searchQuery, hideCompleted]);
 }
