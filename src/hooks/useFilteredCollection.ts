@@ -19,7 +19,7 @@ function useFilteredCollections(searchQuery: string, hideCompleted: boolean) {
     const selected = new Set(selectedMembers);
     const query = searchQuery.trim().toLowerCase();
 
-    if (selected.size === 0 && !searchQuery)
+    if (selected.size === 0 && !searchQuery && !hideCompleted)
       return { filteredCollections: collections, hiddenCount: 0 };
 
     debugLog.store.log('Apply filter');
