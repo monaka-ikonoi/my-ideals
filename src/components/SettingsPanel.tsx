@@ -1,7 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { LanguageSelector } from './LanguageSelector';
 import { useDialogStore } from '@/stores/dialogStore';
-import { InformationCircleIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowTopRightOnSquareIcon,
+  InformationCircleIcon,
+  QuestionMarkCircleIcon,
+} from '@heroicons/react/24/outline';
 
 type SettingsPanelProps = {
   onSelect?: () => void;
@@ -33,6 +37,7 @@ export function SettingsPanel({ onSelect }: SettingsPanelProps) {
         >
           <QuestionMarkCircleIcon className="h-4 w-4" />
           {t('settings.help')}
+          <ArrowTopRightOnSquareIcon className="ml-auto h-4 w-4 text-gray-400" />
         </a>
         <button
           onClick={() => {
