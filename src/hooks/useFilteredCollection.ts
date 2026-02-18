@@ -22,7 +22,9 @@ function useFilteredCollections(searchQuery: string, hideCompleted: boolean) {
     if (selected.size === 0 && !searchQuery && !hideCompleted)
       return { filteredCollections: collections, hiddenCount: 0 };
 
-    debugLog.store.log('Apply filter');
+    debugLog.store.log(
+      `Apply filter, members: [${[...selected].join(',')}], query: "${query}", hideCompleted: ${hideCompleted}`
+    );
     debugLog.perf.time('Apply filter');
 
     const cachedStatus = hideCompleted
