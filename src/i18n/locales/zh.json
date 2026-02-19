@@ -118,5 +118,11 @@
       "view": "当前",
       "total": "总计"
     }
+  },
+  "notice": {
+    "ios-data-warning": {
+      "body": "由于 Apple ITP 限制，7 天未访问可能导致数据被自动清除。每次使用后请通过右上角的\"$t(profile.export)\"按钮备份数据。",
+      "title": "iOS (iPhone / iPad) 及 Safari 用户须知"
+    }
   }
 }

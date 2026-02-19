@@ -118,5 +118,11 @@
       "view": "表示中",
       "total": "全体"
     }
+  },
+  "notice": {
+    "ios-data-warning": {
+      "title": "iOS (iPhone/iPad) および Safari ユーザーへ",
+      "body": "Apple ITP 仕様により、7日間サイトを開かないと保存データが消える場合があります。ご利用後は右上の「$t(profile.export)」ボタンからバックアップを取ってください。"
+    }
   }
 }

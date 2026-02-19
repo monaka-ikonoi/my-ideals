@@ -118,5 +118,11 @@
       "view": "Current",
       "total": "Total"
     }
+  },
+  "notice": {
+    "ios-data-warning": {
+      "title": "Notice for iOS (iPhone / iPad) and Safari Users",
+      "body": "Due to Apple ITP restrictions, saved data may be deleted after 7 days of inactivity. Please export a backup using the \"$t(profile.export)\" button in the top right after each use."
+    }
   }
 }
