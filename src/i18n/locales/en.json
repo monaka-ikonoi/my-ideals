@@ -62,7 +62,10 @@
     "profile-create": {
       "title": "New Profile",
       "profile-name": "Profile Name",
-      "enable-count": "Quantity mode"
+      "enable-count": {
+        "label": "Quantity mode",
+        "description": "Track owned quantity, not just the status"
+      }
     },
     "profile-import": {
       "title": "Import Profile",

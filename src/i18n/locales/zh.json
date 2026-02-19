@@ -62,7 +62,10 @@
     "profile-create": {
       "title": "新建档案",
       "profile-name": "档案名称",
-      "enable-count": "复数记录模式"
+      "enable-count": {
+        "label": "复数记录模式",
+        "description": "记录持有数量，而非仅标记有无"
+      }
     },
     "profile-import": {
       "title": "导入档案",

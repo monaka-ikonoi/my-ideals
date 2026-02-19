@@ -123,16 +123,26 @@ export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
                       focus:outline-none"
                   />
                 </div>
-                <label className="flex cursor-pointer items-center gap-2">
+                <label
+                  className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200
+                    p-3 transition-colors hover:bg-gray-50 has-[:checked]:border-blue-200
+                    has-[:checked]:bg-blue-50"
+                >
                   <input
                     type="checkbox"
                     checked={enableCount}
                     onChange={e => setEnableCount(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 accent-blue-600 focus:ring-blue-500"
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 accent-blue-600
+                      focus:ring-blue-500"
                   />
-                  <span className="text-sm text-gray-700">
-                    {t('dialog.profile-create.enable-count')}
-                  </span>
+                  <div>
+                    <span className="text-sm font-medium text-gray-700">
+                      {t('dialog.profile-create.enable-count.label')}
+                    </span>
+                    <p className="mt-0.5 text-xs text-gray-500">
+                      {t('dialog.profile-create.enable-count.description')}
+                    </p>
+                  </div>
                 </label>
               </>
             )}

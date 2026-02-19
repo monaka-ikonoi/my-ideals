@@ -62,7 +62,10 @@
     "profile-create": {
       "title": "新規プロファイル作成",
       "profile-name": "プロファイル名",
-      "enable-count": "複数記録モード"
+      "enable-count": {
+        "label": "複数記録モード",
+        "description": "有無だけでなく、所持数を記録します"
+      }
     },
     "profile-import": {
       "title": "プロファイルをインポート",
