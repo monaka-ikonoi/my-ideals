@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import { execSync } from 'child_process';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 const getGitInfo = () => {
   try {
@@ -20,7 +21,16 @@ const gitInfo = getGitInfo();
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    visualizer({
+      open: false,
+      filename: 'stats.html',
+      gzipSize: true,
+      brotliSize: true,
+    }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -32,5 +42,16 @@ export default defineConfig({
     'import.meta.env.VITE_GIT_BRANCH': JSON.stringify(gitInfo.branch),
     'import.meta.env.VITE_GIT_REVISION': JSON.stringify(gitInfo.hash),
     'import.meta.env.VITE_BUILD_TIME': JSON.stringify(new Date().toISOString()),
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'lib';
+          }
+        },
+      },
+    },
   },
 });
