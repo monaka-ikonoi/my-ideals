@@ -35,7 +35,13 @@
     "not-selected-hint": "创建或导入档案以开始使用",
     "rename": "重命名档案",
     "edit-template-url": "编辑模板链接",
-    "save-backup": "保存备份"
+    "save-backup": "保存备份",
+    "mode": {
+      "label": "模式",
+      "standard": "标准模式",
+      "count": "复数模式",
+      "switch": "切换模式"
+    }
   },
   "settings": {
     "language": "语言",
@@ -103,6 +109,13 @@
       "image-alt": "导出图片预览：{{name}}",
       "hint": "长按或右键下方图片进行保存",
       "title": "图片已生成"
+    },
+    "profile-switch-mode": {
+      "title": "切换记录模式",
+      "confirm": "切换",
+      "to-count": "切换至多数量记录模式。已勾选的物品将记录为持有 1 个。",
+      "to-standard": "切换至普通模式。持有 1 个以上的物品将显示为已勾选。",
+      "to-standard-warn": "持有 2 个以上的物品将全部变为 1，数量数据将丢失。此操作无法撤销。"
     }
   },
   "input": {

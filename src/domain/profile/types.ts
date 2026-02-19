@@ -6,6 +6,8 @@ export type ProfileTemplateInfo = {
   revision: number;
 };
 
+export type ProfileCollection = Record<string, Record<string, boolean | number>>;
+
 export type Profile = {
   magic: 'my-ideals-profile';
   version: 1;
@@ -14,5 +16,5 @@ export type Profile = {
   template: ProfileTemplateInfo;
   flags?: ProfileFlag[];
   selectedMembers: string[];
-  collections: Record<string, Record<string, boolean | number>>;
+  collections: ProfileCollection;
 };

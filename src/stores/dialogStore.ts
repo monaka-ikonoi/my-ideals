@@ -12,6 +12,7 @@ type DialogState =
       templateId: string;
       currentUrl: string;
     }
+  | { type: 'switch-profile-mode'; profileId: string; enableCount: boolean }
   | { type: 'collection-image-preview'; image: Blob; fileName: string }
   | { type: 'about' };
 
@@ -24,6 +25,7 @@ type DialogStore = {
   openDeleteProfile: (profileId: string, profileName: string) => void;
   openRenameProfile: (profileId: string, profileName: string) => void;
   openEditProfileTemplateUrl: (profileId: string, templateId: string, currentUrl: string) => void;
+  openSwitchProfileMode: (profileId: string, enableCount: boolean) => void;
   openCollectionImagePreview: (image: Blob, fileName: string) => void;
   openAbout: () => void;
 };
@@ -47,6 +49,8 @@ export const useDialogStore = create<DialogStore>(set => ({
         currentUrl,
       },
     }),
+  openSwitchProfileMode: (profileId: string, enableCount: boolean) =>
+    set({ activeDialog: { type: 'switch-profile-mode', profileId, enableCount } }),
   openCollectionImagePreview: (image, fileName) =>
     set({ activeDialog: { type: 'collection-image-preview', image, fileName } }),
   openAbout: () => set({ activeDialog: { type: 'about' } }),

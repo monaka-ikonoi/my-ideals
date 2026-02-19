@@ -6,6 +6,7 @@ import { ProfileImportDialog } from './dialogs/ProfileImportDialog';
 import { ProfileDeleteDialog } from './dialogs/ProfileDeleteDialog';
 import { ProfileRenameDialog } from './dialogs/ProfileRenameDialog';
 import { ProfileEditTemplateUrlDialog } from './dialogs/ProfileEditTemplateUrl';
+import { ProfileSwitchModeDialog } from './dialogs/ProfileSwitchModeDialog';
 import { CollectionImagePreviewDialog } from './dialogs/CollectionImagePreviewDialog';
 import { AboutDialog } from './dialogs/AboutDialog';
 
@@ -39,6 +40,13 @@ export function GlobalDialogs() {
           profileId={activeDialog.profileId}
           templateId={activeDialog.templateId}
           currentUrl={activeDialog.currentUrl}
+          onClose={closeDialog}
+        />
+      )}
+      {activeDialog.type === 'switch-profile-mode' && (
+        <ProfileSwitchModeDialog
+          profileId={activeDialog.profileId}
+          enableCount={activeDialog.enableCount}
           onClose={closeDialog}
         />
       )}

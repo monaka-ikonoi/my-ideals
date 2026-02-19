@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PencilIcon, LinkIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline';
+import {
+  PencilIcon,
+  LinkIcon,
+  ClipboardDocumentCheckIcon,
+  ArrowsRightLeftIcon,
+} from '@heroicons/react/24/outline';
 import { InlineCode } from './ui/InlineCode';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { useDialogStore } from '@/stores/dialogStore';
+import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 
 export function ProfileInfo() {
   const { t } = useTranslation();
@@ -40,39 +46,69 @@ export function ProfileInfo() {
         </div>
       </div>
 
-      {/* Template */}
-      <div className="flex items-center gap-1 text-sm text-gray-500">
-        <div className="flex-1 sm:flex-initial">
-          <span className="block sm:inline">
-            {t('common.template')}: {template.name}
-          </span>
-          <span className="hidden sm:mx-2 sm:inline">/</span>
-          <span className="block font-mono text-gray-500 sm:inline">
-            {profile.template.id} (rev. {profile.template.revision})
-          </span>
+      <div
+        className="flex flex-col gap-2 text-sm text-gray-500 md:flex-row md:items-center md:gap-4"
+      >
+        {/* Template */}
+        <div className="flex items-center gap-1">
+          <div className="flex-1 sm:flex-initial">
+            <span className="block sm:inline">
+              {t('common.template')}: {template.name}
+            </span>
+            <span className="hidden sm:mx-2 sm:inline">/</span>
+            <span className="block font-mono text-gray-500 sm:inline">
+              {profile.template.id} (rev. {profile.template.revision})
+            </span>
+          </div>
+          <button
+            onClick={handleCopyLink}
+            className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            title={t('profile.copy-template-link')}
+          >
+            {copied ? (
+              <ClipboardDocumentCheckIcon className="h-4 w-4 text-green-500" />
+            ) : (
+              <LinkIcon className="h-4 w-4" />
+            )}
+          </button>
+          <button
+            onClick={() =>
+              useDialogStore
+                .getState()
+                .openEditProfileTemplateUrl(profile.id, template.id, profile.template.link)
+            }
+            className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            title={t('profile.edit-template-url')}
+          >
+            <PencilIcon className="h-4 w-4" />
+          </button>
         </div>
-        <button
-          onClick={handleCopyLink}
-          className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-          title={t('profile.copy-template-link')}
-        >
-          {copied ? (
-            <ClipboardDocumentCheckIcon className="h-4 w-4 text-green-500" />
-          ) : (
-            <LinkIcon className="h-4 w-4" />
-          )}
-        </button>
-        <button
-          onClick={() =>
-            useDialogStore
-              .getState()
-              .openEditProfileTemplateUrl(profile.id, template.id, profile.template.link)
-          }
-          className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-          title={t('profile.edit-template-url')}
-        >
-          <PencilIcon className="h-4 w-4" />
-        </button>
+
+        <span className="hidden h-4 w-px bg-gray-300 md:block" aria-hidden="true" />
+
+        {/* Mode */}
+        <div className="flex items-center gap-1">
+          <div className="flex-1 sm:flex-initial">
+            {t('profile.mode.label')}:{' '}
+            {profileHasFlag(profile, ProfileFlags.ENABLE_COUNT)
+              ? t('profile.mode.count')
+              : t('profile.mode.standard')}
+          </div>
+          <button
+            onClick={() =>
+              useDialogStore
+                .getState()
+                .openSwitchProfileMode(
+                  profile.id,
+                  !profileHasFlag(profile, ProfileFlags.ENABLE_COUNT)
+                )
+            }
+            className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            title={t('profile.mode.switch')}
+          >
+            <ArrowsRightLeftIcon className="h-4 w-4" />
+          </button>
+        </div>
       </div>
     </div>
   );

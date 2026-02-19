@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { debounce } from 'lodash-es';
-import { ProfileFlags, profileHasFlag, type Profile } from '@/domain/profile';
+import { ProfileFlags, profileHasFlag, type Profile, type ProfileFlag } from '@/domain/profile';
 import { type Template } from '@/domain/template';
 import { ProfileStorage } from '@/storage/profileStorage';
 import { useProfileListStore } from './profileListStore';
@@ -12,6 +12,7 @@ import {
   type ProfileTemplateDiff,
 } from '@/utils/syncProfile';
 import { fetchTemplate, formatTemplateError } from '@/utils/fetchTemplate';
+import { ProfileFlagOperations } from '@/utils/profileFlagOperation';
 
 export type LoadError =
   | { type: 'template'; message: string }
@@ -36,6 +37,7 @@ type activeProfileStore = {
   toggleMember: (member: string) => void;
   updateName: (name: string) => void;
   updateTemplateUrl: (url: string) => void;
+  toogleFlag: (flag: ProfileFlag, enabled: boolean) => void;
 };
 
 export const useActiveProfileStore = create<activeProfileStore>()(
@@ -218,6 +220,24 @@ export const useActiveProfileStore = create<activeProfileStore>()(
             state.profile.template.link = url;
             debugLog.store.log(`Profile ${state.profile.id} template link updated to ${url}`);
           }
+        });
+        debouncedSave();
+      },
+
+      toogleFlag: (flag: ProfileFlag, enabled: boolean) => {
+        set(state => {
+          if (!state.profile) return;
+
+          const flags = state.profile.flags ?? [];
+          const hasFlag = flags.includes(flag);
+          if (enabled === hasFlag) return;
+
+          debugLog.perf.time(`Toggle flag ${flag} to ${enabled}`);
+          state.profile.flags = enabled ? [...flags, flag] : flags.filter(f => f !== flag);
+          ProfileFlagOperations.get(flag)?.get(enabled)?.(state.profile);
+          debugLog.perf.timeEnd(`Toggle flag ${flag} to ${enabled}`);
+
+          debugLog.store.log(`Profile ${state.profile.id} flag ${flag} toggled to ${enabled}`);
         });
         debouncedSave();
       },
