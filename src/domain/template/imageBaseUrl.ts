@@ -11,6 +11,3 @@ export const TemplateResourceBaseUrlSchema = z.object({
   format: z.enum(['jpg', 'png', 'webp']),
   fallback: z.url().optional(),
 });
-
-export const urlFromBaseUrl = (id: string, config: TemplateResourceBaseUrl): string =>
-  `${config.root}/${id}.${config.format}?v=cors`;

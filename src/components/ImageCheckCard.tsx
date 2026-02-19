@@ -1,9 +1,10 @@
 import { useState, memo } from 'react';
-import { urlFromBaseUrl, type TemplateCollectionItem } from '@/domain/template';
+import { type TemplateCollectionItem } from '@/domain/template';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { debugLog } from '@/utils/debug';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { normalizeStatusBoolean } from '@/utils/utils';
+import { formatImageUrl } from '@/utils/templateUtils';
 import { ItemCounter } from './ItemCounter';
 
 type ImageCheckCardProps = {
@@ -25,8 +26,8 @@ export const ImageCheckCard = memo(function ImageCheckCard({
     profileHasFlag(state.profile!, ProfileFlags.ENABLE_COUNT)
   );
 
-  const baseUrlConfig = useActiveProfileStore(state => state.template!.imageBaseUrl);
-  const fallbackSrc = baseUrlConfig?.fallback;
+  const template = useActiveProfileStore(state => state.template!);
+  const fallbackSrc = template.imageBaseUrl?.fallback;
 
   const status = useActiveProfileStore(
     state => state.profile?.collections[collectionId]?.[item.id] ?? (enableCount ? 0 : false)
@@ -35,7 +36,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   const setCount = useActiveProfileStore(state => state.setCount);
 
   const [imgSrc, setImgSrc] = useState(
-    item.image ?? urlFromBaseUrl(`${collectionId}/${item.id}`, baseUrlConfig!)
+    item.image ?? formatImageUrl(collectionId, item.id, template)
   );
   const [showAlt, setShowAlt] = useState(false);
 
