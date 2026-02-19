@@ -62,7 +62,7 @@ export function ConfirmDialog({
           </div>
 
           {/* Content */}
-          <div className="px-4 py-4 text-gray-600">{children}</div>
+          <div className="space-y-2 px-4 py-4 text-sm text-gray-600">{children}</div>
 
           {/* Actions */}
           <div className="flex justify-end gap-2 border-t border-gray-200 px-4 py-3">

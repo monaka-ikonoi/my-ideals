@@ -33,9 +33,8 @@ export function ProfileDeleteDialog({ onClose, profileId, profileName }: Profile
           values={{ name: profileName }}
           components={{ strong: <strong /> }}
         />
-        <br />
-        {t('dialog.profile-delete.content-warn')}
       </p>
+      <p>{t('dialog.profile-delete.content-warn')}</p>
     </ConfirmDialog>
   );
 }
