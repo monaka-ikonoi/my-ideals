@@ -51,7 +51,14 @@
     "search-placeholder": "搜索合集...",
     "no-result": "未找到合集",
     "hide-completed": "隐藏已完成的合集",
-    "generate-image": "生成图片"
+    "generate-image": "生成图片",
+    "filter": {
+      "status": {
+        "all": "全部",
+        "owned": "已持有",
+        "unowned": "未持有"
+      }
+    }
   },
   "dialog": {
     "disclaimer": {

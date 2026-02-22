@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { CollectionStatusFilter } from './CollectionStatusFilter';
+import type { FilterItemStatus } from '@/hooks/useFilteredCollection';
 
 type CollectionFilterProps = {
   searchQuery: string;
@@ -8,6 +10,8 @@ type CollectionFilterProps = {
   hideCompleted: boolean;
   setHideCompleted: (enabled: boolean) => void;
   hiddenCount: number;
+  filterStatus: FilterItemStatus;
+  setFilterStatus: (status: FilterItemStatus) => void;
 };
 
 export function CollectionFilter({
@@ -15,6 +19,8 @@ export function CollectionFilter({
   setSearchQuery,
   hideCompleted,
   setHideCompleted,
+  filterStatus,
+  setFilterStatus,
   hiddenCount,
 }: CollectionFilterProps) {
   const { t } = useTranslation();
@@ -72,20 +78,24 @@ export function CollectionFilter({
           )}
         </div>
 
-        <label className="flex cursor-pointer items-center gap-2 whitespace-nowrap select-none">
-          <input
-            type="checkbox"
-            checked={hideCompleted}
-            onChange={e => setHideCompleted(e.target.checked)}
-            className="h-4 w-4 rounded border-gray-300 accent-blue-600 focus:ring-blue-500"
-          />
-          <span className="text-sm text-gray-700">
-            {t('collection.hide-completed')}
-            <span
-              className={`tabular-nums ${hiddenCount > 0 ? 'visible' : 'invisible'}`}
-            >{` (${hiddenCount})`}</span>
-          </span>
-        </label>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <label className="flex cursor-pointer items-center gap-2 whitespace-nowrap select-none">
+            <input
+              type="checkbox"
+              checked={hideCompleted}
+              onChange={e => setHideCompleted(e.target.checked)}
+              className="h-4 w-4 rounded border-gray-300 accent-blue-600 focus:ring-blue-500"
+            />
+            <span className="text-sm text-gray-700">
+              {t('collection.hide-completed')}
+              <span
+                className={`tabular-nums ${hiddenCount > 0 ? 'visible' : 'invisible'}`}
+              >{` (${hiddenCount})`}</span>
+            </span>
+          </label>
+
+          <CollectionStatusFilter value={filterStatus} setValue={setFilterStatus} />
+        </div>
       </div>
     </div>
   );

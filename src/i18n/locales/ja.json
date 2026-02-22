@@ -51,7 +51,14 @@
     "search-placeholder": "セットを検索...",
     "no-result": "セットが見つかりません",
     "hide-completed": "コンプリートセットを非表示",
-    "generate-image": "画像を作成"
+    "generate-image": "画像を作成",
+    "filter": {
+      "status": {
+        "all": "すべて",
+        "owned": "所持",
+        "unowned": "未所持"
+      }
+    }
   },
   "dialog": {
     "disclaimer": {

@@ -52,5 +52,5 @@
     "typescript-eslint": "^8.56.0",
     "vite": "^7.3.1"
   },
-  "packageManager": "pnpm@10.30.0+sha256.fde3cebbd4ed0d6d140b1983743bf575cdd4b15e4d5e5b257425152dce5b1b6a"
+  "packageManager": "pnpm@10.30.1+sha256.bc8bb877378eab6a8a83114eeb6a31ef88528db4ab5570299baba8fa54da2375"
 }

@@ -51,7 +51,14 @@
     "search-placeholder": "Search collections...",
     "no-result": "No collections found",
     "hide-completed": "Hide completed collections",
-    "generate-image": "Generate Image"
+    "generate-image": "Generate Image",
+    "filter": {
+      "status": {
+        "all": "All",
+        "owned": "Owned",
+        "unowned": "Missing"
+      }
+    }
   },
   "dialog": {
     "disclaimer": {
