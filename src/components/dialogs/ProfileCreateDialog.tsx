@@ -119,8 +119,8 @@ export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
                     onChange={e => setProfileName(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleCreate()}
                     className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2
-                      text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500
-                      focus:outline-none"
+                      text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                      focus:outline-none sm:text-sm"
                   />
                 </div>
                 <label

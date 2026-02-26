@@ -43,7 +43,7 @@ export function ProfileRenameDialog({ onClose, profileId, profileName }: Profile
           }
         }}
         className="w-full rounded-lg border border-gray-300 px-3 py-2 text-base
-          focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+          focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none sm:text-sm"
         autoFocus
       />
     </ConfirmDialog>

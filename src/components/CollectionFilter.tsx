@@ -63,9 +63,9 @@ export function CollectionFilter({
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             placeholder={t('collection.search-placeholder')}
-            className="w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pr-10 pl-10 text-sm
-              focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500
-              focus:outline-none"
+            className="w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pr-10 pl-10
+              text-base focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500
+              focus:outline-none sm:text-sm"
           />
           {searchQuery && (
             <button
