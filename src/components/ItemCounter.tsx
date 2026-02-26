@@ -57,12 +57,12 @@ export function ItemCounter({ value, setValue, immutable = false }: ItemCounterP
             onClick={() => setValue(value - 1)}
             disabled={value === 0}
           >
-            <MinusIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+            <MinusIcon className="h-3 w-4 sm:h-4" />
           </button>
 
           <div
-            className="mx-1 min-w-0 flex-1 items-center justify-center text-sm font-semibold
-              text-gray-700 tabular-nums sm:mx-1.5 sm:h-6 sm:text-base"
+            className="mx-1 max-w-10 flex-1 items-center justify-center text-sm font-semibold
+              text-gray-700 tabular-nums sm:mx-1.5 sm:h-6 sm:max-w-12 sm:text-base"
           >
             {editorActive ? (
               <input
@@ -94,7 +94,7 @@ export function ItemCounter({ value, setValue, immutable = false }: ItemCounterP
               transition hover:bg-gray-200 active:bg-gray-300 sm:h-6 sm:w-6"
             onClick={() => setValue(value + 1)}
           >
-            <PlusIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+            <PlusIcon className="h-3 w-4 sm:h-4" />
           </button>
         </>
       )}
