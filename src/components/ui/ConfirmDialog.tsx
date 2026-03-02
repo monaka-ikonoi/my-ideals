@@ -7,6 +7,7 @@ const ButtonStyles = {
   primary: 'bg-blue-600 text-white hover:bg-blue-700',
   secondary: 'bg-gray-100 text-gray-700 hover:bg-gray-200',
   danger: 'bg-red-600 text-white hover:bg-red-700',
+  warning: 'bg-amber-600 text-white hover:bg-amber-700',
 };
 
 const DisabledStyle = 'opacity-50 cursor-not-allowed';
@@ -18,7 +19,7 @@ type ConfirmDialogProps = {
   options: {
     label: string;
     value: string;
-    variant?: 'primary' | 'secondary' | 'danger';
+    variant?: 'primary' | 'secondary' | 'danger' | 'warning';
     disabled?: boolean;
   }[];
   onSelect: (value: string) => void;

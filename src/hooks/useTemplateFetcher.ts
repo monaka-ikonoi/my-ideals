@@ -10,7 +10,7 @@ export type TemplateFetchState =
   | { status: 'invalid-url' }
   | { status: 'loading' }
   | { status: 'success'; template: Template }
-  | { status: 'id-mismatch'; actualId: string }
+  | { status: 'id-mismatch'; template: Template; actualId: string }
   | { status: 'error'; message: string };
 
 type TemplateFetcherOptions = {
@@ -65,17 +65,21 @@ export function useTemplateFetcher({
       }
 
       try {
-        const result = await fetchTemplate(url, expectedId, abortController.signal);
+        const result = await fetchTemplate(url, undefined, abortController.signal);
         if (!result.success) {
-          if (result.error.type === 'id-mismatch') {
-            setState({ status: 'id-mismatch', actualId: result.error.actualId });
-          } else {
-            setState({ status: 'error', message: formatTemplateError(result.error) });
-          }
+          setState({ status: 'error', message: formatTemplateError(result.error) });
           return;
         }
 
-        setState({ status: 'success', template: result.template });
+        if (expectedId && result.template.id !== expectedId) {
+          setState({
+            status: 'id-mismatch',
+            template: result.template,
+            actualId: result.template.id,
+          });
+        } else {
+          setState({ status: 'success', template: result.template });
+        }
         onSuccessRef.current?.(result.template);
       } catch (e) {
         // Ignore AbortError

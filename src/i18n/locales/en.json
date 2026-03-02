@@ -110,7 +110,8 @@
       "confirm": "Got it"
     },
     "profile-edit-template-url": {
-      "title": "Edit Template URL"
+      "title": "Edit Template URL",
+      "allow-id-mismatch": "Allow template ID mismatch"
     },
     "collection-image-preview": {
       "title": "Image Ready",

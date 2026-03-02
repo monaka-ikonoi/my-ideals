@@ -110,7 +110,8 @@
       "confirm": "OK"
     },
     "profile-edit-template-url": {
-      "title": "テンプレートURLを編集"
+      "title": "テンプレートURLを編集",
+      "allow-id-mismatch": "テンプレートIDの不一致を許可する"
     },
     "collection-image-preview": {
       "image-alt": "出力画像プレビュー：{{name}}",

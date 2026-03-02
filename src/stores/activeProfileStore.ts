@@ -36,7 +36,7 @@ type activeProfileStore = {
   setCount: (collectionId: string, itemId: string, value: number) => void;
   toggleMember: (member: string) => void;
   updateName: (name: string) => void;
-  updateTemplateUrl: (url: string) => void;
+  updateTemplateInfo: (url: string, templateId?: string) => void;
   toogleFlag: (flag: ProfileFlag, enabled: boolean) => void;
 };
 
@@ -214,11 +214,18 @@ export const useActiveProfileStore = create<activeProfileStore>()(
         debouncedSave();
       },
 
-      updateTemplateUrl: (url: string) => {
+      updateTemplateInfo: (url: string, templateId?: string) => {
         set(state => {
           if (state.profile) {
             state.profile.template.link = url;
             debugLog.store.log(`Profile ${state.profile.id} template link updated to ${url}`);
+            if (templateId && state.profile.template.id !== templateId) {
+              state.profile.template.id = templateId;
+              state.profile.template.revision = -1; // Force sync
+              debugLog.store.log(
+                `Profile ${state.profile.id} template id updated to ${templateId} forcefully`
+              );
+            }
           }
         });
         debouncedSave();

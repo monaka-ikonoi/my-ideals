@@ -110,7 +110,8 @@
       "confirm": "知道了"
     },
     "profile-edit-template-url": {
-      "title": "编辑模板链接"
+      "title": "编辑模板链接",
+      "allow-id-mismatch": "允许不一致的模板 ID"
     },
     "collection-image-preview": {
       "image-alt": "导出图片预览：{{name}}",

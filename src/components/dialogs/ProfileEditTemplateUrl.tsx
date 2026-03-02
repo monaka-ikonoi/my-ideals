@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useTemplateFetcher } from '@/hooks/useTemplateFetcher';
@@ -23,11 +24,18 @@ export function ProfileEditTemplateUrlDialog({
     expectedId: templateId,
   });
 
+  const [allowIdMismatch, setAllowIdMismatch] = useState(false);
+
   const handleSave = () => {
-    if (state.status === 'success' && url.trim() !== currentUrl) {
-      useActiveProfileStore.getState().updateTemplateUrl(url);
-      // Trigger reload
-      useActiveProfileStore.getState().load(profileId);
+    const trimmedUrl = url.trim();
+    if (trimmedUrl !== currentUrl) {
+      if (state.status === 'success') {
+        useActiveProfileStore.getState().updateTemplateInfo(trimmedUrl);
+        useActiveProfileStore.getState().load(profileId); // Trigger reload
+      } else if (allowIdMismatch && state.status === 'id-mismatch') {
+        useActiveProfileStore.getState().updateTemplateInfo(trimmedUrl, state.actualId);
+        useActiveProfileStore.getState().load(profileId); // Trigger reload
+      }
     }
     onClose();
   };
@@ -40,8 +48,9 @@ export function ProfileEditTemplateUrlDialog({
         {
           label: t('common.save'),
           value: 'save',
-          variant: 'primary',
-          disabled: state.status !== 'success',
+          variant: state.status === 'id-mismatch' ? 'danger' : 'primary',
+          disabled:
+            state.status !== 'success' && !(allowIdMismatch && state.status === 'id-mismatch'),
         },
       ]}
       onSelect={handleSave}
@@ -53,6 +62,7 @@ export function ProfileEditTemplateUrlDialog({
           onUrlChange={setUrl}
           state={state}
           templateId={templateId}
+          allowIdMismatch={allowIdMismatch}
           autoFocus
         />
 
@@ -61,6 +71,20 @@ export function ProfileEditTemplateUrlDialog({
           <div className="rounded-lg bg-red-50 p-3">
             <pre className="text-sm whitespace-pre-wrap text-red-600">{state.message}</pre>
           </div>
+        )}
+
+        {state.status === 'id-mismatch' && (
+          <label
+            className="flex cursor-pointer items-center gap-2 text-sm text-gray-500 select-none"
+          >
+            <input
+              type="checkbox"
+              checked={allowIdMismatch}
+              onChange={e => setAllowIdMismatch(e.target.checked)}
+              className="h-4 w-4 rounded border-gray-300 accent-red-600 focus:ring-red-500"
+            />
+            {t('dialog.profile-edit-template-url.allow-id-mismatch')}
+          </label>
         )}
       </div>
     </ConfirmDialog>
