@@ -86,6 +86,17 @@ export const ImageCheckCard = memo(function ImageCheckCard({
           />
         )}
 
+        {/* Count Badge */}
+        {mode === 'export' && enableCount && typeof status === 'number' && status > 0 && (
+          <div
+            className="absolute top-1.5 right-1.5 flex h-10 min-w-10 items-center justify-center
+              rounded-lg bg-white/60 px-2 text-xl font-bold text-gray-800 tabular-nums shadow-sm
+              backdrop-blur-sm"
+          >
+            {status}
+          </div>
+        )}
+
         {/* Bottom bar */}
         <div
           className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-black/50
@@ -105,12 +116,8 @@ export const ImageCheckCard = memo(function ImageCheckCard({
       </div>
 
       {/* Counter */}
-      {enableCount && typeof status === 'number' && (
-        <ItemCounter
-          value={status}
-          setValue={val => setCount(collectionId, item.id, val)}
-          immutable={mode === 'export'}
-        />
+      {mode !== 'export' && enableCount && typeof status === 'number' && (
+        <ItemCounter value={status} setValue={val => setCount(collectionId, item.id, val)} />
       )}
     </div>
   );
