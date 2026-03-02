@@ -138,8 +138,8 @@ export function CollectionImageButton({ collection }: CollectionImageButtonProps
             <div ref={setCaptureNode} className="bg-white text-gray-900">
               {/* Header */}
               <div className="px-8 pt-6">
-                <h1 className="text-3xl leading-tight font-bold">{templateName}</h1>
-                <p className="mt-1 text-xl font-medium text-gray-700">{collection.name}</p>
+                <h1 className="text-3xl leading-tight font-bold">{collection.name}</h1>
+                <p className="mt-1 text-xl font-medium text-gray-700">{templateName}</p>
               </div>
 
               {/* Grid */}
