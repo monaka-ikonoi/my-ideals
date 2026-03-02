@@ -127,7 +127,10 @@ export function syncProfileWithTemplate(
     for (const tc of template.collections) {
       if (!collections[tc.id]) {
         collections[tc.id] = {};
+      } else {
+        collections[tc.id] = { ...collections[tc.id] };
       }
+
       for (const item of tc.items) {
         if (!(item.id in collections[tc.id])) {
           collections[tc.id][item.id] = enableCount ? 0 : false;
