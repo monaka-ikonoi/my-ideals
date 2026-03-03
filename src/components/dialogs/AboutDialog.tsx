@@ -1,7 +1,7 @@
-// components/AboutDialog.tsx
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { LONG_VERSION, APP_NAME, BUILD_TIME_RAW } from '@/utils/appInfo';
+import LICENSE_TEXT from '#/LICENSE?raw';
 
 const GITHUB_REPO = 'monaka-ikonoi/my-ideals';
 const GITHUB_URL = `https://github.com/${GITHUB_REPO}`;
@@ -38,7 +38,7 @@ export function AboutDialog({ onClose }: { onClose: () => void }) {
       showCancel={false}
       options={[{ label: t('common.close'), value: 'close', variant: 'secondary' }]}
     >
-      <>
+      <div className="space-y-4">
         <div className="space-y-1">
           <div className="text-lg font-bold text-gray-900">{APP_NAME}</div>
           <div className="font-mono text-sm text-gray-600">{LONG_VERSION}</div>
@@ -47,7 +47,14 @@ export function AboutDialog({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-1 pt-6">
+        <pre
+          className="max-h-48 overflow-y-auto rounded-md border border-gray-200 bg-gray-50 p-3
+            text-xs leading-relaxed whitespace-pre-wrap text-gray-500"
+        >
+          {LICENSE_TEXT}
+        </pre>
+
+        <div className="flex flex-col gap-1">
           <a
             href={GITHUB_URL}
             target="_blank"
@@ -66,7 +73,7 @@ export function AboutDialog({ onClose }: { onClose: () => void }) {
             <XIcon className="h-4 w-4" />@{TWITTER_USERNAME}
           </a>
         </div>
-      </>
+      </div>
     </ConfirmDialog>
   );
 }
