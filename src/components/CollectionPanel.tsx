@@ -10,14 +10,18 @@ import { CollectionImageButton } from './CollectionImageButton';
 
 type CollectionPanelProps = {
   collection: TemplateCollection;
+  statsCollection: TemplateCollection;
 };
 
-export const CollectionPanel = memo(function CollectionPanel({ collection }: CollectionPanelProps) {
+export const CollectionPanel = memo(function CollectionPanel({
+  collection,
+  statsCollection,
+}: CollectionPanelProps) {
   debugLog.render.log(`CollectionPanel render: ${collection.id}`);
 
   const { t } = useTranslation();
 
-  const stats = useCollectionStats(collection);
+  const stats = useCollectionStats(statsCollection);
 
   const enableCount = useActiveProfileStore(state =>
     profileHasFlag(state.profile!, ProfileFlags.ENABLE_COUNT)
