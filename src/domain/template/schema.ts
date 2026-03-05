@@ -28,6 +28,17 @@ const TemplateCollection = z.object({
   items: z.array(TemplateCollectionItem),
 });
 
+const TemplateMigrationEntry = z.object({
+  type: z.literal('replace-in-id'),
+  from: z.string(),
+  to: z.string(),
+});
+
+const TemplateMigrationRule = z.object({
+  revision: z.int(),
+  operations: z.array(TemplateMigrationEntry),
+});
+
 export const TemplateSchema = z.object({
   magic: z.literal('my-ideals-template'),
   version: z.literal(1),
@@ -37,6 +48,7 @@ export const TemplateSchema = z.object({
   description: z.string().optional(),
   author: z.string().optional(),
   link: z.url().optional(),
+  migrations: z.array(TemplateMigrationRule).optional(),
   imageResourceType: z.enum(['inline', 'baseUrl']),
   imageBaseUrl: TemplateResourceBaseUrlSchema.optional(),
   layout: TemplateLayoutSchema.optional(),

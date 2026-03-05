@@ -13,6 +13,7 @@ import {
 } from '@/utils/syncProfile';
 import { fetchTemplate, formatTemplateError } from '@/utils/fetchTemplate';
 import { ProfileFlagOperations } from '@/utils/profileFlagOperation';
+import { applyTemplateMigrations } from '@/utils/templateMigration';
 
 export type LoadError =
   | { type: 'template'; message: string }
@@ -100,6 +101,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
         let pendingSync = false;
         if (profile.template.revision !== template.revision) {
           if (profile.template.revision !== 0) {
+            applyTemplateMigrations(profile, template);
             changes = diffProfileWithTemplate(profile, template);
             pendingSync = changes.removed.length > 0;
           }
