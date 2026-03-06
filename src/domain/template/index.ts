@@ -1,2 +1,2 @@
-export type { Template, TemplateMember, TemplateCollection, TemplateCollectionItem } from './types';
+export type * from './types';
 export { TemplateSchema } from './schema';

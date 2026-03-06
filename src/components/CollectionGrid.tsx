@@ -7,19 +7,22 @@ import { useActiveProfileStore } from '@/stores/activeProfileStore';
 type CollectionGridProps = {
   collection: TemplateCollection;
   mode?: 'normal' | 'export';
+  columns?: [number, number, number];
 };
 
 export const CollectionGrid = memo(function CollectionGrid({
   collection,
   mode = 'normal',
+  columns,
 }: CollectionGridProps) {
   debugLog.render.log(`CollectionGrid render: ${collection.id}`);
 
   const layout = collection.layout ?? useActiveProfileStore.getState().template?.layout;
 
-  const colsXs = layout?.columns?.[0] ?? 3;
-  const colsMd = layout?.columns?.[1] ?? colsXs * 2;
-  const cols2xl = layout?.columns?.[2] ?? colsXs * 3;
+  if (!columns) {
+    const base = layout?.columns?.[0] ?? 3;
+    columns = [base, layout?.columns?.[1] ?? base * 2, layout?.columns?.[2] ?? base * 3];
+  }
 
   return (
     <div
@@ -36,12 +39,12 @@ export const CollectionGrid = memo(function CollectionGrid({
       style={
         mode === 'export'
           ? ({
-              '--cols': cols2xl,
+              '--cols': columns[2],
             } as React.CSSProperties)
           : ({
-              '--cols-xs': colsXs,
-              '--cols-md': colsMd,
-              '--cols-2xl': cols2xl,
+              '--cols-xs': columns[0],
+              '--cols-md': columns[1],
+              '--cols-2xl': columns[2],
             } as React.CSSProperties)
       }
     >
