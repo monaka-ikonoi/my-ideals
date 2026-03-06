@@ -38,21 +38,20 @@ export function ItemCounter({ value, setValue }: ItemCounterProps) {
   );
 
   return (
-    <div className="flex items-center justify-between bg-gray-100 p-1">
+    <div className="flex h-8 items-center justify-between overflow-hidden bg-gray-100">
       <button
         type="button"
-        className="flex h-4 w-4 shrink-0 items-center justify-center rounded text-gray-500
-          transition hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed
-          disabled:opacity-30 sm:h-6 sm:w-6"
+        className="flex h-full w-8 shrink-0 items-center justify-center text-gray-500 transition
+          hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-30"
         onClick={() => setValue(value - 1)}
         disabled={value === 0}
       >
-        <MinusIcon className="h-3 w-4 sm:h-4" />
+        <MinusIcon className="h-4 w-4" />
       </button>
 
       <div
-        className="mx-1 max-w-10 flex-1 items-center justify-center text-sm font-semibold
-          text-gray-700 tabular-nums sm:mx-1.5 sm:h-6 sm:max-w-12 sm:text-base"
+        className="h-full min-w-[2rem] flex-1 items-center justify-center text-base font-semibold
+          text-gray-700 tabular-nums"
       >
         {editorActive ? (
           <input
@@ -62,7 +61,7 @@ export function ItemCounter({ value, setValue }: ItemCounterProps) {
             defaultValue={value}
             onBlur={handleConfirmEdit}
             onKeyDown={handleKeyDown}
-            className="font-inherit h-full w-full [appearance:textfield] rounded bg-gray-200 px-1
+            className="font-inherit h-full w-full [appearance:textfield] bg-gray-200 px-1
               text-center text-inherit tabular-nums outline-none focus:bg-gray-300
               [&::-webkit-inner-spin-button]:appearance-none
               [&::-webkit-outer-spin-button]:appearance-none"
@@ -71,7 +70,7 @@ export function ItemCounter({ value, setValue }: ItemCounterProps) {
           <button
             type="button"
             onClick={() => handleStartEdit()}
-            className="h-full w-full rounded transition hover:bg-gray-200"
+            className="h-full w-full transition hover:bg-gray-200"
           >
             {value}
           </button>
@@ -80,11 +79,11 @@ export function ItemCounter({ value, setValue }: ItemCounterProps) {
 
       <button
         type="button"
-        className="flex h-4 w-4 shrink-0 items-center justify-center rounded text-gray-500
-          transition hover:bg-gray-200 active:bg-gray-300 sm:h-6 sm:w-6"
+        className="flex h-full w-8 shrink-0 items-center justify-center text-gray-500 transition
+          hover:bg-gray-200 active:bg-gray-300"
         onClick={() => setValue(value + 1)}
       >
-        <PlusIcon className="h-3 w-4 sm:h-4" />
+        <PlusIcon className="h-4 w-4" />
       </button>
     </div>
   );
