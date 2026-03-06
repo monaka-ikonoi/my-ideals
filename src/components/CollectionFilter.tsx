@@ -3,6 +3,7 @@ import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { CollectionStatusFilter } from './CollectionStatusFilter';
 import type { FilterItemStatus } from '@/hooks/useFilteredCollection';
+import { MemberSelector } from './MemberSelector';
 
 type CollectionFilterProps = {
   searchQuery: string;
@@ -34,19 +35,11 @@ export function CollectionFilter({
       {members.length > 1 && (
         <>
           <div className="flex flex-wrap gap-2">
-            {members.map(member => (
-              <button
-                key={member.id}
-                onClick={() => toggleMember(member.id)}
-                className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-                  selectedMembers.includes(member.id)
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {member.name}
-              </button>
-            ))}
+            <MemberSelector
+              members={members}
+              isSelected={m => selectedMembers.includes(m)}
+              onSelect={m => toggleMember(m)}
+            />
           </div>
 
           <div className="border-t border-gray-200" />
