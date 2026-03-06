@@ -7,6 +7,8 @@ import { useCollectionStats } from '@/hooks/useStats';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile/flags';
 import { CollectionGrid } from './CollectionGrid';
 import { CollectionImageButton } from './CollectionImageButton';
+import { PencilSquareIcon } from '@heroicons/react/24/outline';
+import { useDialogStore } from '@/stores/dialogStore';
 
 type CollectionPanelProps = {
   collection: TemplateCollection;
@@ -57,7 +59,17 @@ export const CollectionPanel = memo(function CollectionPanel({
             </div>
           </div>
 
-          <div className="shrink-0">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            {enableCount && (
+              <button
+                type="button"
+                onClick={() => useDialogStore.getState().openEditCollection(collection.id)}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-gray-400
+                  transition-colors hover:bg-gray-100 hover:text-gray-600 active:bg-gray-200"
+              >
+                <PencilSquareIcon className="h-4 w-4" />
+              </button>
+            )}
             <CollectionImageButton collection={collection} />
           </div>
         </div>

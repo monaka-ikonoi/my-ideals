@@ -124,6 +124,9 @@
       "to-count": "Switch to multi-count mode. Checked items will be recorded as quantity 1.",
       "to-standard": "Switch to standard mode. Items with quantity 1 or more will be shown as checked.",
       "to-standard-warn": "Items with quantity 2 or more will all be reduced to 1. Count data will be lost. This cannot be undone."
+    },
+    "collection-edit": {
+      "title": "Edit \"{{name}}\""
     }
   },
   "input": {

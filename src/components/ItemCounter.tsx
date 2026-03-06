@@ -4,9 +4,10 @@ import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 type ItemCounterProps = {
   value: number;
   setValue: (value: number) => void;
+  size?: 'normal' | 'large';
 };
 
-export function ItemCounter({ value, setValue }: ItemCounterProps) {
+export function ItemCounter({ value, setValue, size = 'normal' }: ItemCounterProps) {
   const [editorActive, setEditorActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -18,8 +19,9 @@ export function ItemCounter({ value, setValue }: ItemCounterProps) {
   }, [editorActive, value]);
 
   const handleStartEdit = useCallback(() => {
+    if (size === 'large') return;
     setEditorActive(true);
-  }, []);
+  }, [size]);
 
   const handleConfirmEdit = useCallback(() => {
     if (!inputRef.current) return;
@@ -38,20 +40,24 @@ export function ItemCounter({ value, setValue }: ItemCounterProps) {
   );
 
   return (
-    <div className="flex h-8 items-center justify-between overflow-hidden bg-gray-100">
+    <div
+      className={`flex items-center justify-between overflow-hidden bg-gray-100
+        ${size === 'large' ? 'h-10' : 'h-8'}`}
+    >
       <button
         type="button"
-        className="flex h-full w-8 shrink-0 items-center justify-center text-gray-500 transition
-          hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-30"
+        className={`flex h-full shrink-0 items-center justify-center text-gray-500 transition
+          hover:bg-gray-200 active:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-30
+          ${size === 'large' ? 'w-10' : 'w-8'}`}
         onClick={() => setValue(value - 1)}
         disabled={value === 0}
       >
-        <MinusIcon className="h-4 w-4" />
+        <MinusIcon className={size === 'large' ? 'h-5 w-5' : 'h-4 w-4'} />
       </button>
 
       <div
-        className="h-full min-w-[2rem] flex-1 items-center justify-center text-base font-semibold
-          text-gray-700 tabular-nums"
+        className={`h-full min-w-[2rem] flex-1 items-center justify-center
+          ${size === 'large' ? 'text-lg' : 'text-base'} font-semibold text-gray-700 tabular-nums`}
       >
         {editorActive ? (
           <input
@@ -79,11 +85,11 @@ export function ItemCounter({ value, setValue }: ItemCounterProps) {
 
       <button
         type="button"
-        className="flex h-full w-8 shrink-0 items-center justify-center text-gray-500 transition
-          hover:bg-gray-200 active:bg-gray-300"
+        className={`flex h-full shrink-0 items-center justify-center text-gray-500 transition
+          hover:bg-gray-200 active:bg-gray-300 ${size === 'large' ? 'w-10' : 'w-8'}`}
         onClick={() => setValue(value + 1)}
       >
-        <PlusIcon className="h-4 w-4" />
+        <PlusIcon className={size === 'large' ? 'h-5 w-5' : 'h-4 w-4'} />
       </button>
     </div>
   );

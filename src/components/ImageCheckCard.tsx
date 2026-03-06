@@ -10,7 +10,7 @@ import { ItemCounter } from './ItemCounter';
 type ImageCheckCardProps = {
   collectionId: string;
   item: TemplateCollectionItem;
-  mode?: 'normal' | 'export';
+  mode?: 'normal' | 'export' | 'edit';
   aspectRatio?: [number, number];
 };
 
@@ -117,7 +117,11 @@ export const ImageCheckCard = memo(function ImageCheckCard({
 
       {/* Counter */}
       {mode !== 'export' && enableCount && typeof status === 'number' && (
-        <ItemCounter value={status} setValue={val => setCount(collectionId, item.id, val)} />
+        <ItemCounter
+          value={status}
+          setValue={val => setCount(collectionId, item.id, val)}
+          size={mode === 'edit' ? 'large' : 'normal'}
+        />
       )}
     </div>
   );

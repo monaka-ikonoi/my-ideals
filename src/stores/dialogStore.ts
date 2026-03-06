@@ -14,7 +14,8 @@ type DialogState =
     }
   | { type: 'switch-profile-mode'; profileId: string; enableCount: boolean }
   | { type: 'collection-image-preview'; image: Blob; fileName: string }
-  | { type: 'about' };
+  | { type: 'about' }
+  | { type: 'edit-collection'; collectionId: string };
 
 type DialogStore = {
   activeDialog: DialogState;
@@ -28,6 +29,8 @@ type DialogStore = {
   openSwitchProfileMode: (profileId: string, enableCount: boolean) => void;
   openCollectionImagePreview: (image: Blob, fileName: string) => void;
   openAbout: () => void;
+
+  openEditCollection: (collectionId: string) => void;
 };
 
 export const useDialogStore = create<DialogStore>(set => ({
@@ -54,4 +57,7 @@ export const useDialogStore = create<DialogStore>(set => ({
   openCollectionImagePreview: (image, fileName) =>
     set({ activeDialog: { type: 'collection-image-preview', image, fileName } }),
   openAbout: () => set({ activeDialog: { type: 'about' } }),
+
+  openEditCollection: collectionId =>
+    set({ activeDialog: { type: 'edit-collection', collectionId } }),
 }));

@@ -6,7 +6,7 @@ import { useActiveProfileStore } from '@/stores/activeProfileStore';
 
 type CollectionGridProps = {
   collection: TemplateCollection;
-  mode?: 'normal' | 'export';
+  mode?: 'normal' | 'export' | 'edit';
   columns?: [number, number, number];
 };
 

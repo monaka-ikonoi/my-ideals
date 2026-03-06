@@ -9,6 +9,7 @@ import { ProfileEditTemplateUrlDialog } from './dialogs/ProfileEditTemplateUrl';
 import { ProfileSwitchModeDialog } from './dialogs/ProfileSwitchModeDialog';
 import { CollectionImagePreviewDialog } from './dialogs/CollectionImagePreviewDialog';
 import { AboutDialog } from './dialogs/AboutDialog';
+import { CollectionEditModal } from './dialogs/CollectionEditModal';
 
 export function GlobalDialogs() {
   const activeDialog = useDialogStore(state => state.activeDialog);
@@ -58,6 +59,10 @@ export function GlobalDialogs() {
         />
       )}
       {activeDialog.type === 'about' && <AboutDialog onClose={closeDialog} />}
+
+      {activeDialog.type === 'edit-collection' && (
+        <CollectionEditModal collectionId={activeDialog.collectionId} onClose={closeDialog} />
+      )}
     </>
   );
 }
