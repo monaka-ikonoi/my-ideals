@@ -1,10 +1,11 @@
 import { type Template } from '@/domain/template';
 
 export const formatImageUrl = (
+  baseUrlInfo: Template['imageBaseUrl'],
+  templateRevision: Template['revision'],
   collectionId: string,
-  templateId: string,
-  template: Template
+  itemId: string
 ): string =>
-  template.imageBaseUrl
-    ? `${template.imageBaseUrl.root}/${collectionId}/${templateId}.${template.imageBaseUrl.format}?rev=${template.revision}`
+  baseUrlInfo
+    ? `${baseUrlInfo.root}/${collectionId}/${itemId}.${baseUrlInfo.format}?rev=${templateRevision}`
     : '';

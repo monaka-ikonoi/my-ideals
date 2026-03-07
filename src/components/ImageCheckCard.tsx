@@ -1,4 +1,5 @@
 import { useState, memo } from 'react';
+import { useShallow } from 'zustand/shallow';
 import { type TemplateCollectionItem } from '@/domain/template';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { debugLog } from '@/utils/debug';
@@ -26,8 +27,14 @@ export const ImageCheckCard = memo(function ImageCheckCard({
     profileHasFlag(state.profile!, ProfileFlags.ENABLE_COUNT)
   );
 
-  const template = useActiveProfileStore(state => state.template!);
-  const fallbackSrc = template.imageBaseUrl?.fallback;
+  const { imageBaseUrl, revision } = useActiveProfileStore(
+    useShallow(state => ({
+      imageBaseUrl: state.template?.imageBaseUrl,
+      revision: state.template?.revision,
+    }))
+  );
+  const fallbackSrc = imageBaseUrl?.fallback;
+  const targetSrc = item.image ?? formatImageUrl(imageBaseUrl!, revision!, collectionId, item.id);
 
   const status = useActiveProfileStore(
     state => state.profile?.collections[collectionId]?.[item.id] ?? (enableCount ? 0 : false)
@@ -35,15 +42,15 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   const toggleStatus = useActiveProfileStore(state => state.toggleStatus);
   const setCount = useActiveProfileStore(state => state.setCount);
 
-  const [imgSrc, setImgSrc] = useState(
-    item.image ?? formatImageUrl(collectionId, item.id, template)
-  );
-  const [showAlt, setShowAlt] = useState(false);
-
   const formatAspectRatio = (a: [number, number] | undefined): string => {
     if (!a) return item.rotated ? '10/7' : '7/10';
     return item.rotated ? `${a[1]}/${a[0]}` : `${a[0]}/${a[1]}`;
   };
+
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const isTargetFailed = failedSrc === targetSrc;
+  const currentSrc = isTargetFailed && fallbackSrc ? fallbackSrc : targetSrc;
+  const showAlt = isTargetFailed && (!fallbackSrc || failedSrc === fallbackSrc);
 
   return (
     <div
@@ -73,14 +80,12 @@ export const ImageCheckCard = memo(function ImageCheckCard({
           </div>
         ) : (
           <img
-            src={imgSrc}
+            src={currentSrc}
             alt={item.name}
             crossOrigin="anonymous"
             loading={mode === 'export' ? 'eager' : 'lazy'}
             decoding={mode === 'export' ? 'sync' : 'async'}
-            onError={() =>
-              fallbackSrc && imgSrc !== fallbackSrc ? setImgSrc(fallbackSrc) : setShowAlt(true)
-            }
+            onError={() => setFailedSrc(currentSrc)}
             className={`absolute inset-0 h-full w-full object-cover transition
               ${!normalizeStatusBoolean(status) && 'opacity-50'}`}
           />
