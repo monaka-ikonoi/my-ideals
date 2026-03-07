@@ -17,11 +17,15 @@ export const CollectionGrid = memo(function CollectionGrid({
 }: CollectionGridProps) {
   debugLog.render.log(`CollectionGrid render: ${collection.id}`);
 
-  const layout = collection.layout ?? useActiveProfileStore.getState().template?.layout;
+  const collectionLayout = collection.layout;
+  const templateLayout = useActiveProfileStore.getState().template?.layout;
+
+  console.log('CollectionGrid layout:', templateLayout);
 
   if (!columns) {
-    const base = layout?.columns?.[0] ?? 3;
-    columns = [base, layout?.columns?.[1] ?? base * 2, layout?.columns?.[2] ?? base * 3];
+    const layoutColumns = collectionLayout?.columns ?? templateLayout?.columns;
+    const base = layoutColumns?.[0] ?? 3;
+    columns = [base, layoutColumns?.[1] ?? base * 2, layoutColumns?.[2] ?? base * 3];
   }
 
   return (
@@ -54,7 +58,7 @@ export const CollectionGrid = memo(function CollectionGrid({
           collectionId={collection.id}
           item={item}
           mode={mode}
-          aspectRatio={layout?.aspectRatio}
+          aspectRatio={collectionLayout?.aspectRatio ?? templateLayout?.aspectRatio}
         />
       ))}
     </div>
