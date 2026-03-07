@@ -55,7 +55,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
     >
       {/* Image */}
       <div
-        className="relative flex-1"
+        className="relative w-full shrink-0"
         style={
           {
             aspectRatio: formatAspectRatio(aspectRatio),
@@ -64,8 +64,8 @@ export const ImageCheckCard = memo(function ImageCheckCard({
       >
         {showAlt ? (
           <div
-            className={`flex h-full w-full items-center justify-center bg-gray-200 p-2 text-center
-              text-sm whitespace-pre-line text-gray-600 transition ${
+            className={`absolute inset-0 flex h-full w-full items-center justify-center bg-gray-200
+              p-2 text-center text-sm whitespace-pre-line text-gray-600 transition ${
                 !normalizeStatusBoolean(status) && 'opacity-50'
               }`}
           >
@@ -81,7 +81,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
             onError={() =>
               fallbackSrc && imgSrc !== fallbackSrc ? setImgSrc(fallbackSrc) : setShowAlt(true)
             }
-            className={`h-full w-full object-cover transition
+            className={`absolute inset-0 h-full w-full object-cover transition
               ${!normalizeStatusBoolean(status) && 'opacity-50'}`}
           />
         )}
