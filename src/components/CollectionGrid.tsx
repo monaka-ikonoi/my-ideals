@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { type TemplateCollection } from '@/domain/template';
 import { ImageCheckCard } from './ImageCheckCard';
 import { debugLog } from '@/utils/debug';
@@ -20,13 +20,12 @@ export const CollectionGrid = memo(function CollectionGrid({
   const collectionLayout = collection.layout;
   const templateLayout = useActiveProfileStore.getState().template?.layout;
 
-  console.log('CollectionGrid layout:', templateLayout);
-
-  if (!columns) {
+  const resolvedColumns = useMemo<[number, number, number]>(() => {
+    if (columns) return columns;
     const layoutColumns = collectionLayout?.columns ?? templateLayout?.columns;
     const base = layoutColumns?.[0] ?? 3;
-    columns = [base, layoutColumns?.[1] ?? base * 2, layoutColumns?.[2] ?? base * 3];
-  }
+    return [base, layoutColumns?.[1] ?? base * 2, layoutColumns?.[2] ?? base * 3];
+  }, [columns, collectionLayout?.columns, templateLayout?.columns]);
 
   return (
     <div
@@ -43,12 +42,12 @@ export const CollectionGrid = memo(function CollectionGrid({
       style={
         mode === 'export'
           ? ({
-              '--cols': columns[2],
+              '--cols': resolvedColumns[2],
             } as React.CSSProperties)
           : ({
-              '--cols-xs': columns[0],
-              '--cols-md': columns[1],
-              '--cols-2xl': columns[2],
+              '--cols-xs': resolvedColumns[0],
+              '--cols-md': resolvedColumns[1],
+              '--cols-2xl': resolvedColumns[2],
             } as React.CSSProperties)
       }
     >
