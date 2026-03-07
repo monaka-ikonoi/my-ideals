@@ -54,23 +54,26 @@ export function CollectionEditModal({ collectionId, onClose }: CollectionEditMod
       title={t('dialog.collection-edit.title', { name: collection.name })}
       onClose={onClose}
     >
-      <div className="space-y-4">
+      <div className="flex h-full flex-col overflow-hidden">
         {availableMembers.length > 1 && (
           <>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex shrink-0 flex-wrap gap-2 px-4 pt-3 pb-3 sm:px-6">
               <MemberSelector
                 members={availableMembers}
                 isSelected={id => id === selectedMember}
                 onSelect={id => setSelectedMember(id)}
               />
             </div>
-
             <div className="border-t border-gray-100" />
           </>
         )}
 
         {virtualCollection.items.length > 0 && (
-          <CollectionGrid collection={virtualCollection} columns={[3, 6, 6]} mode="edit" />
+          <div className="flex-1 overflow-y-auto">
+            <div className="p-4 sm:px-6">
+              <CollectionGrid collection={virtualCollection} columns={[3, 6, 6]} mode="edit" />
+            </div>
+          </div>
         )}
       </div>
     </FullScreenModal>

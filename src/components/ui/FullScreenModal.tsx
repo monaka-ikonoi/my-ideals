@@ -40,7 +40,7 @@ export function FullScreenModal({ isOpen, onClose, title, children }: FullScreen
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 sm:px-6">{children}</div>
+        <div className="flex-1 overflow-hidden">{children}</div>
       </div>
     </div>,
     document.body
