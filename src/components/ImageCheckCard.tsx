@@ -7,6 +7,7 @@ import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { normalizeStatusBoolean } from '@/utils/utils';
 import { formatImageUrl } from '@/utils/templateUtils';
 import { ItemCounter } from './ItemCounter';
+import { HeartIcon } from '@heroicons/react/24/solid';
 
 type ImageCheckCardProps = {
   collectionId: string;
@@ -73,7 +74,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
           <div
             className={`absolute inset-0 flex h-full w-full items-center justify-center bg-gray-200
               p-2 text-center text-sm whitespace-pre-line text-gray-600 transition ${
-                !normalizeStatusBoolean(status) && 'opacity-50'
+                !(typeof status === 'boolean' ? status : status !== 0) && 'opacity-50'
               }`}
           >
             {item.name.split(' ').join('\n')}
@@ -87,18 +88,29 @@ export const ImageCheckCard = memo(function ImageCheckCard({
             decoding={mode === 'export' ? 'sync' : 'async'}
             onError={() => setFailedSrc(currentSrc)}
             className={`absolute inset-0 h-full w-full object-cover transition
-              ${!normalizeStatusBoolean(status) && 'opacity-50'}`}
+              ${!(typeof status === 'boolean' ? status : status !== 0) && 'opacity-50'}`}
           />
         )}
 
         {/* Count Badge */}
-        {mode === 'export' && enableCount && typeof status === 'number' && status > 0 && (
+        {mode === 'export' && enableCount && typeof status === 'number' && status !== 0 && (
           <div
-            className="absolute top-1.5 right-1.5 flex h-12 min-w-12 items-center justify-center
-              rounded-lg bg-white/60 px-2 text-2xl font-bold text-gray-800 tabular-nums shadow-sm
-              backdrop-blur-sm"
+            className={`absolute top-1.5 right-1.5 flex h-10 min-w-10 transform-gpu items-center
+            justify-center gap-1 overflow-hidden rounded-lg border px-2 text-xl font-bold
+            tabular-nums backface-hidden ${
+              status > 0
+                ? 'text-gray-80 border-gray-200/60 bg-white/80'
+                : 'border-pink-200/60 bg-pink-100/80 text-pink-600'
+            }`}
           >
-            {status}
+            {status > 0 ? (
+              status
+            ) : (
+              <>
+                <HeartIcon className="h-5 w-5" />
+                {status !== -1 && <span className="leading-none">{Math.abs(status)}</span>}
+              </>
+            )}
           </div>
         )}
 

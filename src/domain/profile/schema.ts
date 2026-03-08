@@ -16,7 +16,7 @@ export const ProfileSchema = z
     template: ProfileTemplateInfoSchema,
     flags: z.array(z.enum(Object.values(ProfileFlags))).optional(),
     selectedMembers: z.array(z.string()).default([]),
-    collections: z.record(z.string(), z.record(z.string(), z.union([z.boolean(), z.int().min(0)]))),
+    collections: z.record(z.string(), z.record(z.string(), z.union([z.boolean(), z.int()]))),
   })
   .superRefine((data, ctx) => {
     const enableCount = data.flags?.includes(ProfileFlags.ENABLE_COUNT) ?? false;

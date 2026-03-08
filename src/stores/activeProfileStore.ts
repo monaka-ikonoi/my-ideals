@@ -178,7 +178,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
 
       setCount: (collectionId: string, itemId: string, value: number) => {
         set(state => {
-          if (!Number.isInteger(value) || value < 0) return;
+          if (!Number.isInteger(value)) return;
 
           if (!state.profile) return;
 
