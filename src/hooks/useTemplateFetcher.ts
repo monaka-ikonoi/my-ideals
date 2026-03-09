@@ -27,6 +27,7 @@ export function useTemplateFetcher({
   const [url, setUrl] = useState(initialUrl);
   const [state, setState] = useState<TemplateFetchState>({ status: 'idle' });
 
+  const fetchedUrlRef = useRef<string | null>(null);
   const onSuccessRef = useRef(onSuccess);
   useLayoutEffect(() => {
     onSuccessRef.current = onSuccess;
@@ -44,6 +45,11 @@ export function useTemplateFetcher({
     const urlResult = z.url().safeParse(trimmed);
     if (!urlResult.success) {
       setState({ status: 'invalid-url' });
+      return;
+    }
+
+    // URL update trigged by code, don't fetch again
+    if (trimmed === fetchedUrlRef.current) {
       return;
     }
 
@@ -70,7 +76,9 @@ export function useTemplateFetcher({
           setState({ status: 'error', message: formatTemplateError(result.error) });
           return;
         }
-        setUrl(result.url);
+
+        fetchedUrlRef.current = result.url;
+        if (url !== result.url) setUrl(result.url);
 
         if (expectedId && result.template.id !== expectedId) {
           setState({
