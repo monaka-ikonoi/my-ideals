@@ -70,6 +70,7 @@ export function useTemplateFetcher({
           setState({ status: 'error', message: formatTemplateError(result.error) });
           return;
         }
+        setUrl(result.url);
 
         if (expectedId && result.template.id !== expectedId) {
           setState({

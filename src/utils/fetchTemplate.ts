@@ -4,7 +4,7 @@ import { ZodError } from 'zod';
 import { debugLog } from './debug';
 
 export type FetchTemplateResult =
-  | { success: true; template: Template }
+  | { success: true; url: string; template: Template }
   | { success: false; error: TemplateError };
 
 export type TemplateError =
@@ -33,7 +33,7 @@ export async function fetchTemplate(
 ): Promise<FetchTemplateResult> {
   let response: Response;
   try {
-    response = await fetch(url, { signal });
+    response = await fetch(url, { signal, redirect: 'follow' });
   } catch (e) {
     // AbortError should be handled by caller
     if (e instanceof Error && e.name === 'AbortError') {
@@ -87,6 +87,10 @@ export async function fetchTemplate(
     };
   }
 
+  if (response.redirected) {
+    debugLog.network.log(`Template URL redirected from ${url} to ${response.url}`);
+  }
+
   debugLog.network.log(`Fetched template ${template.name}, ${template.id}`);
-  return { success: true, template };
+  return { success: true, url: response.url, template };
 }

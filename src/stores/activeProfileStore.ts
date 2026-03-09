@@ -95,6 +95,13 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           setError('template', formatTemplateError(templateResult.error), profile);
           return;
         }
+        if (profile.template.link !== templateResult.url) {
+          debugLog.store.log(
+            `Template link updated from ${profile.template.link} to ${templateResult.url}`
+          );
+          profile.template.link = templateResult.url;
+          ProfileStorage.setProfile(profile);
+        }
         const template = templateResult.template;
 
         let changes: ProfileTemplateDiff | null = null;
