@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { CommonBackdrop } from './CommonBackdrop';
 
 const ButtonStyles = {
   primary: 'bg-blue-600 text-white hover:bg-blue-700',
@@ -40,11 +40,8 @@ export function ConfirmDialog({
 
   if (!isOpen) return null;
 
-  return createPortal(
-    <>
-      {/* Backdrop */}
-      <div className="fixed inset-0 z-50 bg-black/50" />
-      {/* Dialog */}
+  return (
+    <CommonBackdrop>
       <div
         className="fixed inset-0 z-50 flex items-center justify-center p-4 text-left"
         onClick={onCancel}
@@ -89,7 +86,6 @@ export function ConfirmDialog({
           </div>
         </div>
       </div>
-    </>,
-    document.body
+    </CommonBackdrop>
   );
 }

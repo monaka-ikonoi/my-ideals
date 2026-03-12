@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { ExclamationTriangleIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { LanguageDropdown } from '../LanguageDropdown';
+import { CommonBackdrop } from '../ui/CommonBackdrop';
 
 export function DisclaimerDialog() {
   const { t, i18n } = useTranslation();
@@ -19,9 +19,8 @@ export function DisclaimerDialog() {
 
   if (disclaimerAccepted) return null;
 
-  return createPortal(
-    <>
-      <div className="fixed inset-0 z-50 bg-black/50" />
+  return (
+    <CommonBackdrop>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div className="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-lg bg-white shadow-xl">
           {/* Header */}
@@ -84,7 +83,6 @@ export function DisclaimerDialog() {
           </div>
         </div>
       </div>
-    </>,
-    document.body
+    </CommonBackdrop>
   );
 }

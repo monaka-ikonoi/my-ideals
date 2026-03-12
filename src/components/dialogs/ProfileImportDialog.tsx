@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { ZodError } from 'zod';
 import {
@@ -13,6 +12,7 @@ import {
 import { ProfileSchema, type Profile } from '@/domain/profile';
 import { useProfileListStore } from '@/stores/profileListStore';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { CommonBackdrop } from '../ui/CommonBackdrop';
 
 type ImportState =
   | { status: 'idle' }
@@ -103,9 +103,8 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
         )
       : 0;
 
-  return createPortal(
-    <>
-      <div className="fixed inset-0 z-50 bg-black/50" />
+  return (
+    <CommonBackdrop>
       <div
         className="fixed inset-0 z-50 flex items-center justify-center p-4"
         onClick={handleClose}
@@ -267,7 +266,6 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
           </div>
         </div>
       </div>
-    </>,
-    document.body
+    </CommonBackdrop>
   );
 }
