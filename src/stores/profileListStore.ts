@@ -3,7 +3,7 @@ import { subscribeWithSelector, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { nanoid } from 'nanoid';
 import { type Profile, type ProfileFlag, type ProfileTemplateInfo } from '@/domain/profile';
-import { ProfileStorage } from '@/storage/profileStorage';
+import { ProfileStorage } from '@/storage/ProfileStorage';
 
 export type ProfileListEntry = {
   id: string;
@@ -17,12 +17,17 @@ type ProfileListStore = {
   isInitialized: boolean;
 
   // Actions
-  initialize: () => void;
+  initialize: () => Promise<void>;
+  createProfile: (
+    name: string,
+    templateInfo: ProfileTemplateInfo,
+    flags?: ProfileFlag[]
+  ) => Promise<string>;
+  importProfile: (profile: Profile, overwrite: boolean) => Promise<string>;
+  deleteProfile: (id: string) => Promise<void>;
+
   setActiveProfile: (id: string | null) => void;
-  createProfile: (name: string, templateInfo: ProfileTemplateInfo, flags?: ProfileFlag[]) => string;
-  importProfile: (profile: Profile, overwrite: boolean) => string;
-  deleteProfile: (id: string) => void;
-  renameProfile: (id: string, name: string) => void;
+  updateProfileName: (id: string, name: string) => void;
 };
 
 export const useProfileListStore = create<ProfileListStore>()(
@@ -33,11 +38,11 @@ export const useProfileListStore = create<ProfileListStore>()(
         activeId: null,
         isInitialized: false,
 
-        initialize: () => {
+        initialize: async () => {
           const { profiles, activeId, isInitialized } = get();
           if (isInitialized) return;
 
-          const existingIds = new Set(ProfileStorage.listProfiles());
+          const existingIds = new Set(await ProfileStorage.listProfiles());
           const validProfiles = profiles.filter(p => {
             if (existingIds.has(p.id)) {
               existingIds.delete(p.id);
@@ -48,7 +53,7 @@ export const useProfileListStore = create<ProfileListStore>()(
           });
 
           for (const id of existingIds) {
-            const profile = ProfileStorage.getProfile(id);
+            const profile = await ProfileStorage.getProfile(id);
             if (profile) {
               validProfiles.push({ id, name: profile.name });
               console.log(`Found unrecorded profile ${id}`);
@@ -66,13 +71,7 @@ export const useProfileListStore = create<ProfileListStore>()(
           });
         },
 
-        setActiveProfile: id => {
-          set(state => {
-            state.activeId = id;
-          });
-        },
-
-        createProfile: (name, templateInfo, flags = []) => {
+        createProfile: async (name, templateInfo, flags = []) => {
           const id = nanoid();
           const newProfile: Profile = {
             magic: 'my-ideals-profile',
@@ -88,7 +87,7 @@ export const useProfileListStore = create<ProfileListStore>()(
           // Reset the revision to trigger a sync later
           newProfile.template.revision = 0;
 
-          ProfileStorage.setProfile(newProfile);
+          await ProfileStorage.setProfile(newProfile);
 
           set(state => {
             state.profiles.push({ id, name });
@@ -98,7 +97,7 @@ export const useProfileListStore = create<ProfileListStore>()(
           return id;
         },
 
-        importProfile: (profile, overwrite) => {
+        importProfile: async (profile, overwrite) => {
           const existingIndex = get().profiles.findIndex(p => p.id === profile.id);
 
           let finalProfile = profile;
@@ -106,7 +105,7 @@ export const useProfileListStore = create<ProfileListStore>()(
             finalProfile = { ...profile, id: nanoid() };
           }
 
-          ProfileStorage.setProfile(finalProfile);
+          await ProfileStorage.setProfile(finalProfile);
 
           set(state => {
             if (existingIndex >= 0 && overwrite) {
@@ -119,8 +118,8 @@ export const useProfileListStore = create<ProfileListStore>()(
           return finalProfile.id;
         },
 
-        deleteProfile: id => {
-          ProfileStorage.deleteProfile(id);
+        deleteProfile: async id => {
+          await ProfileStorage.deleteProfile(id);
 
           set(state => {
             const index = state.profiles.findIndex(p => p.id === id);
@@ -134,7 +133,13 @@ export const useProfileListStore = create<ProfileListStore>()(
           });
         },
 
-        renameProfile: (id, name) => {
+        setActiveProfile: id => {
+          set(state => {
+            state.activeId = id;
+          });
+        },
+
+        updateProfileName: (id, name) => {
           set(state => {
             const entry = state.profiles.find(p => p.id === id);
             if (entry) {

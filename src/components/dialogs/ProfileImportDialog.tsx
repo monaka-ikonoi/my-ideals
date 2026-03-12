@@ -74,13 +74,13 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     }
   };
 
-  const handleImport = (overwrite: boolean) => {
+  const handleImport = async (overwrite: boolean) => {
     if (state.status !== 'success') return;
 
-    importProfile(state.profile, overwrite);
+    await importProfile(state.profile, overwrite);
 
     if (overwrite && state.profile.id === activeProfileId) {
-      useActiveProfileStore.getState().load(activeProfileId);
+      await useActiveProfileStore.getState().load(activeProfileId);
     }
 
     handleClose();

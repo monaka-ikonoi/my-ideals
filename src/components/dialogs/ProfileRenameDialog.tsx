@@ -19,7 +19,7 @@ export function ProfileRenameDialog({ onClose, profileId, profileName }: Profile
     const name = newName.trim();
     if (profileId && name && name !== profileName) {
       useActiveProfileStore.getState().updateName(name);
-      useProfileListStore.getState().renameProfile(profileId, name);
+      useProfileListStore.getState().updateProfileName(profileId, name);
     }
     onClose();
   };

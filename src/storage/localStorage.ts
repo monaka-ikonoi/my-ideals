@@ -1,3 +1,4 @@
+import type { ProfileStorageOps } from './ProfileStorage';
 import { type Profile, ProfileSchema } from '@/domain/profile';
 import { z } from 'zod';
 
@@ -6,15 +7,15 @@ const LOCAL_STORAGE_KEYS = {
   profile: (id: string = '') => `${LOCAL_STORAGE_PREFIX}:profile:${id}`,
 } as const;
 
-function listProfiles(): string[] {
+const listProfiles = async (): Promise<string[]> => {
   const prefix = LOCAL_STORAGE_KEYS.profile();
   return Object.keys(localStorage)
     .filter(key => key.startsWith(prefix))
     .map(key => key.slice(prefix.length))
     .filter(id => z.nanoid().safeParse(id).success);
-}
+};
 
-function getProfile(id: string): Profile | null {
+const getProfile = async (id: string): Promise<Profile | null> => {
   const raw = localStorage.getItem(LOCAL_STORAGE_KEYS.profile(id));
   if (!raw) {
     return null;
@@ -26,17 +27,17 @@ function getProfile(id: string): Profile | null {
     console.error(`Unable to parse profile: ${id}:`, e);
     return null;
   }
-}
+};
 
-function setProfile(profile: Profile): void {
+const setProfile = async (profile: Profile): Promise<void> => {
   localStorage.setItem(LOCAL_STORAGE_KEYS.profile(profile.id), JSON.stringify(profile));
-}
+};
 
-function deleteProfile(id: string): void {
+const deleteProfile = async (id: string): Promise<void> => {
   localStorage.removeItem(LOCAL_STORAGE_KEYS.profile(id));
-}
+};
 
-export const ProfileStorage = {
+export const localStorageOps: ProfileStorageOps = {
   listProfiles,
   getProfile,
   setProfile,

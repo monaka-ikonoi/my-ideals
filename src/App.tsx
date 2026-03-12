@@ -20,12 +20,14 @@ export default function App() {
   }, [t]);
 
   useEffect(() => {
-    useProfileListStore.getState().initialize();
+    (async () => {
+      await useProfileListStore.getState().initialize();
+    })();
   }, []);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      useActiveProfileStore.getState().flush();
+      void useActiveProfileStore.getState().flush();
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);

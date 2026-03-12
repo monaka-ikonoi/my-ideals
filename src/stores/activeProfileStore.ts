@@ -3,7 +3,7 @@ import { immer } from 'zustand/middleware/immer';
 import { debounce } from 'lodash-es';
 import { ProfileFlags, profileHasFlag, type Profile, type ProfileFlag } from '@/domain/profile';
 import { type Template } from '@/domain/template';
-import { ProfileStorage } from '@/storage/profileStorage';
+import { ProfileStorage } from '@/storage/ProfileStorage';
 import { useProfileListStore } from './profileListStore';
 import { debugLog } from '@/utils/debug';
 import {
@@ -30,9 +30,9 @@ type activeProfileStore = {
 
   // Actions
   load: (profileId: string) => Promise<void>;
-  clear: () => void;
-  flush: () => void;
-  confirmSyncChanges: (cleanup: boolean) => void;
+  clear: () => Promise<void>;
+  flush: () => Promise<void>;
+  confirmSyncChanges: (cleanup: boolean) => Promise<void>;
   toggleStatus: (collectionId: string, itemId: string) => void;
   setCount: (collectionId: string, itemId: string, value: number) => void;
   toggleMember: (member: string) => void;
@@ -43,11 +43,11 @@ type activeProfileStore = {
 
 export const useActiveProfileStore = create<activeProfileStore>()(
   immer((set, get) => {
-    const debouncedSave = debounce(() => {
+    const debouncedSave = debounce(async () => {
       const { profile } = get();
       if (!profile) return;
 
-      ProfileStorage.setProfile(profile);
+      await ProfileStorage.setProfile(profile);
       debugLog.store.log(`Profile ${profile.id} saved`);
     }, 500);
 
@@ -60,7 +60,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
       error: null,
 
       load: async (profileId: string) => {
-        debouncedSave.flush();
+        await Promise.resolve(debouncedSave.flush());
 
         set(state => {
           state.profile = null;
@@ -84,7 +84,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           });
         };
 
-        let profile = ProfileStorage.getProfile(profileId);
+        let profile = await ProfileStorage.getProfile(profileId);
         if (!profile) {
           setError('profile', `Unable to load Profile ${profileId}`);
           return;
@@ -100,7 +100,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
             `Template link updated from ${profile.template.link} to ${templateResult.url}`
           );
           profile.template.link = templateResult.url;
-          ProfileStorage.setProfile(profile);
+          await ProfileStorage.setProfile(profile);
         }
         const template = templateResult.template;
 
@@ -114,7 +114,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           }
           if (!pendingSync) {
             profile = syncProfileWithTemplate(profile, template, false);
-            ProfileStorage.setProfile(profile);
+            await ProfileStorage.setProfile(profile);
           }
         }
 
@@ -129,8 +129,8 @@ export const useActiveProfileStore = create<activeProfileStore>()(
         debugLog.store.log(`Loaded profile ${profile.name}, ${profileId}`);
       },
 
-      clear: () => {
-        debouncedSave.flush();
+      clear: async () => {
+        await Promise.resolve(debouncedSave.flush());
 
         set(state => {
           state.profile = null;
@@ -142,9 +142,11 @@ export const useActiveProfileStore = create<activeProfileStore>()(
         });
       },
 
-      flush: () => debouncedSave.flush(),
+      flush: async () => {
+        await Promise.resolve(debouncedSave.flush());
+      },
 
-      confirmSyncChanges: (cleanup: boolean) => {
+      confirmSyncChanges: async (cleanup: boolean) => {
         const { profile, template, pendingSync } = get();
 
         if (!profile || !template) return;
@@ -157,7 +159,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
         }
 
         const synced = syncProfileWithTemplate(profile, template, cleanup);
-        ProfileStorage.setProfile(synced);
+        await ProfileStorage.setProfile(synced);
 
         set(state => {
           state.profile = synced;
@@ -265,9 +267,9 @@ useProfileListStore.subscribe(
   state => state.activeId,
   activeId => {
     if (activeId) {
-      useActiveProfileStore.getState().load(activeId);
+      void useActiveProfileStore.getState().load(activeId);
     } else {
-      useActiveProfileStore.getState().clear();
+      void useActiveProfileStore.getState().clear();
     }
   },
   { fireImmediately: true }

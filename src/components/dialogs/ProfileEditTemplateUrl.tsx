@@ -26,15 +26,15 @@ export function ProfileEditTemplateUrlDialog({
 
   const [allowIdMismatch, setAllowIdMismatch] = useState(false);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const trimmedUrl = url.trim();
     if (trimmedUrl !== currentUrl) {
       if (state.status === 'success') {
         useActiveProfileStore.getState().updateTemplateInfo(trimmedUrl);
-        useActiveProfileStore.getState().load(profileId); // Trigger reload
+        await useActiveProfileStore.getState().load(profileId); // Trigger reload
       } else if (allowIdMismatch && state.status === 'id-mismatch') {
         useActiveProfileStore.getState().updateTemplateInfo(trimmedUrl, state.actualId);
-        useActiveProfileStore.getState().load(profileId); // Trigger reload
+        await useActiveProfileStore.getState().load(profileId); // Trigger reload
       }
     }
     onClose();

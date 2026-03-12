@@ -30,14 +30,18 @@ export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
     },
   });
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const name = profileName.trim();
     if (fetchState.status !== 'success' || !name || !template) return;
 
     const flags: ProfileFlag[] = [];
     if (enableCount) flags.push(ProfileFlags.ENABLE_COUNT);
 
-    createProfile(name, { id: template.id, link: url.trim(), revision: template.revision }, flags);
+    await createProfile(
+      name,
+      { id: template.id, link: url.trim(), revision: template.revision },
+      flags
+    );
     onClose();
   };
 

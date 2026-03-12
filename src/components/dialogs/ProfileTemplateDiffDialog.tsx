@@ -131,11 +131,11 @@ export function ProfileTemplateDiffDialog() {
   const hasChanges = changes && (changes.added.length > 0 || changes.removed.length > 0);
   const hasRemovals = changes && changes.removed.length > 0;
 
-  const handleSelect = (value: string) => {
+  const handleSelect = async (value: string) => {
     if (value === 'cleanup') {
-      confirmSyncChanges(true);
+      await confirmSyncChanges(true);
     } else {
-      confirmSyncChanges(false);
+      await confirmSyncChanges(false);
     }
   };
 
@@ -153,7 +153,7 @@ export function ProfileTemplateDiffDialog() {
       options={options}
       showCancel={false}
       onSelect={handleSelect}
-      onCancel={() => confirmSyncChanges(false)}
+      onCancel={async () => await confirmSyncChanges(false)}
     >
       <ProfileTemplateDiffContent template={template} changes={changes} />
     </ConfirmDialog>

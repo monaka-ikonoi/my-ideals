@@ -12,9 +12,9 @@ type ProfileDeleteDialogProps = {
 export function ProfileDeleteDialog({ onClose, profileId, profileName }: ProfileDeleteDialogProps) {
   const { t } = useTranslation();
 
-  const handleConfirmDelete = (value: string) => {
+  const handleConfirmDelete = async (value: string) => {
     if (value === 'delete' && profileId) {
-      useProfileListStore.getState().deleteProfile(profileId);
+      await useProfileListStore.getState().deleteProfile(profileId);
       toast.success(t('toast.profile-deleted', { name: profileName }));
     }
     onClose();

@@ -17,12 +17,12 @@ export function ProfileDuplicateDialog({ onClose }: ProfileDuplicateDialogProps)
     t('dialog.profile-duplicate.name-default', { name: profile.name })
   );
 
-  const handleDuplicate = () => {
+  const handleDuplicate = async () => {
     const trimmedName = newName.trim();
     if (trimmedName) {
       const duplicated = structuredClone(profile);
       duplicated.name = trimmedName;
-      useProfileListStore.getState().importProfile(duplicated, false);
+      await useProfileListStore.getState().importProfile(duplicated, false);
       toast.success(t('toast.profile-duplicate.success', { name: trimmedName }));
     }
     onClose();
