@@ -62,11 +62,11 @@ export function ProfileDrawer({ isOpen, onOpen, onClose }: ProfileDrawerProps) {
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto overscroll-contain">
               {/* Profile List */}
-              <ProfileList />
+              <ProfileList onSelect={onClose} />
 
               {/* Settings */}
               <div className="border-t border-gray-200">
-                <SettingsPanel />
+                <SettingsPanel onSelect={onClose} />
               </div>
             </div>
           </div>
