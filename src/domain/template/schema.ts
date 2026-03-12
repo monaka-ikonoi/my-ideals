@@ -2,7 +2,12 @@ import { z } from 'zod';
 import { TemplateResourceBaseUrlSchema } from './imageBaseUrl';
 
 const TemplateLayoutSchema = z.object({
-  aspectRatio: z.tuple([z.int(), z.int().min(1)]).optional(),
+  aspectRatio: z
+    .union([
+      z.string().regex(/^[1-9]\d*\/[1-9]\d*$/, "Must be in 'x/y' format"),
+      z.tuple([z.int(), z.int().min(1)]).transform(arr => `${arr[0]}/${arr[1]}`), // Handle old [x, y] format
+    ])
+    .optional(),
   columns: z
     .tuple([z.int().min(1), z.int().min(1).optional(), z.int().min(1).optional()])
     .optional(),

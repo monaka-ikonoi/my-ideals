@@ -1,7 +1,7 @@
 import { type TemplateResourceBaseUrl } from './imageBaseUrl';
 
 export type TemplateLayout = {
-  aspectRatio?: [number, number];
+  aspectRatio?: string;
   columns?: [number, number?, number?];
 };
 

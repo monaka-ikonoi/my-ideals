@@ -13,14 +13,14 @@ type ImageCheckCardProps = {
   collectionId: string;
   item: TemplateCollectionItem;
   mode?: 'normal' | 'export' | 'edit';
-  aspectRatio?: [number, number];
+  aspectRatio?: string;
 };
 
 export const ImageCheckCard = memo(function ImageCheckCard({
   collectionId,
   item,
   mode = 'normal',
-  aspectRatio,
+  aspectRatio = '7/10',
 }: ImageCheckCardProps) {
   debugLog.render.log(`ImageCheckCard render: ${collectionId} ${item.id}`);
 
@@ -49,13 +49,9 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   const [imageStatus, setImageStatus] = useState<'normal' | 'fallback' | 'failed'>('normal');
   const currentSrc = imageStatus === 'fallback' ? (fallbackSrc as string) : targetSrc;
 
-  const computedAspectRatio = aspectRatio
-    ? item.rotated
-      ? `${aspectRatio[1]}/${aspectRatio[0]}`
-      : `${aspectRatio[0]}/${aspectRatio[1]}`
-    : item.rotated
-      ? '10/7'
-      : '7/10';
+  const computedAspectRatio = item.rotated
+    ? aspectRatio.split('/').reverse().join('/')
+    : aspectRatio;
 
   const isToggled = typeof status === 'boolean' ? status : status !== 0;
 
