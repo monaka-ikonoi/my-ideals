@@ -46,10 +46,8 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   const fallbackSrc = imageBaseUrl?.fallback;
   const targetSrc = item.image ?? formatImageUrl(imageBaseUrl!, revision!, collectionId, item.id);
 
-  const [failedSrc, setFailedSrc] = useState<string | null>(null);
-  const isTargetFailed = failedSrc === targetSrc;
-  const currentSrc = isTargetFailed && fallbackSrc ? fallbackSrc : targetSrc;
-  const showAlt = isTargetFailed && (!fallbackSrc || failedSrc === fallbackSrc);
+  const [imageStatus, setImageStatus] = useState<'normal' | 'fallback' | 'failed'>('normal');
+  const currentSrc = imageStatus === 'fallback' ? (fallbackSrc as string) : targetSrc;
 
   const computedAspectRatio = aspectRatio
     ? item.rotated
@@ -74,7 +72,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
         className="relative w-full shrink-0"
         style={{ aspectRatio: computedAspectRatio } as React.CSSProperties}
       >
-        {showAlt ? (
+        {imageStatus === 'failed' ? (
           <div
             className={`absolute inset-0 flex h-full w-full items-center justify-center bg-gray-200
               p-2 text-center text-sm whitespace-pre-line text-gray-600 transition
@@ -89,7 +87,13 @@ export const ImageCheckCard = memo(function ImageCheckCard({
             crossOrigin="anonymous"
             loading={mode === 'export' ? 'eager' : 'lazy'}
             decoding={mode === 'export' ? 'sync' : 'async'}
-            onError={() => setFailedSrc(currentSrc)}
+            onError={() =>
+              setImageStatus(prevStatus => {
+                if (prevStatus === 'normal') return fallbackSrc ? 'fallback' : 'failed';
+                if (prevStatus === 'fallback') return 'failed';
+                return prevStatus;
+              })
+            }
             className={`absolute inset-0 h-full w-full object-cover transition
               ${isToggled ? '' : 'opacity-50'}`}
           />
