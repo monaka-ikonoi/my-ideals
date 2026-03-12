@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { ProfileList } from './ProfileList';
@@ -16,6 +17,14 @@ export function ProfileDrawer({ isOpen, onOpen, onClose }: ProfileDrawerProps) {
   const activeProfile = useProfileListStore(
     state => state.profiles.find(p => p.id === state.activeId) ?? null
   );
+
+  useEffect(() => {
+    if (isOpen) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = 'unset';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   return (
     <>
