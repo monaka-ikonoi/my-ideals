@@ -1,4 +1,4 @@
-import { useState, memo } from 'react';
+import { useState, memo, useCallback } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { type TemplateCollectionItem } from '@/domain/template';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
@@ -24,34 +24,42 @@ export const ImageCheckCard = memo(function ImageCheckCard({
 }: ImageCheckCardProps) {
   debugLog.render.log(`ImageCheckCard render: ${collectionId} ${item.id}`);
 
-  const enableCount = useActiveProfileStore(state =>
-    profileHasFlag(state.profile!, ProfileFlags.ENABLE_COUNT)
-  );
-
-  const { imageBaseUrl, revision } = useActiveProfileStore(
+  const { enableCount, imageBaseUrl, revision, toggleStatus, setCount } = useActiveProfileStore(
     useShallow(state => ({
+      enableCount: profileHasFlag(state.profile!, ProfileFlags.ENABLE_COUNT),
       imageBaseUrl: state.template?.imageBaseUrl,
       revision: state.template?.revision,
+      toggleStatus: state.toggleStatus,
+      setCount: state.setCount,
     }))
   );
-  const fallbackSrc = imageBaseUrl?.fallback;
-  const targetSrc = item.image ?? formatImageUrl(imageBaseUrl!, revision!, collectionId, item.id);
 
   const status = useActiveProfileStore(
     state => state.profile?.collections[collectionId]?.[item.id] ?? (enableCount ? 0 : false)
   );
-  const toggleStatus = useActiveProfileStore(state => state.toggleStatus);
-  const setCount = useActiveProfileStore(state => state.setCount);
 
-  const formatAspectRatio = (a: [number, number] | undefined): string => {
-    if (!a) return item.rotated ? '10/7' : '7/10';
-    return item.rotated ? `${a[1]}/${a[0]}` : `${a[0]}/${a[1]}`;
-  };
+  const handleSetCount = useCallback(
+    (val: number) => setCount(collectionId, item.id, val),
+    [setCount, collectionId, item.id]
+  );
+
+  const fallbackSrc = imageBaseUrl?.fallback;
+  const targetSrc = item.image ?? formatImageUrl(imageBaseUrl!, revision!, collectionId, item.id);
 
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const isTargetFailed = failedSrc === targetSrc;
   const currentSrc = isTargetFailed && fallbackSrc ? fallbackSrc : targetSrc;
   const showAlt = isTargetFailed && (!fallbackSrc || failedSrc === fallbackSrc);
+
+  const computedAspectRatio = aspectRatio
+    ? item.rotated
+      ? `${aspectRatio[1]}/${aspectRatio[0]}`
+      : `${aspectRatio[0]}/${aspectRatio[1]}`
+    : item.rotated
+      ? '10/7'
+      : '7/10';
+
+  const isToggled = typeof status === 'boolean' ? status : status !== 0;
 
   return (
     <div
@@ -64,18 +72,13 @@ export const ImageCheckCard = memo(function ImageCheckCard({
       {/* Image */}
       <div
         className="relative w-full shrink-0"
-        style={
-          {
-            aspectRatio: formatAspectRatio(aspectRatio),
-          } as React.CSSProperties
-        }
+        style={{ aspectRatio: computedAspectRatio } as React.CSSProperties}
       >
         {showAlt ? (
           <div
             className={`absolute inset-0 flex h-full w-full items-center justify-center bg-gray-200
-              p-2 text-center text-sm whitespace-pre-line text-gray-600 transition ${
-                !(typeof status === 'boolean' ? status : status !== 0) && 'opacity-50'
-              }`}
+              p-2 text-center text-sm whitespace-pre-line text-gray-600 transition
+              ${isToggled ? '' : 'opacity-50'}`}
           >
             {item.name.split(' ').join('\n')}
           </div>
@@ -88,7 +91,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
             decoding={mode === 'export' ? 'sync' : 'async'}
             onError={() => setFailedSrc(currentSrc)}
             className={`absolute inset-0 h-full w-full object-cover transition
-              ${!(typeof status === 'boolean' ? status : status !== 0) && 'opacity-50'}`}
+              ${isToggled ? '' : 'opacity-50'}`}
           />
         )}
 
@@ -136,7 +139,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
       {mode !== 'export' && enableCount && typeof status === 'number' && (
         <ItemCounter
           value={status}
-          setValue={val => setCount(collectionId, item.id, val)}
+          setValue={handleSetCount}
           size={mode === 'edit' ? 'large' : 'normal'}
         />
       )}
