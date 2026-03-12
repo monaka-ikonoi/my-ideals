@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+import { useShallow } from 'zustand/shallow';
 import { type TemplateCollection } from '@/domain/template';
 import { ImageCheckCard } from './ImageCheckCard';
 import { debugLog } from '@/utils/debug';
@@ -18,9 +19,9 @@ export const CollectionGrid = memo(function CollectionGrid({
   debugLog.render.log(`CollectionGrid render: ${collection.id}`);
 
   const collectionLayout = collection.layout;
-  const templateLayout = useActiveProfileStore.getState().template?.layout;
+  const templateLayout = useActiveProfileStore(useShallow(state => state.template?.layout));
 
-  const resolvedColumns = useMemo<[number, number, number]>(() => {
+  const computedColumns = useMemo<[number, number, number]>(() => {
     if (columns) return columns;
     const layoutColumns = collectionLayout?.columns ?? templateLayout?.columns;
     const base = layoutColumns?.[0] ?? 3;
@@ -42,12 +43,12 @@ export const CollectionGrid = memo(function CollectionGrid({
       style={
         mode === 'export'
           ? ({
-              '--cols': resolvedColumns[2],
+              '--cols': computedColumns[2],
             } as React.CSSProperties)
           : ({
-              '--cols-xs': resolvedColumns[0],
-              '--cols-md': resolvedColumns[1],
-              '--cols-2xl': resolvedColumns[2],
+              '--cols-xs': computedColumns[0],
+              '--cols-md': computedColumns[1],
+              '--cols-2xl': computedColumns[2],
             } as React.CSSProperties)
       }
     >
