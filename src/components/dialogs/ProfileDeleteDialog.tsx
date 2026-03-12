@@ -1,4 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useProfileListStore } from '@/stores/profileListStore';
 
@@ -14,7 +15,7 @@ export function ProfileDeleteDialog({ onClose, profileId, profileName }: Profile
   const handleConfirmDelete = (value: string) => {
     if (value === 'delete' && profileId) {
       useProfileListStore.getState().deleteProfile(profileId);
-      // TODO: toast.success(`Profile "${deleteTarget.name}" deleted`);
+      toast.success(t('toast.profile-deleted', { name: profileName }));
     }
     onClose();
   };
