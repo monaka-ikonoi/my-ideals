@@ -5,6 +5,7 @@ import { useProfileListStore } from './stores/profileListStore';
 import { useActiveProfileStore } from './stores/activeProfileStore';
 import { LoadingPage } from './components/ui/LoadingPage';
 import { GlobalDialogs } from './components/GlobalDialogs';
+import { GlobalToaster } from './components/GlobalToaster';
 import { MainContent } from './components/MainContent';
 import { DEV_MODE } from './utils/appInfo';
 
@@ -42,6 +43,7 @@ export default function App() {
       <Navbar />
       <MainContent />
       <GlobalDialogs />
+      <GlobalToaster />
     </div>
   );
 }
