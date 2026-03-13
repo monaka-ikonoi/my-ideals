@@ -153,6 +153,7 @@
     }
   },
   "toast": {
-    "profile-deleted": "已删除档案\"{{name}}\""
+    "profile-deleted": "已删除档案\"{{name}}\"",
+    "template-link-copied": "模板链接已复制"
   }
 }

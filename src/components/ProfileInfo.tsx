@@ -10,6 +10,7 @@ import { InlineCode } from './ui/InlineCode';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { useDialogStore } from '@/stores/dialogStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
+import { toast } from 'sonner';
 
 export function ProfileInfo() {
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ export function ProfileInfo() {
 
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(profile.template.link);
+    toast.success(t('toast.template-link-copied'));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

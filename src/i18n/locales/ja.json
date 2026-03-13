@@ -153,6 +153,7 @@
     }
   },
   "toast": {
-    "profile-deleted": "プロファイル「{{name}}」を削除しました"
+    "profile-deleted": "プロファイル「{{name}}」を削除しました",
+    "template-link-copied": "テンプレートリンクをコピーしました"
   }
 }

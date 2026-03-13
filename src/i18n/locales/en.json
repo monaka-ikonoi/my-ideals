@@ -153,6 +153,7 @@
     }
   },
   "toast": {
-    "profile-deleted": "Profile {{name}} deleted"
+    "profile-deleted": "Profile {{name}} deleted",
+    "template-link-copied": "Template link copied"
   }
 }
