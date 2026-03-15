@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { DEV_MODE } from '@/utils/appInfo';
 
 type ProfileExportButtonProps = {
   children: ReactNode;
@@ -12,7 +13,8 @@ export function ProfileExportButton({ children, className }: ProfileExportButton
   const handleExport = () => {
     if (!profile) return;
 
-    const blob = new Blob([JSON.stringify(profile, null, 2)], { type: 'application/json' });
+    const json = DEV_MODE ? JSON.stringify(profile, null, 2) : JSON.stringify(profile);
+    const blob = new Blob([json], { type: 'application/json' });
     const filename = `my-ideals-profile-${profile.name}.json`;
     const url = URL.createObjectURL(blob);
     Object.assign(document.createElement('a'), { href: url, download: filename }).click();
