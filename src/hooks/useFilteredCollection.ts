@@ -100,6 +100,17 @@ function useDisplayCollections(
   }, [filteredCollections, cachedStatus, itemStatus]);
 }
 
+function useSearchSuggestions(collections: TemplateCollection[], searchQuery: string): string[] {
+  return useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return [];
+
+    return collections
+      .filter(collection => collection.name.toLowerCase().includes(query))
+      .map(collection => collection.name);
+  }, [collections, searchQuery]);
+}
+
 export function useCollectionFilter() {
   const [searchQuery, setSearchQuery] = useState('');
   const [hideCompleted, setHideCompleted] = useState(false);
@@ -116,6 +127,8 @@ export function useCollectionFilter() {
 
   const displayCollections = useDisplayCollections(cachedStatus, filteredCollections, filterStatus);
 
+  const searchSuggestions = useSearchSuggestions(displayCollections, searchQuery);
+
   const collectionMap = useMemo(() => {
     const map: Record<string, TemplateCollection> = {};
     for (const collection of filteredCollections) {
@@ -127,8 +140,11 @@ export function useCollectionFilter() {
 
   return {
     filterProps: {
-      searchQuery,
-      setSearchQuery,
+      searchProps: {
+        searchQuery,
+        setSearchQuery,
+        searchSuggestions,
+      },
       hideCompleted,
       setHideCompleted,
       filterStatus,

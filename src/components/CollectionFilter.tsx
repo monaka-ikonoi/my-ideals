@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
@@ -5,9 +6,88 @@ import { CollectionStatusFilter } from './CollectionStatusFilter';
 import type { FilterItemStatus } from '@/hooks/useFilteredCollection';
 import { MemberSelector } from './MemberSelector';
 
-type CollectionFilterProps = {
+type SearchBoxProps = {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  searchSuggestions: string[];
+};
+
+function CollectionSearchBox({ searchQuery, setSearchQuery, searchSuggestions }: SearchBoxProps) {
+  const { t } = useTranslation();
+
+  const [openSuggestions, setOpenSuggestions] = useState(false);
+
+  const showSuggestions =
+    openSuggestions && searchQuery.trim().length > 0 && searchSuggestions.length > 0;
+
+  const handleSelectSuggestion = (value: string) => {
+    setSearchQuery(value);
+    setOpenSuggestions(false);
+  };
+
+  return (
+    <div className="relative flex-1">
+      <MagnifyingGlassIcon
+        className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400"
+      />
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={e => {
+          setSearchQuery(e.target.value);
+          setOpenSuggestions(true);
+        }}
+        onFocus={() => setOpenSuggestions(true)}
+        onBlur={() => setOpenSuggestions(false)}
+        placeholder={t('collection.search-placeholder')}
+        className="w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pr-10 pl-10 text-base
+          focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none
+          sm:text-sm"
+      />
+      {searchQuery && (
+        <button
+          onClick={() => {
+            setSearchQuery('');
+            setOpenSuggestions(false);
+          }}
+          className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+        >
+          <XMarkIcon className="h-5 w-5" />
+        </button>
+      )}
+
+      {showSuggestions && (
+        <div
+          id="collection-search-suggestions"
+          role="listbox"
+          className="absolute z-20 mt-1 max-h-60 w-full overflow-hidden overflow-y-auto
+            overscroll-contain scroll-smooth rounded-xl border border-gray-200 bg-white shadow-lg"
+        >
+          <div className="py-1">
+            {searchSuggestions.map((suggestion, index) => (
+              <button
+                key={`${suggestion}-${index}`}
+                type="button"
+                role="option"
+                onMouseDown={e => {
+                  e.preventDefault();
+                  handleSelectSuggestion(suggestion);
+                }}
+                className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
+                  hover:bg-gray-100"
+              >
+                <span className="truncate">{suggestion}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+type CollectionFilterProps = {
+  searchProps: SearchBoxProps;
   hideCompleted: boolean;
   setHideCompleted: (enabled: boolean) => void;
   hiddenCount: number;
@@ -16,8 +96,7 @@ type CollectionFilterProps = {
 };
 
 export function CollectionFilter({
-  searchQuery,
-  setSearchQuery,
+  searchProps,
   hideCompleted,
   setHideCompleted,
   filterStatus,
@@ -47,30 +126,7 @@ export function CollectionFilter({
       )}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <MagnifyingGlassIcon
-            className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            placeholder={t('collection.search-placeholder')}
-            className="w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pr-10 pl-10
-              text-base focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500
-              focus:outline-none sm:text-sm"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400
-                hover:text-gray-600"
-            >
-              <XMarkIcon className="h-5 w-5" />
-            </button>
-          )}
-        </div>
-
+        <CollectionSearchBox {...searchProps} />
         <div className="flex flex-wrap items-center justify-between gap-3">
           <label className="flex cursor-pointer items-center gap-2 whitespace-nowrap select-none">
             <input
