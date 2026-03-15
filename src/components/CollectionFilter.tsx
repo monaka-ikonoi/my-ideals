@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
@@ -16,14 +16,68 @@ function CollectionSearchBox({ searchQuery, setSearchQuery, searchSuggestions }:
   const { t } = useTranslation();
 
   const [openSuggestions, setOpenSuggestions] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  const listRef = useRef<HTMLDivElement | null>(null);
 
   const showSuggestions =
     openSuggestions && searchQuery.trim().length > 0 && searchSuggestions.length > 0;
+  const activeIndex = selectedIndex >= searchSuggestions.length ? -1 : selectedIndex;
 
   const handleSelectSuggestion = (value: string) => {
     setSearchQuery(value);
     setOpenSuggestions(false);
+    setSelectedIndex(-1);
   };
+
+  const handleKeyboardActions = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (searchSuggestions.length === 0) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        if (!showSuggestions) {
+          setOpenSuggestions(true);
+          setSelectedIndex(0);
+          return;
+        }
+        setSelectedIndex(prev => (prev < searchSuggestions.length - 1 ? prev + 1 : 0));
+        return;
+      case 'ArrowUp':
+        e.preventDefault();
+        if (!showSuggestions) {
+          setOpenSuggestions(true);
+          setSelectedIndex(searchSuggestions.length - 1);
+          return;
+        }
+        setSelectedIndex(prev => (prev > 0 ? prev - 1 : searchSuggestions.length - 1));
+        return;
+      case 'Enter':
+        e.preventDefault();
+        if (activeIndex >= 0) {
+          setSearchQuery(searchSuggestions[activeIndex]);
+        }
+        setOpenSuggestions(false);
+        setSelectedIndex(-1);
+        e.currentTarget.blur();
+        return;
+      case 'Escape':
+        setOpenSuggestions(false);
+        setSelectedIndex(-1);
+        return;
+    }
+  };
+
+  useEffect(() => {
+    if (!showSuggestions || activeIndex < 0 || !listRef.current) return;
+
+    const activeElement = listRef.current.querySelector<HTMLElement>(
+      `[data-index="${activeIndex}"]`
+    );
+    if (activeElement) {
+      activeElement.scrollIntoView({ block: 'nearest' });
+    }
+  }, [activeIndex, showSuggestions]);
 
   return (
     <div className="relative flex-1">
@@ -36,19 +90,32 @@ function CollectionSearchBox({ searchQuery, setSearchQuery, searchSuggestions }:
         onChange={e => {
           setSearchQuery(e.target.value);
           setOpenSuggestions(true);
+          setSelectedIndex(-1);
         }}
         onFocus={() => setOpenSuggestions(true)}
-        onBlur={() => setOpenSuggestions(false)}
+        onBlur={() => {
+          setOpenSuggestions(false);
+          setSelectedIndex(-1);
+        }}
+        onKeyDown={handleKeyboardActions}
         placeholder={t('collection.search-placeholder')}
+        role="combobox"
+        aria-expanded={showSuggestions}
+        aria-controls={showSuggestions ? 'collection-search-suggestions' : undefined}
+        aria-autocomplete="list"
         className="w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pr-10 pl-10 text-base
           focus:border-blue-500 focus:bg-white focus:ring-1 focus:ring-blue-500 focus:outline-none
           sm:text-sm"
       />
+
       {searchQuery && (
         <button
+          type="button"
+          onMouseDown={e => e.preventDefault()}
           onClick={() => {
             setSearchQuery('');
             setOpenSuggestions(false);
+            setSelectedIndex(-1);
           }}
           className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 hover:text-gray-600"
         >
@@ -58,27 +125,36 @@ function CollectionSearchBox({ searchQuery, setSearchQuery, searchSuggestions }:
 
       {showSuggestions && (
         <div
+          ref={listRef}
+          onMouseDown={e => e.preventDefault()}
           id="collection-search-suggestions"
           role="listbox"
-          className="absolute z-20 mt-1 max-h-60 w-full overflow-hidden overflow-y-auto
-            overscroll-contain scroll-smooth rounded-xl border border-gray-200 bg-white shadow-lg"
+          className="thin-scrollbar absolute z-20 mt-1 max-h-60 w-full overflow-y-auto
+            overscroll-contain rounded-xl border border-gray-200 bg-white shadow-lg"
         >
           <div className="py-1">
-            {searchSuggestions.map((suggestion, index) => (
-              <button
-                key={`${suggestion}-${index}`}
-                type="button"
-                role="option"
-                onMouseDown={e => {
-                  e.preventDefault();
-                  handleSelectSuggestion(suggestion);
-                }}
-                className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
-                  hover:bg-gray-100"
-              >
-                <span className="truncate">{suggestion}</span>
-              </button>
-            ))}
+            {searchSuggestions.map((suggestion, index) => {
+              const active = index === selectedIndex;
+
+              return (
+                <button
+                  key={`${suggestion}-${index}`}
+                  data-index={index}
+                  type="button"
+                  role="option"
+                  aria-selected={active}
+                  onMouseDown={e => {
+                    e.preventDefault();
+                    handleSelectSuggestion(suggestion);
+                  }}
+                  onMouseEnter={() => setSelectedIndex(index)}
+                  className={`flex w-full items-center gap-2 px-3 py-2 text-sm transition
+                  ${active ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                >
+                  <span className="truncate">{suggestion}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
