@@ -11,14 +11,14 @@ export function ProfileErrorPage() {
   const { t } = useTranslation();
 
   const profileId = useProfileListStore(state => state.activeId!);
-  const { error, hasProfile, loadProfile, templateInfo } = useActiveProfileStore(
+  const { error, hasProfile, loadProfile } = useActiveProfileStore(
     useShallow(state => ({
       error: state.error!,
       hasProfile: !!state.profile,
       loadProfile: state.load,
-      templateInfo: state.profile?.template,
     }))
   );
+  const templateInfo = useActiveProfileStore(state => state.profile?.template);
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center">

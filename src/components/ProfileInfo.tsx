@@ -11,17 +11,26 @@ import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { useDialogStore } from '@/stores/dialogStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { toast } from 'sonner';
+import { useShallow } from 'zustand/shallow';
 
 export function ProfileInfo() {
   const { t } = useTranslation();
 
-  const profile = useActiveProfileStore(state => state.profile!);
-  const template = useActiveProfileStore(state => state.template!);
+  const { profileId, profileName, templateId, templateName, enableCount } = useActiveProfileStore(
+    useShallow(state => ({
+      profileId: state.profile!.id,
+      profileName: state.profile!.name,
+      templateId: state.template!.id,
+      templateName: state.template!.name,
+      enableCount: profileHasFlag(state.profile!, ProfileFlags.ENABLE_COUNT),
+    }))
+  );
+  const profileTemplateInfo = useActiveProfileStore(state => state.profile!.template);
 
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = async () => {
-    await navigator.clipboard.writeText(profile.template.link);
+    await navigator.clipboard.writeText(profileTemplateInfo.link);
     toast.success(t('toast.template-link-copied'));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -32,9 +41,9 @@ export function ProfileInfo() {
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
         {/* Profile Name */}
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-semibold text-gray-900">{profile.name}</h1>
+          <h1 className="text-xl font-semibold text-gray-900">{profileName}</h1>
           <button
-            onClick={() => useDialogStore.getState().openRenameProfile(profile.id, profile.name)}
+            onClick={() => useDialogStore.getState().openRenameProfile(profileId, profileName)}
             className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
             title={t('profile.rename')}
           >
@@ -44,7 +53,7 @@ export function ProfileInfo() {
 
         {/* ID */}
         <div className="text-sm text-gray-500">
-          <InlineCode>ID: {profile.id}</InlineCode>
+          <InlineCode>ID: {profileId}</InlineCode>
         </div>
       </div>
 
@@ -55,11 +64,11 @@ export function ProfileInfo() {
         <div className="flex items-center gap-1">
           <div className="flex-1 sm:flex-initial">
             <span className="block sm:inline">
-              {t('common.template')}: {template.name}
+              {t('common.template')}: {templateName}
             </span>
             <span className="hidden sm:mx-2 sm:inline">/</span>
             <span className="block font-mono text-gray-500 sm:inline">
-              {profile.template.id} (rev. {profile.template.revision})
+              {profileTemplateInfo.id} (rev. {profileTemplateInfo.revision})
             </span>
           </div>
           <button
@@ -77,7 +86,7 @@ export function ProfileInfo() {
             onClick={() =>
               useDialogStore
                 .getState()
-                .openEditProfileTemplateUrl(profile.id, template.id, profile.template.link)
+                .openEditProfileTemplateUrl(profileId, templateId, profileTemplateInfo.link)
             }
             className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
             title={t('profile.edit-template-url')}
@@ -92,19 +101,10 @@ export function ProfileInfo() {
         <div className="flex items-center gap-1">
           <div className="flex-1 sm:flex-initial">
             {t('profile.mode.label')}:{' '}
-            {profileHasFlag(profile, ProfileFlags.ENABLE_COUNT)
-              ? t('profile.mode.count')
-              : t('profile.mode.standard')}
+            {enableCount ? t('profile.mode.count') : t('profile.mode.standard')}
           </div>
           <button
-            onClick={() =>
-              useDialogStore
-                .getState()
-                .openSwitchProfileMode(
-                  profile.id,
-                  !profileHasFlag(profile, ProfileFlags.ENABLE_COUNT)
-                )
-            }
+            onClick={() => useDialogStore.getState().openSwitchProfileMode(profileId, !enableCount)}
             className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
             title={t('profile.mode.switch')}
           >
