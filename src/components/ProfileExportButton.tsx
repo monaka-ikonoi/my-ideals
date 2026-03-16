@@ -15,7 +15,7 @@ export function ProfileExportButton({ children, className }: ProfileExportButton
 
     const json = DEV_MODE ? JSON.stringify(profile, null, 2) : JSON.stringify(profile);
     const blob = new Blob([json], { type: 'application/json' });
-    const filename = `my-ideals-profile-${profile.name}.json`;
+    const filename = `my-ideals-profile-${profile.id}.json`;
     const url = URL.createObjectURL(blob);
     Object.assign(document.createElement('a'), { href: url, download: filename }).click();
     URL.revokeObjectURL(url);
