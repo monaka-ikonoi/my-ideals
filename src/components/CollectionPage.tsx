@@ -11,8 +11,7 @@ import { AppleItpWarning } from './AppleItpWarning';
 export function CollectionPage() {
   const { t } = useTranslation();
 
-  const { filteredCollections, displayCollections, collectionMap, filterProps, hiddenCount } =
-    useCollectionFilter();
+  const { displayCollections, collectionMap, filterProps, hiddenCount } = useCollectionFilter();
 
   return (
     <main className="mx-auto max-w-[512px] space-y-6 px-4 py-6 md:max-w-[1024px] 2xl:max-w-[1664px]">
@@ -22,7 +21,7 @@ export function CollectionPage() {
         <div className="my-4 border-t border-gray-200" />
         <CollectionFilter hiddenCount={hiddenCount} {...filterProps} />
         <div className="my-4 border-t border-gray-200" />
-        <ProfileStats filteredCollections={filteredCollections} />
+        <ProfileStats visibleCollections={displayCollections} baseCollectionMap={collectionMap} />
       </div>
 
       {/* Collections - Virtualized*/}
@@ -34,7 +33,7 @@ export function CollectionPage() {
           <div className="pb-6">
             <CollectionPanel
               collection={collection}
-              statsCollection={collectionMap[collection.id]}
+              baseCollection={collectionMap[collection.id]}
             />
           </div>
         )}

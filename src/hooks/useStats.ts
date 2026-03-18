@@ -5,38 +5,47 @@ import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { normalizeStatusNumber } from '@/utils/utils';
 import { debugLog } from '@/utils/debug';
 
-type CollectionStats = {
-  totalItems: number;
-  collectedItems: number;
-  ownedItems: number;
-  totalComps: number;
-  collectedComps: number;
-  ownedComps: number;
+type StatsCounter = {
+  total: number;
+  collected: number;
+  owned: number;
 };
 
-function calculateCollectionStats(
-  collection: TemplateCollection,
-  statusMap: Profile['collections'][string]
-): CollectionStats {
-  const result = {
-    totalItems: collection.items.length,
-    collectedItems: 0,
-    ownedItems: 0,
-    totalComps: 0,
-    collectedComps: 0,
-    ownedComps: 0,
-  };
+type CollectionStats = {
+  items: StatsCounter;
+  comps: StatsCounter;
+};
 
-  // Minimal item count of different members
+type StatusMap = Profile['collections'][string];
+
+function calculateItemStats(collection: TemplateCollection, statusMap: StatusMap): StatsCounter {
+  let collected = 0;
+  let owned = 0;
+
+  for (const item of collection.items) {
+    const count = normalizeStatusNumber(statusMap?.[item.id]);
+    if (count > 0) {
+      collected++;
+      owned += count;
+    }
+  }
+
+  return {
+    total: collection.items.length,
+    collected,
+    owned,
+  };
+}
+
+function calculateCompStats(collection: TemplateCollection, statusMap: StatusMap): StatsCounter {
+  let collected = 0;
+  let owned = 0;
+
+  // Minimal item count of each member
   const memberMinCounts = new Map<string, number>();
 
   for (const item of collection.items) {
     const count = normalizeStatusNumber(statusMap?.[item.id]);
-
-    if (count > 0) {
-      result.collectedItems++;
-      result.ownedItems += count;
-    }
 
     const members = Array.isArray(item.member) ? item.member : [item.member];
     for (const m of members) {
@@ -44,71 +53,95 @@ function calculateCollectionStats(
     }
   }
 
-  result.totalComps = memberMinCounts.size;
   for (const count of memberMinCounts.values()) {
     if (count > 0) {
-      result.collectedComps++;
-      result.ownedComps += count;
+      collected++;
+      owned += count;
     }
   }
 
-  return result;
+  return {
+    total: memberMinCounts.size,
+    collected,
+    owned,
+  };
 }
 
-export function useCollectionStats(collection: TemplateCollection) {
-  const statusMap = useActiveProfileStore(state => state.profile?.collections[collection.id]);
+function calculateCollectionStats(
+  visibleCollections: TemplateCollection,
+  baseCollection: TemplateCollection,
+  statusMap: Profile['collections'][string]
+): CollectionStats {
+  return {
+    items: calculateItemStats(visibleCollections, statusMap),
+    comps: calculateCompStats(baseCollection, statusMap),
+  };
+}
+
+export function useCollectionStats(
+  visibleCollections: TemplateCollection,
+  baseCollection: TemplateCollection
+) {
+  const statusMap = useActiveProfileStore(
+    state => state.profile?.collections[baseCollection.id] ?? {}
+  );
 
   return useMemo(() => {
-    debugLog.perf.time(`calculateCollectionStats: ${collection.id}`);
-    const stats = calculateCollectionStats(collection, statusMap ?? {});
-    debugLog.perf.timeEnd(`calculateCollectionStats: ${collection.id}`);
+    debugLog.perf.time(`calculateCollectionStats: ${baseCollection.id}`);
+    const stats = calculateCollectionStats(visibleCollections, baseCollection, statusMap);
+    debugLog.perf.timeEnd(`calculateCollectionStats: ${baseCollection.id}`);
     return stats;
-  }, [collection, statusMap]);
+  }, [baseCollection, visibleCollections, statusMap]);
 }
 
-type AggreatedCollectionStats = {
+type AggregatedCollectionStats = {
   totalCollections: number;
-  totalItems: number;
-  collectedItems: number;
-  ownedItems: number;
-  totalComps: number;
-  collectedComps: number;
-  ownedComps: number;
+  items: StatsCounter;
+  comps: StatsCounter;
 };
 
-function calculateAggreatedCollectionStats(
-  collections: TemplateCollection[],
-  statusMaps: Profile['collections']
-): AggreatedCollectionStats {
-  const result: AggreatedCollectionStats = {
-    totalCollections: collections.length,
-    totalItems: 0,
-    collectedItems: 0,
-    ownedItems: 0,
-    totalComps: 0,
-    collectedComps: 0,
-    ownedComps: 0,
+function addStatsCounter(target: StatsCounter, source: StatsCounter) {
+  target.total += source.total;
+  target.collected += source.collected;
+  target.owned += source.owned;
+}
+
+function calculateAggregatedCollectionStats(
+  visibleCollectionss: TemplateCollection[],
+  statusMaps: Profile['collections'],
+  baseCollectionMap?: Record<string, TemplateCollection>
+): AggregatedCollectionStats {
+  const result: AggregatedCollectionStats = {
+    totalCollections: visibleCollectionss.length,
+    items: { total: 0, collected: 0, owned: 0 },
+    comps: { total: 0, collected: 0, owned: 0 },
   };
 
-  for (const collection of collections) {
-    const stats = calculateCollectionStats(collection, statusMaps[collection.id] ?? {});
-    result.totalItems += stats.totalItems;
-    result.collectedItems += stats.collectedItems;
-    result.ownedItems += stats.ownedItems;
-    result.totalComps += stats.totalComps;
-    result.collectedComps += stats.collectedComps;
-    result.ownedComps += stats.ownedComps;
+  for (const c of visibleCollectionss) {
+    // for global stats where visible equals base
+    const baseCollection = baseCollectionMap?.[c.id] ?? c;
+
+    const stats = calculateCollectionStats(c, baseCollection, statusMaps[baseCollection.id]);
+    addStatsCounter(result.items, stats.items);
+    addStatsCounter(result.comps, stats.comps);
   }
 
   return result;
 }
 
-export function useAggreatedCollectionStats(collections: TemplateCollection[]) {
-  const statusMaps = useActiveProfileStore(state => state.profile?.collections);
+export function useAggregatedCollectionStats(
+  visibleCollectionss: TemplateCollection[],
+  baseCollectionMap?: Record<string, TemplateCollection>
+) {
+  const statusMaps = useActiveProfileStore(state => state.profile?.collections ?? {});
   return useMemo(() => {
-    debugLog.perf.time(`calculateAggreatedCollectionStats`);
-    const stats = calculateAggreatedCollectionStats(collections, statusMaps ?? {});
-    debugLog.perf.timeEnd(`calculateAggreatedCollectionStats`);
+    debugLog.perf.time(`calculateAggregatedCollectionStats`);
+    const stats = calculateAggregatedCollectionStats(
+      visibleCollectionss,
+      statusMaps,
+      baseCollectionMap
+    );
+    debugLog.perf.timeEnd(`calculateAggregatedCollectionStats`);
     return stats;
-  }, [collections, statusMaps]);
+  }, [visibleCollectionss, baseCollectionMap, statusMaps]);
 }

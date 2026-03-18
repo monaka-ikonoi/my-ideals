@@ -12,18 +12,18 @@ import { useDialogStore } from '@/stores/dialogStore';
 
 type CollectionPanelProps = {
   collection: TemplateCollection;
-  statsCollection: TemplateCollection;
+  baseCollection: TemplateCollection;
 };
 
 export const CollectionPanel = memo(function CollectionPanel({
   collection,
-  statsCollection,
+  baseCollection,
 }: CollectionPanelProps) {
   debugLog.render.log(`CollectionPanel render: ${collection.id}`);
 
   const { t } = useTranslation();
 
-  const stats = useCollectionStats(statsCollection);
+  const stats = useCollectionStats(collection, baseCollection);
 
   const enableCount = useActiveProfileStore(state =>
     profileHasFlag(state.profile!, ProfileFlags.ENABLE_COUNT)
@@ -42,17 +42,17 @@ export const CollectionPanel = memo(function CollectionPanel({
             >
               <span>
                 {t('stats.collected', {
-                  item: stats.collectedItems,
-                  totalItem: stats.totalItems,
-                  comp: stats.collectedComps,
-                  totalComp: stats.totalComps,
+                  item: stats.items.collected,
+                  totalItem: stats.items.total,
+                  comp: stats.comps.collected,
+                  totalComp: stats.comps.total,
                 })}
               </span>
               {enableCount && (
                 <span>
                   {t('stats.owned', {
-                    items: stats.ownedItems,
-                    comps: stats.ownedComps,
+                    items: stats.items.owned,
+                    comps: stats.comps.owned,
                   })}
                 </span>
               )}

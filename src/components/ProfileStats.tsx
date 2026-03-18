@@ -2,18 +2,19 @@ import { useTranslation } from 'react-i18next';
 import type { TemplateCollection } from '@/domain/template';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
-import { useAggreatedCollectionStats } from '@/hooks/useStats';
+import { useAggregatedCollectionStats } from '@/hooks/useStats';
 
 type ProfileStatsProps = {
-  filteredCollections: TemplateCollection[];
+  visibleCollections: TemplateCollection[];
+  baseCollectionMap: Record<string, TemplateCollection>;
 };
 
-export function ProfileStats({ filteredCollections }: ProfileStatsProps) {
+export function ProfileStats({ visibleCollections, baseCollectionMap }: ProfileStatsProps) {
   const { t } = useTranslation();
 
   const allCollections = useActiveProfileStore(state => state.template?.collections) ?? [];
-  const globalStats = useAggreatedCollectionStats(allCollections);
-  const currentStats = useAggreatedCollectionStats(filteredCollections);
+  const globalStats = useAggregatedCollectionStats(allCollections);
+  const currentStats = useAggregatedCollectionStats(visibleCollections, baseCollectionMap);
 
   const enableCount = useActiveProfileStore(state =>
     profileHasFlag(state.profile!, ProfileFlags.ENABLE_COUNT)
@@ -30,17 +31,17 @@ export function ProfileStats({ filteredCollections }: ProfileStatsProps) {
         <span>{t('stats.collections', { count: stats.totalCollections })}</span>
         <span>
           {t('stats.collected', {
-            item: stats.collectedItems,
-            totalItem: stats.totalItems,
-            comp: stats.collectedComps,
-            totalComp: stats.totalComps,
+            item: stats.items.collected,
+            totalItem: stats.items.total,
+            comp: stats.comps.collected,
+            totalComp: stats.comps.total,
           })}
         </span>
         {enableCount && (
           <span>
             {t('stats.owned', {
-              items: stats.ownedItems,
-              comps: stats.ownedComps,
+              items: stats.items.owned,
+              comps: stats.comps.owned,
             })}
           </span>
         )}
