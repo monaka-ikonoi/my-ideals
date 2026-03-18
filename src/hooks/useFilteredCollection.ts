@@ -13,33 +13,27 @@ type FilteredCollectionsResult = {
 };
 
 function useFilteredCollections(
+  collections: TemplateCollection[],
   cachedStatus: ProfileCollection,
-  searchQuery: string,
   hideCompleted: boolean
 ): FilteredCollectionsResult {
-  const collections = useActiveProfileStore(state => state.template?.collections);
   const selectedMembers = useActiveProfileStore(state => state.profile?.selectedMembers);
 
   return useMemo((): FilteredCollectionsResult => {
-    if (!collections) return { filteredCollections: [], hiddenCount: 0 };
+    if (collections.length === 0) return { filteredCollections: [], hiddenCount: 0 };
 
     const selected = new Set(selectedMembers);
-    const query = searchQuery.trim().toLowerCase();
 
-    if (selected.size === 0 && !searchQuery && !hideCompleted)
+    if (selected.size === 0 && !hideCompleted)
       return { filteredCollections: collections, hiddenCount: 0 };
 
     debugLog.store.log(
-      `Apply filter, members: [${[...selected].join(',')}], query: "${query}", hideCompleted: ${hideCompleted}`
+      `Apply filter, members: [${[...selected].join(',')}], hideCompleted: ${hideCompleted}`
     );
     debugLog.perf.time('Apply filter');
 
     const result = collections.reduce<FilteredCollectionsResult>(
       (acc, collection) => {
-        if (query && !collection.name.toLowerCase().includes(query)) {
-          return acc;
-        }
-
         const items =
           selected.size === 0
             ? collection.items
@@ -49,11 +43,11 @@ function useFilteredCollections(
                   : item.member.some(m => selected.has(m))
               );
 
-        if (items.length == 0) {
+        if (items.length === 0) {
           return acc;
         }
 
-        if (hideCompleted && cachedStatus) {
+        if (hideCompleted) {
           const status = cachedStatus[collection.id] ?? {};
 
           if (items.every(item => normalizeStatusBoolean(status[item.id]) === true)) {
@@ -70,7 +64,7 @@ function useFilteredCollections(
 
     debugLog.perf.timeEnd('Apply filter');
     return result;
-  }, [collections, cachedStatus, selectedMembers, searchQuery, hideCompleted]);
+  }, [collections, cachedStatus, selectedMembers, hideCompleted]);
 }
 
 function useVisibleCollections(
@@ -100,33 +94,58 @@ function useVisibleCollections(
   }, [filteredCollections, cachedStatus, itemStatus]);
 }
 
-function useSearchSuggestions(collections: TemplateCollection[], searchQuery: string): string[] {
+function useSearchedCollections(
+  collections: TemplateCollection[],
+  query: string
+): TemplateCollection[] {
   return useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
+    if (collections.length === 0) return [];
+    if (!query) return collections;
+
+    debugLog.store.log(`Search with query ${query}`);
+    debugLog.perf.time('Apply search');
+    const result = collections.reduce<TemplateCollection[]>((acc, collection) => {
+      if (!collection.name.toLowerCase().includes(query)) return acc;
+      acc.push(collection);
+      return acc;
+    }, []);
+
+    debugLog.perf.timeEnd('Apply search');
+    return result;
+  }, [collections, query]);
+}
+
+function useSearchSuggestions(collections: TemplateCollection[], query: string): string[] {
+  return useMemo(() => {
     if (!query) return [];
 
     return collections
       .filter(collection => collection.name.toLowerCase().includes(query))
       .map(collection => collection.name);
-  }, [collections, searchQuery]);
+  }, [collections, query]);
 }
 
 export function useCollectionFilter() {
   const [searchQuery, setSearchQuery] = useState('');
   const [hideCompleted, setHideCompleted] = useState(false);
   const [filterStatus, setFilterStatus] = useState<FilterItemStatus>('all');
-  const deferredQuery = useDeferredValue(searchQuery);
+
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const deferredQuery = useDeferredValue(normalizedQuery);
 
   debugLog.perf.time('useCollectionFilter');
+  const collections = useActiveProfileStore(state => state.template?.collections) ?? [];
   const cachedStatus = useActiveProfileStore.getState().profile?.collections ?? {};
+
   const { filteredCollections, hiddenCount } = useFilteredCollections(
+    collections,
     cachedStatus,
-    deferredQuery,
     hideCompleted
   );
 
   const visibleCollections = useVisibleCollections(cachedStatus, filteredCollections, filterStatus);
 
+  const searchedCollections = useSearchedCollections(visibleCollections, deferredQuery);
   const searchSuggestions = useSearchSuggestions(visibleCollections, searchQuery);
 
   const collectionMap = useMemo(() => {
@@ -151,7 +170,7 @@ export function useCollectionFilter() {
       setFilterStatus,
     },
     filteredCollections,
-    visibleCollections,
+    visibleCollections: searchedCollections,
     collectionMap,
     hiddenCount,
   };
