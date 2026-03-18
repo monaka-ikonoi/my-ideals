@@ -11,7 +11,7 @@ import { AppleItpWarning } from './AppleItpWarning';
 export function CollectionPage() {
   const { t } = useTranslation();
 
-  const { displayCollections, collectionMap, filterProps, hiddenCount } = useCollectionFilter();
+  const { visibleCollections, collectionMap, filterProps, hiddenCount } = useCollectionFilter();
 
   return (
     <main className="mx-auto max-w-[512px] space-y-6 px-4 py-6 md:max-w-[1024px] 2xl:max-w-[1664px]">
@@ -21,12 +21,12 @@ export function CollectionPage() {
         <div className="my-4 border-t border-gray-200" />
         <CollectionFilter hiddenCount={hiddenCount} {...filterProps} />
         <div className="my-4 border-t border-gray-200" />
-        <ProfileStats visibleCollections={displayCollections} baseCollectionMap={collectionMap} />
+        <ProfileStats visibleCollections={visibleCollections} baseCollectionMap={collectionMap} />
       </div>
 
       {/* Collections - Virtualized*/}
       <Virtuoso
-        data={displayCollections}
+        data={visibleCollections}
         useWindowScroll
         overscan={3}
         itemContent={(_, collection) => (

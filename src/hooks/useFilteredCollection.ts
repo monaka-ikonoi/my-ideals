@@ -73,7 +73,7 @@ function useFilteredCollections(
   }, [collections, cachedStatus, selectedMembers, searchQuery, hideCompleted]);
 }
 
-function useDisplayCollections(
+function useVisibleCollections(
   cachedStatus: ProfileCollection,
   filteredCollections: TemplateCollection[],
   itemStatus: FilterItemStatus
@@ -81,8 +81,8 @@ function useDisplayCollections(
   return useMemo(() => {
     if (itemStatus === 'all') return filteredCollections;
 
-    debugLog.perf.log(`Apply display filter, status: ${itemStatus}`);
-    debugLog.perf.time(`Apply display filter`);
+    debugLog.perf.log(`Apply visible filter, status: ${itemStatus}`);
+    debugLog.perf.time(`Apply visible filter`);
     const result = filteredCollections.reduce<TemplateCollection[]>((acc, collection) => {
       const items = collection.items.filter(item => {
         const owned = normalizeStatusBoolean(cachedStatus[collection.id]?.[item.id] ?? false);
@@ -95,7 +95,7 @@ function useDisplayCollections(
       return acc;
     }, []);
 
-    debugLog.perf.timeEnd(`Apply display filter`);
+    debugLog.perf.timeEnd(`Apply visible filter`);
     return result;
   }, [filteredCollections, cachedStatus, itemStatus]);
 }
@@ -125,9 +125,9 @@ export function useCollectionFilter() {
     hideCompleted
   );
 
-  const displayCollections = useDisplayCollections(cachedStatus, filteredCollections, filterStatus);
+  const visibleCollections = useVisibleCollections(cachedStatus, filteredCollections, filterStatus);
 
-  const searchSuggestions = useSearchSuggestions(displayCollections, searchQuery);
+  const searchSuggestions = useSearchSuggestions(visibleCollections, searchQuery);
 
   const collectionMap = useMemo(() => {
     const map: Record<string, TemplateCollection> = {};
@@ -151,7 +151,7 @@ export function useCollectionFilter() {
       setFilterStatus,
     },
     filteredCollections,
-    displayCollections,
+    visibleCollections,
     collectionMap,
     hiddenCount,
   };
