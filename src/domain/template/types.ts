@@ -16,6 +16,7 @@ export type TemplateCollectionItem = {
 export type TemplateCollection = {
   id: string;
   name: string;
+  searchTerms?: string[];
   layout?: TemplateLayout;
   items: TemplateCollectionItem[];
 };

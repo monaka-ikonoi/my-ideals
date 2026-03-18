@@ -29,6 +29,7 @@ const TemplateCollectionItem = z.object({
 const TemplateCollection = z.object({
   id: z.string(),
   name: z.string(),
+  searchTerms: z.array(z.string().min(1)).min(1).optional(),
   layout: TemplateLayoutSchema.optional(),
   items: z.array(TemplateCollectionItem),
 });

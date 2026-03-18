@@ -153,7 +153,10 @@ export function useCollectionFilter() {
   const searchIndexMap = useMemo(() => {
     const map = new Map<string, SearchIndex>();
     for (const collection of collections) {
-      map.set(collection.id, compileSearchIndex([collection.name]));
+      map.set(
+        collection.id,
+        compileSearchIndex([collection.name, ...(collection.searchTerms ?? [])])
+      );
     }
     return map;
   }, [collections]);
