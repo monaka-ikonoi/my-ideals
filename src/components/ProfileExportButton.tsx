@@ -18,8 +18,17 @@ export function ProfileExportButton({ children, className }: ProfileExportButton
     const blob = new Blob([json], { type: 'application/json' });
     const filename = `my-ideals-profile-${profile.id}.json`;
     const url = URL.createObjectURL(blob);
-    Object.assign(document.createElement('a'), { href: url, download: filename }).click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    // Append to DOM, required for iOS Safari to respect the click
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
   };
 
   return (
