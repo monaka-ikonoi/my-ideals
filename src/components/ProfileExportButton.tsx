@@ -17,7 +17,7 @@ export function ProfileExportButton({ children, className }: ProfileExportButton
 
     const filename = `my-ideals-profile-${profile.id}.json`;
     const json = DEV_MODE ? JSON.stringify(profile, null, 2) : JSON.stringify(profile);
-    const file = new File([json], filename, { type: 'application/json;charset=utf-8' });
+    const file = new File([json], filename, { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(file);
 
     if (navigator && isIos(navigator.userAgent) && navigator.canShare?.({ files: [file] })) {
