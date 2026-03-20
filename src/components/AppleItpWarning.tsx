@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { isIos, isMacSafari } from '@/utils/userAgent';
 
 const isItpAffected = () => {
   if (typeof navigator === 'undefined') return false;
 
   const ua = navigator.userAgent;
 
-  return (
-    /iPad|iPhone|iPod/.test(ua) ||
-    (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) || // iPadOS 13+ would fake its User-Agent to macOS
-    (/Macintosh/.test(ua) && /Safari/.test(ua) && !/Chrome/.test(ua)) // Safari on macOS
-  );
+  return isIos(ua) || isMacSafari(ua);
 };
 
 export function AppleItpWarning() {
