@@ -8,10 +8,12 @@ import { bootstrap } from './bootstrap.ts';
 
 console.log(`${APP_NAME} ${LONG_VERSION} (${MODE}) build at ${BUILD_TIME_RAW}`);
 
-bootstrap();
+void (async () => {
+  await bootstrap();
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <App />
+    </StrictMode>
+  );
+})();

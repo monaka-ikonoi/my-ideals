@@ -20,9 +20,7 @@ export default function App() {
   }, [t]);
 
   useEffect(() => {
-    (async () => {
-      await useProfileListStore.getState().initialize();
-    })();
+    void useProfileListStore.getState().initialize();
   }, []);
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import type { Profile } from '@/domain/profile';
 import { localStorageOps } from './localStorage';
 import { indexedDbOps } from './indexedDb';
-import { getStorageBackend } from './runtime';
+import { getStorageBackend, type StorageBackend } from './runtime';
 
 export type ProfileStorageOps = {
   listProfiles: () => Promise<string[]>;
@@ -15,5 +15,5 @@ const ProfileStorageBackends = {
   indexedDb: indexedDbOps,
 };
 
-export const getProfileStorage = (): ProfileStorageOps =>
-  ProfileStorageBackends[getStorageBackend()];
+export const getProfileStorage = (backend?: StorageBackend): ProfileStorageOps =>
+  ProfileStorageBackends[backend ?? getStorageBackend()];
