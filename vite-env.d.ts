@@ -7,6 +7,8 @@ interface ImportMetaEnv {
 
   readonly VITE_DEBUG: string;
   readonly VITE_DEBUG_CATEGORIES: string;
+
+  readonly VITE_STORAGE_BACKEND: string;
 }
 
 interface ImportMeta {

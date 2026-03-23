@@ -4,17 +4,18 @@ import { useProfileListStore } from './stores/profileListStore';
 import { useActiveProfileStore } from './stores/activeProfileStore';
 import { migrateProfileStorage } from './storage/migrate';
 import { debugLog } from './utils/debug';
+import { getConfiguredStorageBackend } from './storage/config';
 
 export async function bootstrap() {
   let currentBackend = useSettingsStore.getState().storageBackend;
-  const expectedBackend = 'localStorage';
+  const configuredBackend = getConfiguredStorageBackend();
 
   debugLog.store.log(`Current storage backend: ${currentBackend}`);
 
-  if (currentBackend != expectedBackend) {
-    await migrateProfileStorage(currentBackend, expectedBackend);
-    useSettingsStore.getState().setStorageBackend(expectedBackend);
-    currentBackend = expectedBackend;
+  if (currentBackend != configuredBackend) {
+    await migrateProfileStorage(currentBackend, configuredBackend);
+    useSettingsStore.getState().setStorageBackend(configuredBackend);
+    currentBackend = configuredBackend;
   }
   setStorageBackend(currentBackend);
 
