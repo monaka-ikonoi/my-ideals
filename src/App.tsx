@@ -26,13 +26,21 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const handleBeforeUnload = () => {
+    const flushSafely = () => {
       void useActiveProfileStore.getState().flush();
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') flushSafely();
+    };
+
+    window.addEventListener('beforeunload', flushSafely);
+    window.addEventListener('pagehide', flushSafely);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('beforeunload', flushSafely);
+      window.removeEventListener('pagehide', flushSafely);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
