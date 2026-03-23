@@ -57,7 +57,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
 
   return (
     <div
-      className={`flex h-full w-full flex-col overflow-hidden rounded-md
+      className={`flex w-full flex-col overflow-hidden rounded-md
         ${!enableCount ? 'cursor-pointer' : ''} ${item.rotated ? 'col-span-2' : ''}`}
       onClick={() => {
         if (!enableCount) toggleStatus(collectionId, item.id);

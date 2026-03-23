@@ -32,9 +32,9 @@ export const CollectionGrid = memo(function CollectionGrid({
     <div
       className={
         mode === 'export'
-          ? `mx-auto grid max-w-[1600px] grid-cols-[repeat(var(--cols),minmax(0,1fr))]
+          ? `mx-auto grid max-w-[1600px] grid-cols-[repeat(var(--cols),minmax(0,1fr))] items-start
             gap-[calc(36*var(--spacing)/var(--cols))]`
-          : `mx-auto grid max-w-[480px] grid-cols-[repeat(var(--cols),minmax(0,1fr))]
+          : `mx-auto grid max-w-[480px] grid-cols-[repeat(var(--cols),minmax(0,1fr))] items-start
             gap-[var(--gap)] [--cols:var(--cols-xs)] [--gap:calc(6*var(--spacing)/var(--cols))]
             md:max-w-[960px] md:[--cols:var(--cols-md)]
             md:[--gap:calc(18*var(--spacing)/var(--cols))] 2xl:max-w-[1600px]
