@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { LONG_VERSION, APP_NAME, BUILD_TIME_RAW } from '@/utils/appInfo';
 import LICENSE_TEXT from '#/LICENSE?raw';
+import { getStorageBackend } from '@/storage/runtime';
 
 const GITHUB_REPO = 'monaka-ikonoi/my-ideals';
 const GITHUB_URL = `https://github.com/${GITHUB_REPO}`;
@@ -45,6 +46,7 @@ export function AboutDialog({ onClose }: { onClose: () => void }) {
           <div className="text-sm text-gray-600">
             Build at {buildTime.toLocaleString(i18n.language)}
           </div>
+          <div className="text-sm text-gray-600">Storage backend: {getStorageBackend()}</div>
         </div>
 
         <pre
