@@ -3,7 +3,7 @@ import { subscribeWithSelector, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { nanoid } from 'nanoid';
 import { type Profile, type ProfileFlag, type ProfileTemplateInfo } from '@/domain/profile';
-import { ProfileStorage } from '@/storage/ProfileStorage';
+import { getProfileStorage } from '@/storage/ProfileStorage';
 
 export type ProfileListEntry = {
   id: string;
@@ -42,7 +42,7 @@ export const useProfileListStore = create<ProfileListStore>()(
           const { profiles, activeId, isInitialized } = get();
           if (isInitialized) return;
 
-          const existingIds = new Set(await ProfileStorage.listProfiles());
+          const existingIds = new Set(await getProfileStorage().listProfiles());
           const validProfiles = profiles.filter(p => {
             if (existingIds.has(p.id)) {
               existingIds.delete(p.id);
@@ -53,7 +53,7 @@ export const useProfileListStore = create<ProfileListStore>()(
           });
 
           for (const id of existingIds) {
-            const profile = await ProfileStorage.getProfile(id);
+            const profile = await getProfileStorage().getProfile(id);
             if (profile) {
               validProfiles.push({ id, name: profile.name });
               console.log(`Found unrecorded profile ${id}`);
@@ -87,7 +87,7 @@ export const useProfileListStore = create<ProfileListStore>()(
           // Reset the revision to trigger a sync later
           newProfile.template.revision = 0;
 
-          await ProfileStorage.setProfile(newProfile);
+          await getProfileStorage().setProfile(newProfile);
 
           set(state => {
             state.profiles.push({ id, name });
@@ -105,7 +105,7 @@ export const useProfileListStore = create<ProfileListStore>()(
             finalProfile = { ...profile, id: nanoid() };
           }
 
-          await ProfileStorage.setProfile(finalProfile);
+          await getProfileStorage().setProfile(finalProfile);
 
           set(state => {
             if (existingIndex >= 0 && overwrite) {
@@ -118,7 +118,7 @@ export const useProfileListStore = create<ProfileListStore>()(
         },
 
         deleteProfile: async id => {
-          await ProfileStorage.deleteProfile(id);
+          await getProfileStorage().deleteProfile(id);
 
           set(state => {
             const index = state.profiles.findIndex(p => p.id === id);

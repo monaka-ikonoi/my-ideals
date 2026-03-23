@@ -3,8 +3,7 @@ import { immer } from 'zustand/middleware/immer';
 import { debounce } from 'lodash-es';
 import { ProfileFlags, profileHasFlag, type Profile, type ProfileFlag } from '@/domain/profile';
 import { type Template } from '@/domain/template';
-import { ProfileStorage } from '@/storage/ProfileStorage';
-import { useProfileListStore } from './profileListStore';
+import { getProfileStorage } from '@/storage/ProfileStorage';
 import { debugLog } from '@/utils/debug';
 import {
   diffProfileWithTemplate,
@@ -47,7 +46,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
       const { profile } = get();
       if (!profile) return;
 
-      await ProfileStorage.setProfile(profile);
+      await getProfileStorage().setProfile(profile);
       debugLog.store.log(`Profile ${profile.id} saved`);
     }, 500);
 
@@ -87,7 +86,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           });
         };
 
-        let profile = await ProfileStorage.getProfile(profileId);
+        let profile = await getProfileStorage().getProfile(profileId);
         if (!profile) {
           setError('profile', `Unable to load Profile ${profileId}`);
           return;
@@ -103,7 +102,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
             `Template link updated from ${profile.template.link} to ${templateResult.url}`
           );
           profile.template.link = templateResult.url;
-          await ProfileStorage.setProfile(profile);
+          await getProfileStorage().setProfile(profile);
         }
         const template = templateResult.template;
 
@@ -117,7 +116,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           }
           if (!pendingSync) {
             profile = syncProfileWithTemplate(profile, template, false);
-            await ProfileStorage.setProfile(profile);
+            await getProfileStorage().setProfile(profile);
           }
         }
 
@@ -165,7 +164,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
         }
 
         const synced = syncProfileWithTemplate(profile, template, cleanup);
-        await ProfileStorage.setProfile(synced);
+        await getProfileStorage().setProfile(synced);
 
         set(state => {
           state.profile = synced;
@@ -267,16 +266,4 @@ export const useActiveProfileStore = create<activeProfileStore>()(
       },
     };
   })
-);
-
-useProfileListStore.subscribe(
-  state => state.activeId,
-  activeId => {
-    if (activeId) {
-      void useActiveProfileStore.getState().load(activeId);
-    } else {
-      void useActiveProfileStore.getState().clear();
-    }
-  },
-  { fireImmediately: true }
 );
