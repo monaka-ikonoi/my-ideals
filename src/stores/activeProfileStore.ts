@@ -38,7 +38,7 @@ type activeProfileStore = {
   toggleMember: (member: string) => void;
   updateName: (name: string) => void;
   updateTemplateInfo: (url: string, templateId?: string) => void;
-  toogleFlag: (flag: ProfileFlag, enabled: boolean) => void;
+  toggleFlag: (flag: ProfileFlag, enabled: boolean) => void;
 };
 
 export const useActiveProfileStore = create<activeProfileStore>()(
@@ -240,7 +240,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
         debouncedSave();
       },
 
-      toogleFlag: (flag: ProfileFlag, enabled: boolean) => {
+      toggleFlag: (flag: ProfileFlag, enabled: boolean) => {
         set(state => {
           if (!state.profile) return;
 

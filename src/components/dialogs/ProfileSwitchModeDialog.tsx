@@ -18,7 +18,7 @@ export function ProfileSwitchModeDialog({
 
   const handleConfirmSwitch = (value: string) => {
     if (value === 'switch' && profileId) {
-      useActiveProfileStore.getState().toogleFlag(ProfileFlags.ENABLE_COUNT, enableCount);
+      useActiveProfileStore.getState().toggleFlag(ProfileFlags.ENABLE_COUNT, enableCount);
     }
     onClose();
   };
