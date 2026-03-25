@@ -48,7 +48,7 @@ export function ProfileList({ onSelect }: ProfileListProps) {
               )}
 
               <div className="min-w-0 flex-1">
-                <span className="truncate">{profile.name}</span>
+                <div className="truncate">{profile.name}</div>
                 <div className="truncate font-mono text-xs text-gray-400">ID: {profile.id}</div>
               </div>
 
