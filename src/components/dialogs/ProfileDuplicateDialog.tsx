@@ -10,7 +10,7 @@ type ProfileDuplicateDialogProps = {
 };
 
 export function ProfileDuplicateDialog({ onClose }: ProfileDuplicateDialogProps) {
-  const profile = useActiveProfileStore(state => state.profile!);
+  const profile = useActiveProfileStore.getState().profile!;
   const { t } = useTranslation();
 
   const [newName, setNewName] = useState(
@@ -21,9 +21,9 @@ export function ProfileDuplicateDialog({ onClose }: ProfileDuplicateDialogProps)
     const trimmedName = newName.trim();
     if (trimmedName) {
       const duplicated = structuredClone(profile);
-      duplicated.name = newName;
+      duplicated.name = trimmedName;
       useProfileListStore.getState().importProfile(duplicated, false);
-      toast.success(t('toast.profile-duplicate.success', { name: newName }));
+      toast.success(t('toast.profile-duplicate.success', { name: trimmedName }));
     }
     onClose();
   };
