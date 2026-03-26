@@ -21,7 +21,8 @@
     "template": "テンプレート",
     "close": "閉じる",
     "share": "シェア",
-    "download": "ダウンロード"
+    "download": "ダウンロード",
+    "ok": "決定"
   },
   "profile": {
     "create": "新規プロファイル",
@@ -41,7 +42,8 @@
       "count": "複数モード",
       "standard": "通常モード",
       "switch": "モードを切り替え"
-    }
+    },
+    "duplicate": "コピーを作成"
   },
   "settings": {
     "language": "言語",
@@ -127,6 +129,11 @@
     },
     "collection-edit": {
       "title": "「{{name}}」を編集"
+    },
+    "profile-duplicate": {
+      "title": "プロフィールのコピーを作成",
+      "name-label": "新しいプロフィール名",
+      "name-default": "{{name}} のコピー"
     }
   },
   "input": {
@@ -154,6 +161,9 @@
   },
   "toast": {
     "profile-deleted": "プロファイル「{{name}}」を削除しました",
-    "template-link-copied": "テンプレートリンクをコピーしました"
+    "template-link-copied": "テンプレートリンクをコピーしました",
+    "profile-duplicate": {
+      "success": "プロフィールのコピーを作成しました：{{name}}"
+    }
   }
 }

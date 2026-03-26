@@ -6,6 +6,7 @@ type DialogState =
   | { type: 'import-profile' }
   | { type: 'delete-profile'; profileId: string; profileName: string }
   | { type: 'rename-profile'; profileId: string; profileName: string }
+  | { type: 'duplicate-profile';}
   | {
       type: 'edit-profile-template-url';
       profileId: string;
@@ -25,6 +26,7 @@ type DialogStore = {
   openImportProfile: () => void;
   openDeleteProfile: (profileId: string, profileName: string) => void;
   openRenameProfile: (profileId: string, profileName: string) => void;
+  openDuplicateProfile: () => void;
   openEditProfileTemplateUrl: (profileId: string, templateId: string, currentUrl: string) => void;
   openSwitchProfileMode: (profileId: string, enableCount: boolean) => void;
   openCollectionImagePreview: (image: Blob, fileName: string) => void;
@@ -43,6 +45,7 @@ export const useDialogStore = create<DialogStore>(set => ({
     set({ activeDialog: { type: 'delete-profile', profileId, profileName } }),
   openRenameProfile: (profileId, profileName) =>
     set({ activeDialog: { type: 'rename-profile', profileId, profileName } }),
+  openDuplicateProfile: () => set({ activeDialog: { type: 'duplicate-profile' } }),
   openEditProfileTemplateUrl: (profileId, templateId, currentUrl) =>
     set({
       activeDialog: {

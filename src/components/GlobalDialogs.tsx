@@ -10,6 +10,7 @@ import { ProfileSwitchModeDialog } from './dialogs/ProfileSwitchModeDialog';
 import { CollectionImagePreviewDialog } from './dialogs/CollectionImagePreviewDialog';
 import { AboutDialog } from './dialogs/AboutDialog';
 import { CollectionEditModal } from './dialogs/CollectionEditModal';
+import { ProfileDuplicateDialog } from './dialogs/ProfileDuplicateDialog';
 
 export function GlobalDialogs() {
   const activeDialog = useDialogStore(state => state.activeDialog);
@@ -35,6 +36,9 @@ export function GlobalDialogs() {
           profileName={activeDialog.profileName}
           onClose={closeDialog}
         />
+      )}
+      {activeDialog.type === 'duplicate-profile' && (
+        <ProfileDuplicateDialog onClose={closeDialog} />
       )}
       {activeDialog.type === 'edit-profile-template-url' && (
         <ProfileEditTemplateUrlDialog

@@ -21,7 +21,8 @@
     "template": "Template",
     "close": "Close",
     "download": "Download",
-    "share": "Share"
+    "share": "Share",
+    "ok": "OK"
   },
   "profile": {
     "create": "New Profile",
@@ -41,7 +42,8 @@
       "standard": "Standard Mode",
       "count": "Quantity mode",
       "switch": "Switch Mode"
-    }
+    },
+    "duplicate": "Create Copy"
   },
   "settings": {
     "language": "Language",
@@ -127,6 +129,11 @@
     },
     "collection-edit": {
       "title": "Edit \"{{name}}\""
+    },
+    "profile-duplicate": {
+      "title": "Create Profile Copy",
+      "name-label": "New profile name",
+      "name-default": "Copy of {{name}}"
     }
   },
   "input": {
@@ -154,6 +161,9 @@
   },
   "toast": {
     "profile-deleted": "Profile {{name}} deleted",
-    "template-link-copied": "Template link copied"
+    "template-link-copied": "Template link copied",
+    "profile-duplicate": {
+      "success": "Created profile copy: {{name}}"
+    }
   }
 }

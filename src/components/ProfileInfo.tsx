@@ -5,6 +5,7 @@ import {
   LinkIcon,
   ClipboardDocumentCheckIcon,
   ArrowsRightLeftIcon,
+  DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
 import { InlineCode } from './ui/InlineCode';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
@@ -40,14 +41,21 @@ export function ProfileInfo() {
     <div className="space-y-2">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
         {/* Profile Name */}
-        <div className="flex items-center gap-2">
-          <h1 className="text-xl font-semibold text-gray-900">{profileName}</h1>
+        <div className="flex items-center gap-1">
+          <h1 className="pr-2 text-xl font-semibold text-gray-900">{profileName}</h1>
           <button
             onClick={() => useDialogStore.getState().openRenameProfile(profileId, profileName)}
             className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
             title={t('profile.rename')}
           >
             <PencilIcon className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => useDialogStore.getState().openDuplicateProfile()}
+            className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            title={t('profile.duplicate')}
+          >
+            <DocumentDuplicateIcon className="h-4 w-4" />
           </button>
         </div>
 

@@ -21,7 +21,8 @@
     "template": "模板",
     "close": "关闭",
     "download": "下载",
-    "share": "分享"
+    "share": "分享",
+    "ok": "确定"
   },
   "profile": {
     "import": "导入档案",
@@ -41,7 +42,8 @@
       "standard": "标准模式",
       "count": "复数模式",
       "switch": "切换模式"
-    }
+    },
+    "duplicate": "创建副本"
   },
   "settings": {
     "language": "语言",
@@ -127,6 +129,11 @@
     },
     "collection-edit": {
       "title": "编辑 \"{{name}}\""
+    },
+    "profile-duplicate": {
+      "title": "创建档案副本",
+      "name-label": "新档案名称",
+      "name-default": "{{name}} 的副本"
     }
   },
   "input": {
@@ -154,6 +161,9 @@
   },
   "toast": {
     "profile-deleted": "已删除档案\"{{name}}\"",
-    "template-link-copied": "模板链接已复制"
+    "template-link-copied": "模板链接已复制",
+    "profile-duplicate": {
+      "success": "已创建档案副本：{{name}}"
+    }
   }
 }
