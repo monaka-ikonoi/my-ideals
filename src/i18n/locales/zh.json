@@ -133,7 +133,8 @@
     "profile-duplicate": {
       "title": "创建档案副本",
       "name-label": "新档案名称",
-      "name-default": "{{name}} 的副本"
+      "name-default": "{{name}} 的副本",
+      "switch-after": "复制后切换到副本"
     }
   },
   "input": {

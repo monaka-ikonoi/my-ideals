@@ -25,6 +25,7 @@ export function ProfileDuplicateDialog({ onClose }: ProfileDuplicateDialogProps)
   const [newName, setNewName] = useState(
     t('dialog.profile-duplicate.name-default', { name: profile.name })
   );
+  const [switchToDuplicated, setSwitchToDuplicated] = useState(true);
 
   const handleDuplicate = async () => {
     const trimmedName = newName.trim();
@@ -33,7 +34,7 @@ export function ProfileDuplicateDialog({ onClose }: ProfileDuplicateDialogProps)
         const duplicated = structuredClone(profile);
         duplicated.name = trimmedName;
         const duplicatedProfileId = await importProfile(duplicated, false);
-        setActiveProfile(duplicatedProfileId);
+        if (switchToDuplicated) setActiveProfile(duplicatedProfileId);
         toast.success(t('toast.profile-duplicated', { name: trimmedName }));
       }
       onClose();
@@ -68,6 +69,16 @@ export function ProfileDuplicateDialog({ onClose }: ProfileDuplicateDialogProps)
             focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none sm:text-sm"
           autoFocus
         />
+
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-600 select-none">
+          <input
+            type="checkbox"
+            checked={switchToDuplicated}
+            onChange={e => setSwitchToDuplicated(e.target.checked)}
+            className="h-4 w-4 rounded border-gray-300 accent-blue-600 focus:ring-blue-500"
+          />
+          {t('dialog.profile-duplicate.switch-after')}
+        </label>
       </div>
     </ConfirmDialog>
   );

@@ -133,7 +133,8 @@
     "profile-duplicate": {
       "title": "Create Profile Copy",
       "name-label": "New profile name",
-      "name-default": "Copy of {{name}}"
+      "name-default": "Copy of {{name}}",
+      "switch-after": "Switch to the copy after duplicating"
     }
   },
   "input": {
