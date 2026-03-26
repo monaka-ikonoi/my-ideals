@@ -44,7 +44,9 @@ export function ConfirmDialog({
     <CommonBackdrop>
       <div
         className="fixed inset-0 z-50 flex items-center justify-center p-4 text-left"
-        onClick={onCancel}
+        onMouseDown={e => {
+          if (e.target === e.currentTarget) onCancel();
+        }}
       >
         <div
           className="w-auto max-w-[90vw] min-w-[20rem] rounded-lg bg-white shadow-xl sm:max-w-3xl

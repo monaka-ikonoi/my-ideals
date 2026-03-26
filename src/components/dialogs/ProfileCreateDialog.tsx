@@ -45,7 +45,12 @@ export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
 
   return (
     <CommonBackdrop>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        onMouseDown={e => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
         <div
           className="w-full max-w-lg rounded-lg bg-white text-left shadow-xl"
           onClick={e => e.stopPropagation()}
