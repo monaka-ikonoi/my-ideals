@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useShallow } from 'zustand/shallow';
 import { useTranslation } from 'react-i18next';
 import { ZodError } from 'zod';
 import {
@@ -39,9 +40,14 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useState<ImportState>({ status: 'idle' });
 
-  const profiles = useProfileListStore(s => s.profiles);
-  const activeProfileId = useProfileListStore(s => s.activeId);
-  const importProfile = useProfileListStore(s => s.importProfile);
+  const { profiles, activeProfileId, importProfile, setActiveProfile } = useProfileListStore(
+    useShallow(state => ({
+      profiles: state.profiles,
+      activeProfileId: state.activeId,
+      importProfile: state.importProfile,
+      setActiveProfile: state.setActiveProfile,
+    }))
+  );
 
   const handleClose = () => {
     setState({ status: 'idle' });
@@ -80,9 +86,11 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     if (state.status !== 'success') return;
 
     try {
-      await importProfile(state.profile, overwrite);
+      const importedId = await importProfile(state.profile, overwrite);
+      setActiveProfile(importedId);
 
-      if (overwrite && state.profile.id === activeProfileId) {
+      // reload on overwrite
+      if (importedId === activeProfileId) {
         await useActiveProfileStore.getState().load(activeProfileId);
       }
       toast.success(t('toast.profile-imported', { name: state.profile.name }));

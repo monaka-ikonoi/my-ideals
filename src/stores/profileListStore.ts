@@ -112,7 +112,6 @@ export const useProfileListStore = create<ProfileListStore>()(
               state.profiles.splice(existingIndex, 1);
             }
             state.profiles.push({ id: finalProfile.id, name: finalProfile.name });
-            state.activeId = finalProfile.id;
           });
 
           return finalProfile.id;

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useShallow } from 'zustand/shallow';
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useProfileListStore } from '@/stores/profileListStore';
@@ -11,8 +12,15 @@ type ProfileDuplicateDialogProps = {
 };
 
 export function ProfileDuplicateDialog({ onClose }: ProfileDuplicateDialogProps) {
-  const profile = useActiveProfileStore.getState().profile!;
   const { t } = useTranslation();
+  const { importProfile, setActiveProfile } = useProfileListStore(
+    useShallow(state => ({
+      importProfile: state.importProfile,
+      setActiveProfile: state.setActiveProfile,
+    }))
+  );
+
+  const profile = useActiveProfileStore.getState().profile!;
 
   const [newName, setNewName] = useState(
     t('dialog.profile-duplicate.name-default', { name: profile.name })
@@ -24,7 +32,8 @@ export function ProfileDuplicateDialog({ onClose }: ProfileDuplicateDialogProps)
       if (trimmedName) {
         const duplicated = structuredClone(profile);
         duplicated.name = trimmedName;
-        await useProfileListStore.getState().importProfile(duplicated, false);
+        const duplicatedProfileId = await importProfile(duplicated, false);
+        setActiveProfile(duplicatedProfileId);
         toast.success(t('toast.profile-duplicated', { name: trimmedName }));
       }
       onClose();
