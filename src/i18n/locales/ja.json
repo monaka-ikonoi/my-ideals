@@ -160,10 +160,13 @@
     }
   },
   "toast": {
+    "error": "エラー：{{error}}",
     "profile-deleted": "プロファイル「{{name}}」を削除しました",
     "template-link-copied": "テンプレートリンクをコピーしました",
-    "profile-duplicate": {
-      "success": "プロフィールのコピーを作成しました：{{name}}"
-    }
+    "profile-duplicate": {},
+    "profile-created": "プロフィール「{{name}}」を作成しました",
+    "profile-template url-updated": "テンプレートリンクを更新しました",
+    "profile-imported": "プロフィール「{{name}}」をインポートしました",
+    "profile-duplicated": "プロフィールのコピーを作成しました：{{name}}"
   }
 }

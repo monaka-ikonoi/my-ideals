@@ -6,6 +6,8 @@ import { useTemplateFetcher } from '@/hooks/useTemplateFetcher';
 import { ProfileFlags, type ProfileFlag } from '@/domain/profile';
 import { TemplateUrlInput } from '../TemplateUrlInput';
 import { CommonBackdrop } from '../ui/CommonBackdrop';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/error';
 
 type ProfileCreateDialogProps = {
   onClose: () => void;
@@ -37,12 +39,17 @@ export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
     const flags: ProfileFlag[] = [];
     if (enableCount) flags.push(ProfileFlags.ENABLE_COUNT);
 
-    await createProfile(
-      name,
-      { id: template.id, link: url.trim(), revision: template.revision },
-      flags
-    );
-    onClose();
+    try {
+      await createProfile(
+        name,
+        { id: template.id, link: url.trim(), revision: template.revision },
+        flags
+      );
+      toast.success(t('toast.profile-created', { name }));
+      onClose();
+    } catch (e) {
+      toast.error(t('toast.error', { error: getErrorMessage(e) }));
+    }
   };
 
   const canCreate = fetchState.status === 'success' && profileName.trim();

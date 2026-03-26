@@ -141,7 +141,7 @@
       "label": "Template URL",
       "placeholder": "Paste template link here..",
       "invalid-url": "Invalid URL format",
-      "id-mismatch": "Template ID mismatch. Expected \\\"{{expected}}\\\", got \\\"{{actual}}\\\"."
+      "id-mismatch": "Template ID mismatch. Expected \"{{expected}}\", got \"{{actual}}\"."
     }
   },
   "stats": {
@@ -160,10 +160,13 @@
     }
   },
   "toast": {
+    "error": "Error: {{error}}",
     "profile-deleted": "Profile {{name}} deleted",
     "template-link-copied": "Template link copied",
-    "profile-duplicate": {
-      "success": "Created profile copy: {{name}}"
-    }
+    "profile-duplicate": {},
+    "profile-created": "Created profile \"{{name}}\"",
+    "profile-template url-updated": "Template link updated",
+    "profile-imported": "Imported profile \"{{name}}\"",
+    "profile-duplicated": "Created profile copy: {{name}}"
   }
 }

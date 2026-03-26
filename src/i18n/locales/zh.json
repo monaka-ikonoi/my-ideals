@@ -141,7 +141,7 @@
       "label": "模板链接",
       "placeholder": "在此粘贴模板链接",
       "invalid-url": "链接格式无效",
-      "id-mismatch": "模板 ID 不匹配。期望 \\\"{{expected}}\\\"，实际 \\\"{{actual}}\\\"。"
+      "id-mismatch": "模板 ID 不匹配。期望 \"{{expected}}\"，实际 \"{{actual}}\"。"
     }
   },
   "stats": {
@@ -160,10 +160,13 @@
     }
   },
   "toast": {
+    "error": "错误：{{error}}",
     "profile-deleted": "已删除档案\"{{name}}\"",
     "template-link-copied": "模板链接已复制",
-    "profile-duplicate": {
-      "success": "已创建档案副本：{{name}}"
-    }
+    "profile-duplicate": {},
+    "profile-created": "档案 \"{{name}}\" 已创建",
+    "profile-template url-updated": "模板链接已更新",
+    "profile-imported": "档案 \"{{name}}\" 已导入",
+    "profile-duplicated": "已创建档案副本：{{name}}"
   }
 }

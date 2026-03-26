@@ -4,6 +4,7 @@ import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useProfileListStore } from '@/stores/profileListStore';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/error';
 
 type ProfileDuplicateDialogProps = {
   onClose: () => void;
@@ -19,13 +20,17 @@ export function ProfileDuplicateDialog({ onClose }: ProfileDuplicateDialogProps)
 
   const handleDuplicate = async () => {
     const trimmedName = newName.trim();
-    if (trimmedName) {
-      const duplicated = structuredClone(profile);
-      duplicated.name = trimmedName;
-      await useProfileListStore.getState().importProfile(duplicated, false);
-      toast.success(t('toast.profile-duplicate.success', { name: trimmedName }));
+    try {
+      if (trimmedName) {
+        const duplicated = structuredClone(profile);
+        duplicated.name = trimmedName;
+        await useProfileListStore.getState().importProfile(duplicated, false);
+        toast.success(t('toast.profile-duplicated', { name: trimmedName }));
+      }
+      onClose();
+    } catch (e) {
+      toast.error(t('toast.error', { error: getErrorMessage(e) }));
     }
-    onClose();
   };
 
   return (

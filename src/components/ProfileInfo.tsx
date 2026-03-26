@@ -13,6 +13,7 @@ import { useDialogStore } from '@/stores/dialogStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { toast } from 'sonner';
 import { useShallow } from 'zustand/shallow';
+import { getErrorMessage } from '@/utils/error';
 
 export function ProfileInfo() {
   const { t } = useTranslation();
@@ -31,10 +32,14 @@ export function ProfileInfo() {
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = async () => {
-    await navigator.clipboard.writeText(profileTemplateInfo.link);
-    toast.success(t('toast.template-link-copied'));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(profileTemplateInfo.link);
+      toast.success(t('toast.template-link-copied'));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      toast.error(t('toast.error', { error: getErrorMessage(e) }));
+    }
   };
 
   return (

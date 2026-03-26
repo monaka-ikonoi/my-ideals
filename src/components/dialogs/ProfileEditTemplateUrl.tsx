@@ -4,6 +4,8 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useTemplateFetcher } from '@/hooks/useTemplateFetcher';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { TemplateUrlInput } from '../TemplateUrlInput';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/error';
 
 type ProfileEditTemplateUrlDialogProps = {
   onClose: () => void;
@@ -28,16 +30,26 @@ export function ProfileEditTemplateUrlDialog({
 
   const handleSave = async () => {
     const trimmedUrl = url.trim();
-    if (trimmedUrl !== currentUrl) {
+
+    if (trimmedUrl === currentUrl) {
+      onClose();
+      return;
+    }
+    try {
       if (state.status === 'success') {
         useActiveProfileStore.getState().updateTemplateInfo(trimmedUrl);
         await useActiveProfileStore.getState().load(profileId); // Trigger reload
       } else if (allowIdMismatch && state.status === 'id-mismatch') {
         useActiveProfileStore.getState().updateTemplateInfo(trimmedUrl, state.actualId);
         await useActiveProfileStore.getState().load(profileId); // Trigger reload
+      } else {
+        return;
       }
+      toast.success(t('toast.profile-template url-updated'));
+      onClose();
+    } catch (e) {
+      toast.error(t('toast.error', { error: getErrorMessage(e) }));
     }
-    onClose();
   };
 
   return (

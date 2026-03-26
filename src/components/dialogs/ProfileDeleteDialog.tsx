@@ -2,6 +2,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useProfileListStore } from '@/stores/profileListStore';
+import { getErrorMessage } from '@/utils/error';
 
 type ProfileDeleteDialogProps = {
   onClose: () => void;
@@ -13,11 +14,15 @@ export function ProfileDeleteDialog({ onClose, profileId, profileName }: Profile
   const { t } = useTranslation();
 
   const handleConfirmDelete = async (value: string) => {
-    if (value === 'delete' && profileId) {
-      await useProfileListStore.getState().deleteProfile(profileId);
-      toast.success(t('toast.profile-deleted', { name: profileName }));
+    try {
+      if (value === 'delete' && profileId) {
+        await useProfileListStore.getState().deleteProfile(profileId);
+        toast.success(t('toast.profile-deleted', { name: profileName }));
+      }
+      onClose();
+    } catch (e) {
+      toast.error(t('toast.error', { error: getErrorMessage(e) }));
     }
-    onClose();
   };
 
   return (

@@ -13,6 +13,8 @@ import { ProfileSchema, type Profile } from '@/domain/profile';
 import { useProfileListStore } from '@/stores/profileListStore';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { CommonBackdrop } from '../ui/CommonBackdrop';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/error';
 
 type ImportState =
   | { status: 'idle' }
@@ -77,13 +79,17 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
   const handleImport = async (overwrite: boolean) => {
     if (state.status !== 'success') return;
 
-    await importProfile(state.profile, overwrite);
+    try {
+      await importProfile(state.profile, overwrite);
 
-    if (overwrite && state.profile.id === activeProfileId) {
-      await useActiveProfileStore.getState().load(activeProfileId);
+      if (overwrite && state.profile.id === activeProfileId) {
+        await useActiveProfileStore.getState().load(activeProfileId);
+      }
+      toast.success(t('toast.profile-imported', { name: state.profile.name }));
+      handleClose();
+    } catch (e) {
+      toast.error(t('toast.error', { error: getErrorMessage(e) }));
     }
-
-    handleClose();
   };
 
   const collectionsCount =
