@@ -133,7 +133,7 @@
     "profile-duplicate": {
       "title": "プロフィールのコピーを作成",
       "name-label": "新しいプロフィール名",
-      "name-default": "{{name}} のコピー",
+      "name-default": "{{name}}のコピー",
       "switch-after": "作成後にコピーへ切り替える"
     }
   },
