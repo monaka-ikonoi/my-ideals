@@ -58,7 +58,8 @@
       "status": {
         "all": "All",
         "owned": "Owned",
-        "unowned": "Missing"
+        "unowned": "Missing",
+        "wanted": "Wanted"
       }
     }
   },

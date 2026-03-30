@@ -58,7 +58,8 @@
       "status": {
         "all": "全部",
         "owned": "已持有",
-        "unowned": "未持有"
+        "unowned": "未持有",
+        "wanted": "求收"
       }
     }
   },

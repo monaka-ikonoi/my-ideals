@@ -58,7 +58,8 @@
       "status": {
         "all": "すべて",
         "owned": "所持",
-        "unowned": "未所持"
+        "unowned": "未所持",
+        "wanted": "求め"
       }
     }
   },

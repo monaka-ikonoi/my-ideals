@@ -3,7 +3,7 @@ import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { type TemplateCollection } from '@/domain/template';
 import { type ProfileCollection } from '@/domain/profile';
 import { debugLog } from '@/utils/debug';
-import { normalizeStatusBoolean } from '@/utils/utils';
+import { normalizeStatusBoolean, normalizeStatusNumber } from '@/utils/utils';
 import {
   compileSearchIndex,
   compileSearchQuery,
@@ -11,7 +11,7 @@ import {
   type SearchIndex,
 } from '@/utils/search';
 
-export type FilterItemStatus = 'all' | 'owned' | 'unowned';
+export type FilterItemStatus = 'all' | 'owned' | 'unowned' | 'wanted';
 
 type FilteredCollectionsResult = {
   filteredCollections: TemplateCollection[];
@@ -85,8 +85,17 @@ function useVisibleCollections(
     debugLog.perf.time(`Apply visible filter`);
     const result = filteredCollections.reduce<TemplateCollection[]>((acc, collection) => {
       const items = collection.items.filter(item => {
-        const owned = normalizeStatusBoolean(cachedStatus[collection.id]?.[item.id] ?? false);
-        return itemStatus === 'owned' ? owned : !owned;
+        const count = normalizeStatusNumber(cachedStatus[collection.id]?.[item.id] ?? 0);
+        switch (itemStatus) {
+          case 'owned':
+            return count > 0;
+          case 'wanted':
+            return count < 0;
+          case 'unowned':
+            return count === 0;
+          default:
+            return true;
+        }
       });
 
       if (items.length > 0) {
