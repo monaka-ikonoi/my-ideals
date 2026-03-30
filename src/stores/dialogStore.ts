@@ -6,7 +6,7 @@ type DialogState =
   | { type: 'import-profile' }
   | { type: 'delete-profile'; profileId: string; profileName: string }
   | { type: 'rename-profile'; profileId: string; profileName: string }
-  | { type: 'duplicate-profile';}
+  | { type: 'duplicate-profile' }
   | {
       type: 'edit-profile-template-url';
       profileId: string;
