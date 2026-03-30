@@ -1,7 +1,7 @@
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { useProfileListStore } from '@/stores/profileListStore';
 import { ProfileErrorPage } from './ProfileErrorPage';
-import { CollectionPage } from './CollectionPage';
+import { ProfilePage } from './ProfilePage';
 import { EmptyPage } from './EmptyPage';
 import { LoadingPage } from './ui/LoadingPage';
 
@@ -23,5 +23,5 @@ export function MainContent() {
     return <LoadingPage />;
   }
 
-  return <CollectionPage />;
+  return <ProfilePage />;
 }

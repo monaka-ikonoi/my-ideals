@@ -8,7 +8,7 @@ import { ScrollToTop } from './ui/ScrollToTop';
 import { ProfileStats } from './ProfileStats';
 import { AppleItpWarning } from './AppleItpWarning';
 
-export function CollectionPage() {
+export function ProfilePage() {
   const { t } = useTranslation();
 
   const { visibleCollections, collectionMap, filterProps, hiddenCount } = useCollectionFilter();
