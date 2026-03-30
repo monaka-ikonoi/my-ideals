@@ -60,6 +60,11 @@ export const useActiveProfileStore = create<activeProfileStore>()(
       error: null,
 
       load: async (profileId: string) => {
+        set(state => {
+          state.isLoading = true;
+          state.error = null;
+        });
+
         await Promise.resolve(debouncedSave.flush());
 
         set(state => {
@@ -67,8 +72,6 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           state.template = null;
           state.changes = null;
           state.pendingSync = false;
-          state.isLoading = true;
-          state.error = null;
         });
 
         const setError = (
@@ -130,6 +133,11 @@ export const useActiveProfileStore = create<activeProfileStore>()(
       },
 
       clear: async () => {
+        set(state => {
+          state.isLoading = true;
+          state.error = null;
+        });
+
         await Promise.resolve(debouncedSave.flush());
 
         set(state => {
@@ -137,8 +145,6 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           state.template = null;
           state.changes = null;
           state.pendingSync = false;
-          state.isLoading = false;
-          state.error = null;
         });
       },
 
