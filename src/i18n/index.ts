@@ -18,7 +18,6 @@ i18n.use(initReactI18next).init({
   interpolation: {
     escapeValue: false,
   },
-  showSupportNotice: false,
 });
 
 export const supportedLanguages = Object.keys(resources) as (keyof typeof resources)[];
