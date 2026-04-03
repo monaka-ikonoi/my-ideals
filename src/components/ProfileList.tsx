@@ -4,10 +4,11 @@ import { ArrowUpTrayIcon, CheckIcon, PlusIcon, TrashIcon } from '@heroicons/reac
 import { useDialogStore } from '@/stores/dialogStore';
 
 type ProfileListProps = {
+  maxHeight?: string;
   onSelect?: () => void;
 };
 
-export function ProfileList({ onSelect }: ProfileListProps) {
+export function ProfileList({ maxHeight, onSelect }: ProfileListProps) {
   const { t } = useTranslation();
 
   const profiles = useProfileListStore(state => state.profiles);
@@ -31,36 +32,41 @@ export function ProfileList({ onSelect }: ProfileListProps) {
           <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">
             {t('profile.list')}
           </div>
-          {profiles.map(profile => (
-            <button
-              key={profile.id}
-              onClick={() => handleSelect(profile.id)}
-              className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm ${
-                profile.id === activeProfileId
-                  ? 'bg-blue-50 text-blue-700'
-                  : 'text-gray-700 hover:bg-gray-100'
-              } `}
-            >
-              {profile.id === activeProfileId ? (
-                <CheckIcon className="h-4 w-4" />
-              ) : (
-                <span className="w-4" />
-              )}
-
-              <div className="min-w-0 flex-1">
-                <div className="truncate">{profile.name}</div>
-                <div className="truncate font-mono text-xs text-gray-400">ID: {profile.id}</div>
-              </div>
-
-              {/* Delete button */}
-              <div
-                onClick={e => handleDeleteClick(e, profile)}
-                className="shrink-0 rounded p-1 text-gray-400 hover:bg-red-100 hover:text-red-600"
+          <div
+            className={maxHeight ? 'overflow-y-auto' : ''}
+            style={maxHeight ? { maxHeight } : undefined}
+          >
+            {profiles.map(profile => (
+              <button
+                key={profile.id}
+                onClick={() => handleSelect(profile.id)}
+                className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm ${
+                  profile.id === activeProfileId
+                    ? 'bg-blue-50 text-blue-700'
+                    : 'text-gray-700 hover:bg-gray-100'
+                } `}
               >
-                <TrashIcon className="h-4 w-4" />
-              </div>
-            </button>
-          ))}
+                {profile.id === activeProfileId ? (
+                  <CheckIcon className="h-4 w-4" />
+                ) : (
+                  <span className="w-4" />
+                )}
+
+                <div className="min-w-0 flex-1">
+                  <div className="truncate">{profile.name}</div>
+                  <div className="truncate font-mono text-xs text-gray-400">ID: {profile.id}</div>
+                </div>
+
+                {/* Delete button */}
+                <div
+                  onClick={e => handleDeleteClick(e, profile)}
+                  className="shrink-0 rounded p-1 text-gray-400 hover:bg-red-100 hover:text-red-600"
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
