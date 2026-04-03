@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { ProfileSelector } from './ProfileSelector';
 import { DEV_MODE } from '@/utils/appInfo';
+import { scrollPageToTop } from '@/utils/ui';
 
 export function Navbar() {
   const { t } = useTranslation();
@@ -10,7 +11,7 @@ export function Navbar() {
       <div className="mx-auto px-4 lg:max-w-[1024px] 2xl:max-w-[1664px]">
         <div className="flex h-14 items-center justify-between">
           {/* Left: Title */}
-          <div className="flex items-center">
+          <div className="items-centerm flex cursor-pointer" onClick={scrollPageToTop}>
             <h1 className="text-lg font-bold text-gray-900">
               <span className="sm:hidden">
                 {DEV_MODE && <span className="mr-1">[DEV]</span>}

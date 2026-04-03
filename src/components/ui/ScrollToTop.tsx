@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ArrowUpIcon } from '@heroicons/react/24/outline';
+import { scrollPageToTop } from '@/utils/ui';
 
 export function ScrollToTop({ threshold = 300 }: { threshold?: number }) {
   const [visible, setVisible] = useState(false);
@@ -13,16 +14,9 @@ export function ScrollToTop({ threshold = 300 }: { threshold?: number }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [threshold]);
 
-  const scrollToTop = () => {
-    window.scrollTo(0, window.innerHeight);
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 10);
-  };
-
   return (
     <button
-      onClick={scrollToTop}
+      onClick={scrollPageToTop}
       className={`fixed right-6 bottom-6 z-50 rounded-full bg-blue-600 p-3 text-white shadow-lg
         transition-all duration-300 hover:bg-blue-700 hover:shadow-xl active:scale-95 ${
           visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'
