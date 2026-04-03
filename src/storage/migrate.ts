@@ -9,7 +9,8 @@ export type MigrateProfileStorageResult = {
 
 export async function migrateProfileStorage(
   from: StorageBackend,
-  to: StorageBackend
+  to: StorageBackend,
+  cleanup: boolean = false
 ): Promise<void> {
   if (from === to) return;
 
@@ -27,7 +28,7 @@ export async function migrateProfileStorage(
     }
 
     await target.setProfile(profile);
-    await source.deleteProfile(id);
+    if (cleanup) await source.deleteProfile(id);
   }
 
   debugLog.perf.timeEnd('Migrate storage');
