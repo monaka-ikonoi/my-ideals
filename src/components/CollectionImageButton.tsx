@@ -6,6 +6,7 @@ import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { OffscreenCaptureArea, type CaptureResult } from './ui/OffscreenCaptureArea';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import { CollectionImageContent } from './CollectionImageContent';
+import { toast } from 'sonner';
 
 type CollectionImageButtonProps = {
   collection: TemplateCollection;
@@ -28,10 +29,10 @@ export function CollectionImageButton({ collection }: CollectionImageButtonProps
       if (result.success) {
         useDialogStore.getState().openCollectionImagePreview(result.blob, fileName);
       } else {
-        console.error('Capture failed:', result.error);
+        toast.error(t('toast.error', { error: result.error }));
       }
     },
-    [fileName]
+    [fileName, t]
   );
 
   return (
