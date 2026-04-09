@@ -75,7 +75,7 @@ export function OffscreenCaptureArea({
       await waitForImagesSettled(captureNode);
       if (cancelled) return;
 
-      const blob = await toBlob(captureNode);
+      const blob = await toBlob(captureNode, { pixelRatio: 1 });
       if (cancelled) return;
 
       if (blob) {
