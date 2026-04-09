@@ -16,11 +16,17 @@ export function CollectionImageButton({ collection }: CollectionImageButtonProps
   const { t, i18n } = useTranslation();
 
   const [generating, setGenerating] = useState(false);
+  const [captureTime, setCaptureTime] = useState('');
 
   const templateName = useActiveProfileStore(state => state.template!.name);
   const templateId = useActiveProfileStore(state => state.template!.id);
   const profileId = useActiveProfileStore(state => state.profile!.id);
   const fileName = `${templateId}-${collection.id}.png`;
+
+  const handleGenerate = useCallback(() => {
+    setCaptureTime(new Date().toLocaleString(i18n.language, { timeZoneName: 'short' }));
+    setGenerating(true);
+  }, [i18n.language]);
 
   const handleCapture = useCallback(
     (result: CaptureResult) => {
@@ -39,7 +45,7 @@ export function CollectionImageButton({ collection }: CollectionImageButtonProps
     <>
       <button
         type="button"
-        onClick={() => setGenerating(true)}
+        onClick={handleGenerate}
         disabled={generating}
         className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
         title={t('collection.generate-image')}
@@ -59,7 +65,7 @@ export function CollectionImageButton({ collection }: CollectionImageButtonProps
           templateId={templateId}
           profileId={profileId}
           collections={[collection]}
-          captureTime={new Date().toLocaleString(i18n.language, { timeZoneName: 'short' })}
+          captureTime={captureTime}
         />
       </OffscreenCaptureArea>
     </>
