@@ -3,10 +3,9 @@ import { useTranslation } from 'react-i18next';
 import type { TemplateCollection } from '@/domain/template';
 import { useDialogStore } from '@/stores/dialogStore';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
-import { CollectionGrid } from './CollectionGrid';
 import { OffscreenCaptureArea, type CaptureResult } from './ui/OffscreenCaptureArea';
-import { APP_NAME, LONG_VERSION } from '@/utils/appInfo';
 import { PhotoIcon } from '@heroicons/react/24/outline';
+import { CollectionImageContent } from './CollectionImageContent';
 
 type CollectionImageButtonProps = {
   collection: TemplateCollection;
@@ -54,31 +53,13 @@ export function CollectionImageButton({ collection }: CollectionImageButtonProps
       </button>
 
       <OffscreenCaptureArea active={generating} onComplete={handleCapture} width={1664}>
-        <div className="bg-white text-gray-900">
-          {/* Header */}
-          <div className="px-8 pt-6">
-            <h1 className="text-3xl leading-tight font-bold">{collection.name}</h1>
-            <p className="mt-1 text-xl font-medium text-gray-700">{templateName}</p>
-          </div>
-
-          {/* Grid */}
-          <div className="px-8 py-4">
-            <CollectionGrid collection={collection} mode="export" />
-          </div>
-
-          {/* Footer meta: left / right */}
-          <div className="text-md px-8 pb-4 text-gray-500">
-            <div className="grid grid-cols-[1fr_auto] items-end gap-4">
-              <div>
-                Template: {templateId} / Collection: {collection.id} / Profile: {profileId}
-              </div>
-              <div className="text-right whitespace-nowrap">
-                {APP_NAME} {LONG_VERSION} / {window.location.hostname} /{' '}
-                {new Date().toLocaleString(i18n.language, { timeZoneName: 'short' })}
-              </div>
-            </div>
-          </div>
-        </div>
+        <CollectionImageContent
+          templateName={templateName}
+          templateId={templateId}
+          profileId={profileId}
+          collections={[collection]}
+          captureTime={new Date().toLocaleString(i18n.language, { timeZoneName: 'short' })}
+        />
       </OffscreenCaptureArea>
     </>
   );
