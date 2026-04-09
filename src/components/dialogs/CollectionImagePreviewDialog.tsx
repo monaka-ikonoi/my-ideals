@@ -72,8 +72,7 @@ export function CollectionImagePreviewDialog({
           <img
             src={imageUrl}
             alt={t('dialog.collection-image-preview.image-alt', { name: fileName })}
-            className="mx-auto h-auto max-w-full rounded-md border border-gray-200 bg-white
-              shadow-lg"
+            className="mx-auto h-auto max-w-full rounded-md border border-gray-200"
             style={{ WebkitTouchCallout: 'default' }}
           />
         )}
