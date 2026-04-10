@@ -1,6 +1,9 @@
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
+import { shareAPISupported, downloadFile, shareFile } from '@/utils/fileUtils';
+import { getErrorMessage } from '@/utils/error';
+import { toast } from 'sonner';
 
 type CollectionImagePreviewDialogProps = {
   onClose: () => void;
@@ -28,21 +31,17 @@ export function CollectionImagePreviewDialog({
     };
   }, [image]);
 
-  const canUseWebShare = useMemo(() => {
-    if (typeof navigator === 'undefined') return false;
-    return typeof navigator.share === 'function' && typeof navigator.canShare === 'function';
-  }, []);
-
   const handleImageActions = async (value: string) => {
+    const file = new File([image], fileName, { type: image.type });
     if (value === 'download') {
-      Object.assign(document.createElement('a'), { href: imageUrl, download: fileName }).click();
+      downloadFile(file);
     }
     if (value === 'share') {
-      if (!canUseWebShare) return;
-
-      const file = new File([image], fileName, { type: image.type });
-      if (navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file] });
+      if (!shareAPISupported) return;
+      try {
+        await shareFile(file);
+      } catch (e) {
+        toast.error(t('toast.error', { error: getErrorMessage(e) }));
       }
     }
     onClose();
@@ -59,7 +58,7 @@ export function CollectionImagePreviewDialog({
           label: t('common.share'),
           value: 'share',
           variant: 'secondary',
-          disabled: !canUseWebShare,
+          disabled: !shareAPISupported,
         },
         { label: t('common.close'), value: 'close', variant: 'secondary' },
       ]}
