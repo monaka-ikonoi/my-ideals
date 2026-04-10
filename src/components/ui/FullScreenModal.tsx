@@ -15,8 +15,8 @@ export function FullScreenModal({ isOpen, onClose, title, children }: FullScreen
     <CommonBackdrop>
       <div className="fixed inset-0 z-50 flex md:items-center md:justify-center md:p-4">
         <div
-          className="flex h-full w-full flex-col bg-white md:h-auto md:max-h-[90vh] md:min-h-[60vh]
-            md:w-full md:max-w-4xl md:rounded-xl md:shadow-2xl"
+          className="flex h-full w-full flex-col bg-white md:h-[80vh] md:w-full md:max-w-4xl
+            md:rounded-xl md:shadow-2xl"
           onClick={e => e.stopPropagation()}
         >
           <div

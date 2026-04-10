@@ -22,7 +22,10 @@
     "close": "关闭",
     "download": "下载",
     "share": "分享",
-    "ok": "确定"
+    "ok": "确定",
+    "select-all": "全选",
+    "deselect-all": "取消全选",
+    "back": "返回"
   },
   "profile": {
     "import": "导入档案",
@@ -136,6 +139,13 @@
       "name-label": "新档案名称",
       "name-default": "{{name}}的副本",
       "switch-after": "复制后切换到副本"
+    },
+    "image-generate": {
+      "step-preview": "预览",
+      "selected-count": "已选中 {{collections}} / {{maxCollections}} 套，{{items}} / {{maxItems}} 个项目",
+      "generating": "生成中…",
+      "generate": "生成",
+      "step-select": "选择"
     }
   },
   "input": {

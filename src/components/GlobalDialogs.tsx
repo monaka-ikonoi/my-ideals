@@ -11,6 +11,7 @@ import { CollectionImagePreviewDialog } from './dialogs/CollectionImagePreviewDi
 import { AboutDialog } from './dialogs/AboutDialog';
 import { CollectionEditModal } from './dialogs/CollectionEditModal';
 import { ProfileDuplicateDialog } from './dialogs/ProfileDuplicateDialog';
+import { ImageGenerateModal } from './dialogs/ImageGenerateModal';
 
 export function GlobalDialogs() {
   const activeDialog = useDialogStore(state => state.activeDialog);
@@ -66,6 +67,9 @@ export function GlobalDialogs() {
 
       {activeDialog.type === 'edit-collection' && (
         <CollectionEditModal collectionId={activeDialog.collectionId} onClose={closeDialog} />
+      )}
+      {activeDialog.type === 'generate-image' && (
+        <ImageGenerateModal collections={activeDialog.collections} onClose={closeDialog} />
       )}
     </>
   );

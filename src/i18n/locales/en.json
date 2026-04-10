@@ -22,7 +22,10 @@
     "close": "Close",
     "download": "Download",
     "share": "Share",
-    "ok": "OK"
+    "ok": "OK",
+    "back": "Back",
+    "select-all": "Select All",
+    "deselect-all": "Deselect All"
   },
   "profile": {
     "create": "New Profile",
@@ -136,6 +139,13 @@
       "name-label": "New profile name",
       "name-default": "Copy of {{name}}",
       "switch-after": "Switch to the copy after duplicating"
+    },
+    "image-generate": {
+      "step-select": "Select",
+      "step-preview": "Preview",
+      "selected-count": "{{collections}} / {{maxCollections}} collections, {{items}} / {{maxItems}} items selected",
+      "generating": "Generating…",
+      "generate": "Generate"
     }
   },
   "input": {

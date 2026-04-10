@@ -19,7 +19,11 @@ export function ProfilePage() {
       <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
         <ProfileInfo />
         <div className="my-4 border-t border-gray-200" />
-        <CollectionFilter hiddenCount={hiddenCount} {...filterProps} />
+        <CollectionFilter
+          hiddenCount={hiddenCount}
+          imageCollections={visibleCollections}
+          {...filterProps}
+        />
         <div className="my-4 border-t border-gray-200" />
         <ProfileStats visibleCollections={visibleCollections} baseCollectionMap={collectionMap} />
       </div>

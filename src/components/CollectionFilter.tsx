@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { CollectionStatusFilter } from './CollectionStatusFilter';
 import type { FilterItemStatus } from '@/hooks/useFilteredCollection';
 import { MemberSelector } from './MemberSelector';
+import type { TemplateCollection } from '@/domain/template';
+import { useDialogStore } from '@/stores/dialogStore';
 
 type SearchBoxProps = {
   searchQuery: string;
@@ -80,7 +82,7 @@ function CollectionSearchBox({ searchQuery, setSearchQuery, searchSuggestions }:
   }, [activeIndex, showSuggestions]);
 
   return (
-    <div className="relative flex-1">
+    <div className="relative w-full">
       <MagnifyingGlassIcon
         className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-400"
       />
@@ -169,6 +171,7 @@ type CollectionFilterProps = {
   hiddenCount: number;
   filterStatus: FilterItemStatus;
   setFilterStatus: (status: FilterItemStatus) => void;
+  imageCollections: TemplateCollection[];
 };
 
 export function CollectionFilter({
@@ -178,6 +181,7 @@ export function CollectionFilter({
   filterStatus,
   setFilterStatus,
   hiddenCount,
+  imageCollections,
 }: CollectionFilterProps) {
   const { t } = useTranslation();
 
@@ -201,25 +205,46 @@ export function CollectionFilter({
         </>
       )}
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <CollectionSearchBox {...searchProps} />
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <label className="flex cursor-pointer items-center gap-2 whitespace-nowrap select-none">
-            <input
-              type="checkbox"
-              checked={hideCompleted}
-              onChange={e => setHideCompleted(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 accent-blue-600 focus:ring-blue-500"
-            />
-            <span className="text-sm text-gray-700">
-              {t('collection.hide-completed')}
-              <span
-                className={`tabular-nums ${hiddenCount > 0 ? 'visible' : 'invisible'}`}
-              >{` (${hiddenCount})`}</span>
-            </span>
-          </label>
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="min-w-64 flex-[999_1_12rem]">
+          <CollectionSearchBox {...searchProps} />
+        </div>
 
-          <CollectionStatusFilter value={filterStatus} setValue={setFilterStatus} />
+        <div className="min-w-0 flex-[1_1_max-content]">
+          <div className="flex w-full flex-wrap items-center gap-3">
+            <label
+              className="flex shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap
+                select-none"
+            >
+              <input
+                type="checkbox"
+                checked={hideCompleted}
+                onChange={e => setHideCompleted(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 accent-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm text-gray-700">
+                {t('collection.hide-completed')}
+                <span
+                  className={`tabular-nums ${hiddenCount > 0 ? 'visible' : 'invisible'}`}
+                >{` (${hiddenCount})`}</span>
+              </span>
+            </label>
+
+            <div className="flex min-w-0 flex-[1_1_max-content] items-center gap-2">
+              <CollectionStatusFilter value={filterStatus} setValue={setFilterStatus} />
+              <div className="ml-auto shrink-0">
+                <button
+                  type="button"
+                  onClick={() => useDialogStore.getState().openGenerateImage(imageCollections)}
+                  className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600
+                    disabled:cursor-not-allowed disabled:opacity-50"
+                  title={t('collection.generate-image')}
+                >
+                  <PhotoIcon className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
