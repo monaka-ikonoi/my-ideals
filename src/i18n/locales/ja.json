@@ -25,7 +25,8 @@
     "ok": "決定",
     "back": "戻る",
     "select-all": "すべて選択",
-    "deselect-all": "すべて解除"
+    "deselect-all": "すべて解除",
+    "unknown": "不明"
   },
   "profile": {
     "create": "新規プロファイル",
@@ -92,7 +93,9 @@
       "select-file-hint": "このアプリからエクスポートしたJSONファイル",
       "conflict-message": "このIDのプロファイルは既に存在します。上書きするか、コピーを作成できます。",
       "collections-count": "{{count}} セット",
-      "stats": "{{count}} / {{total}} 収集済み"
+      "stats": "{{count}} / {{total}} 収集済み",
+      "existing": "既存",
+      "importing": "インポート"
     },
     "profile-delete": {
       "title": "プロファイルを削除",

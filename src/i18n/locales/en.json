@@ -25,7 +25,8 @@
     "ok": "OK",
     "back": "Back",
     "select-all": "Select All",
-    "deselect-all": "Deselect All"
+    "deselect-all": "Deselect All",
+    "unknown": "Unknown"
   },
   "profile": {
     "create": "New Profile",
@@ -92,7 +93,9 @@
       "select-file-hint": "JSON file exported from this app",
       "conflict-message": "A profile with this ID already exists. You can overwrite it or create a copy.",
       "collections-count": "{{count}} collection(s)",
-      "stats": "{{count}} / {{total}} collected"
+      "stats": "{{count}} / {{total}} collected",
+      "existing": "Existing",
+      "importing": "Importing"
     },
     "profile-delete": {
       "title": "Delete Profile",

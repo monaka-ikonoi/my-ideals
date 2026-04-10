@@ -16,11 +16,18 @@ import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { CommonBackdrop } from '../ui/CommonBackdrop';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/error';
+import { getProfileStorage } from '@/storage/ProfileStorage';
 
 type ImportState =
   | { status: 'idle' }
   | { status: 'loading'; fileName: string }
-  | { status: 'success'; fileName: string; profile: Profile; isConflict: boolean }
+  | {
+      status: 'success';
+      fileName: string;
+      profile: Profile;
+      isConflict: boolean;
+      existingLastModified: number;
+    }
   | { status: 'error'; fileName: string; message: string };
 
 const FileSelectorBoarderStyles = {
@@ -35,7 +42,7 @@ type ProfileImportDialogProps = {
 };
 
 export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useState<ImportState>({ status: 'idle' });
@@ -67,8 +74,13 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
       const text = await file.text();
       const profile = ProfileSchema.parse(JSON.parse(text));
       const isConflict = profiles.some(p => p.id === profile.id);
+      const existingLastModified = isConflict
+        ? profile.id === activeProfileId
+          ? (useActiveProfileStore.getState().profile?.lastModified ?? 0)
+          : ((await getProfileStorage().getProfile(profile.id))?.lastModified ?? 0)
+        : 0;
 
-      setState({ status: 'success', fileName, profile, isConflict });
+      setState({ status: 'success', fileName, profile, isConflict, existingLastModified });
     } catch (e) {
       let message = 'Unknown error';
       if (e instanceof SyntaxError) {
@@ -99,6 +111,9 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
       toast.error(t('toast.error', { error: getErrorMessage(e) }));
     }
   };
+
+  const formatTimestampString = (timestamp: number) =>
+    timestamp === 0 ? t('common.unknown') : new Date(timestamp).toLocaleString(i18n.language);
 
   const collectionsCount =
     state.status === 'success' ? Object.keys(state.profile.collections).length : 0;
@@ -208,6 +223,20 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
                     <ExclamationTriangleIcon className="h-5 w-5 shrink-0 text-amber-500" />
                     <div className="text-sm text-amber-800">
                       {t('dialog.profile-import.conflict-message')}
+                      <div className="mt-1 space-y-0.5 text-xs text-amber-700">
+                        <div className="flex gap-2">
+                          <span className="w-16 shrink-0 font-medium">
+                            {t('dialog.profile-import.existing')}:{' '}
+                          </span>
+                          <span>{formatTimestampString(state.existingLastModified)}</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <span className="w-16 shrink-0 font-medium">
+                            {t('dialog.profile-import.importing')}:{' '}
+                          </span>
+                          <span>{formatTimestampString(state.profile.lastModified)}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
