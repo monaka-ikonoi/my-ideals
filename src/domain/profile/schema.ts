@@ -17,6 +17,7 @@ export const ProfileSchema = z
     flags: z.array(z.enum(Object.values(ProfileFlags))).optional(),
     selectedMembers: z.array(z.string()).default([]),
     collections: z.record(z.string(), z.record(z.string(), z.union([z.boolean(), z.int()]))),
+    lastModified: z.number().default(0),
   })
   .superRefine((data, ctx) => {
     const enableCount = data.flags?.includes(ProfileFlags.ENABLE_COUNT) ?? false;

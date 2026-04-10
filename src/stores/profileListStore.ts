@@ -82,6 +82,7 @@ export const useProfileListStore = create<ProfileListStore>()(
             flags,
             selectedMembers: [],
             collections: {},
+            lastModified: Date.now(),
           };
 
           // Reset the revision to trigger a sync later
@@ -102,7 +103,7 @@ export const useProfileListStore = create<ProfileListStore>()(
 
           let finalProfile = profile;
           if (existingIndex >= 0 && !overwrite) {
-            finalProfile = { ...profile, id: nanoid() };
+            finalProfile = { ...profile, id: nanoid(), lastModified: Date.now() };
           }
 
           await getProfileStorage().setProfile(finalProfile);

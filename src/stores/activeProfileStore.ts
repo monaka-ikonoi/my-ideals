@@ -42,6 +42,10 @@ type activeProfileStore = {
 
 export const useActiveProfileStore = create<activeProfileStore>()(
   immer((set, get) => {
+    const touch = (profile: Profile) => {
+      profile.lastModified = Date.now();
+    };
+
     const debouncedSave = debounce(async () => {
       const { profile } = get();
       if (!profile) return;
@@ -102,6 +106,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
             `Template link updated from ${profile.template.link} to ${templateResult.url}`
           );
           profile.template.link = templateResult.url;
+          touch(profile);
           await getProfileStorage().setProfile(profile);
         }
         const template = templateResult.template;
@@ -116,6 +121,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           }
           if (!pendingSync) {
             profile = syncProfileWithTemplate(profile, template, false);
+            touch(profile);
             await getProfileStorage().setProfile(profile);
           }
         }
@@ -164,6 +170,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
         }
 
         const synced = syncProfileWithTemplate(profile, template, cleanup);
+        touch(synced);
         await getProfileStorage().setProfile(synced);
 
         set(state => {
@@ -185,6 +192,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
 
           const current = state.profile.collections[collectionId][itemId] ?? false;
           state.profile.collections[collectionId][itemId] = !current;
+          touch(state.profile);
         });
 
         debouncedSave();
@@ -202,6 +210,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
             state.profile.collections[collectionId] = {};
           }
           state.profile.collections[collectionId][itemId] = value;
+          touch(state.profile);
         });
 
         debouncedSave();
@@ -217,6 +226,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           } else {
             state.profile.selectedMembers = [...selectedMembers, member];
           }
+          touch(state.profile);
         });
         debouncedSave();
       },
@@ -225,6 +235,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
         set(state => {
           if (state.profile) {
             state.profile.name = name;
+            touch(state.profile);
           }
         });
         debouncedSave();
@@ -242,6 +253,7 @@ export const useActiveProfileStore = create<activeProfileStore>()(
                 `Profile ${state.profile.id} template id updated to ${templateId} forcefully`
               );
             }
+            touch(state.profile);
           }
         });
         debouncedSave();
@@ -258,8 +270,8 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           debugLog.perf.time(`Toggle flag ${flag} to ${enabled}`);
           state.profile.flags = enabled ? [...flags, flag] : flags.filter(f => f !== flag);
           ProfileFlagOperations.get(flag)?.get(enabled)?.(state.profile);
+          touch(state.profile);
           debugLog.perf.timeEnd(`Toggle flag ${flag} to ${enabled}`);
-
           debugLog.store.log(`Profile ${state.profile.id} flag ${flag} toggled to ${enabled}`);
         });
         debouncedSave();

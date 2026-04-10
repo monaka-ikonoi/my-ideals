@@ -17,4 +17,5 @@ export type Profile = {
   flags?: ProfileFlag[];
   selectedMembers: string[];
   collections: ProfileCollection;
+  lastModified: number;
 };
