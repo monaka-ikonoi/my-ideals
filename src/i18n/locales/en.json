@@ -95,7 +95,8 @@
       "collections-count": "{{count}} collection(s)",
       "stats": "{{count}} / {{total}} collected",
       "existing": "Existing",
-      "importing": "Importing"
+      "importing": "Importing",
+      "newer": "(Newer)"
     },
     "profile-delete": {
       "title": "Delete Profile",

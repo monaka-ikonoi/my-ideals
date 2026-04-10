@@ -95,7 +95,8 @@
       "collections-count": "{{count}} セット",
       "stats": "{{count}} / {{total}} 収集済み",
       "existing": "既存",
-      "importing": "インポート"
+      "importing": "インポート",
+      "newer": "(新しい)"
     },
     "profile-delete": {
       "title": "プロファイルを削除",

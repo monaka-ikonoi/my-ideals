@@ -95,7 +95,8 @@
       "collections-count": "{{count}} 个合集",
       "stats": "已收集 {{count}} / {{total}}",
       "existing": "现有",
-      "importing": "导入"
+      "importing": "导入",
+      "newer": "(较新)"
     },
     "profile-delete": {
       "title": "删除档案",

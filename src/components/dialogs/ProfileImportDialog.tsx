@@ -115,6 +115,12 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
   const formatTimestampString = (timestamp: number) =>
     timestamp === 0 ? t('common.unknown') : new Date(timestamp).toLocaleString(i18n.language);
 
+  const compareTimestamps = (t1: number, t2: number) => {
+    if (t1 === 0 || t2 === 0) return null;
+    if (t1 === t2) return null;
+    return t1 > t2;
+  };
+
   const collectionsCount =
     state.status === 'success' ? Object.keys(state.profile.collections).length : 0;
   const itemsCount =
@@ -229,12 +235,20 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
                             {t('dialog.profile-import.existing')}:{' '}
                           </span>
                           <span>{formatTimestampString(state.existingLastModified)}</span>
+                          {compareTimestamps(
+                            state.existingLastModified,
+                            state.profile.lastModified
+                          ) && <span>{t('dialog.profile-import.newer')}</span>}
                         </div>
                         <div className="flex gap-2">
                           <span className="w-16 shrink-0 font-medium">
                             {t('dialog.profile-import.importing')}:{' '}
                           </span>
                           <span>{formatTimestampString(state.profile.lastModified)}</span>
+                          {compareTimestamps(
+                            state.profile.lastModified,
+                            state.existingLastModified
+                          ) && <span>{t('dialog.profile-import.newer')}</span>}
                         </div>
                       </div>
                     </div>
