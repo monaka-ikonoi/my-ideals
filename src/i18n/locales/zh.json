@@ -47,7 +47,8 @@
       "count": "复数模式",
       "switch": "切换模式"
     },
-    "duplicate": "创建副本"
+    "duplicate": "创建副本",
+    "reorder": "重新排序"
   },
   "settings": {
     "language": "语言",

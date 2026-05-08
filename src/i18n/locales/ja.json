@@ -47,7 +47,8 @@
       "standard": "通常モード",
       "switch": "モードを切り替え"
     },
-    "duplicate": "コピーを作成"
+    "duplicate": "コピーを作成",
+    "reorder": "並び替え"
   },
   "settings": {
     "language": "言語",

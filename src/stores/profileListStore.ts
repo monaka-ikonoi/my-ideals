@@ -28,6 +28,7 @@ type ProfileListStore = {
 
   setActiveProfile: (id: string | null) => void;
   updateProfileName: (id: string, name: string) => void;
+  reorderProfile: (id: string, direction: 'up' | 'down') => void;
 };
 
 export const useProfileListStore = create<ProfileListStore>()(
@@ -145,6 +146,18 @@ export const useProfileListStore = create<ProfileListStore>()(
             if (entry) {
               entry.name = name;
             }
+          });
+        },
+
+        reorderProfile: (id, direction) => {
+          set(state => {
+            const index = state.profiles.findIndex(p => p.id === id);
+            if (index < 0) return;
+            const swapIndex = direction === 'up' ? index - 1 : index + 1;
+            if (swapIndex < 0 || swapIndex >= state.profiles.length) return;
+            const temp = state.profiles[index];
+            state.profiles[index] = state.profiles[swapIndex];
+            state.profiles[swapIndex] = temp;
           });
         },
       })),

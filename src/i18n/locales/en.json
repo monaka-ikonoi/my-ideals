@@ -47,7 +47,8 @@
       "count": "Quantity mode",
       "switch": "Switch Mode"
     },
-    "duplicate": "Create Copy"
+    "duplicate": "Create Copy",
+    "reorder": "Reorder"
   },
   "settings": {
     "language": "Language",

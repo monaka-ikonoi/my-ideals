@@ -1,6 +1,15 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useProfileListStore, type ProfileListEntry } from '@/stores/profileListStore';
-import { ArrowUpTrayIcon, CheckIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
+import {
+  ArrowUpTrayIcon,
+  ArrowsUpDownIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/solid';
 import { useDialogStore } from '@/stores/dialogStore';
 
 type ProfileListProps = {
@@ -14,7 +23,14 @@ export function ProfileList({ maxHeight, onSelect }: ProfileListProps) {
   const profiles = useProfileListStore(state => state.profiles);
   const activeProfileId = useProfileListStore(state => state.activeId);
 
+  const [isReordering, setIsReordering] = useState(false);
+
   const handleSelect = (id: string) => {
+    // Exit reordering mode on the next click to prevent accidental profile switches
+    if (isReordering) {
+      setIsReordering(false);
+      return;
+    }
     useProfileListStore.getState().setActiveProfile(id);
     onSelect?.();
   };
@@ -25,12 +41,32 @@ export function ProfileList({ maxHeight, onSelect }: ProfileListProps) {
     onSelect?.();
   };
 
+  const handleReorderClick = (e: React.MouseEvent, id: string, direction: 'up' | 'down') => {
+    e.stopPropagation();
+    useProfileListStore.getState().reorderProfile(id, direction);
+  };
+
   return (
     <>
       {profiles.length > 0 && (
         <div className="py-1">
-          <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">
-            {t('profile.list')}
+          <div className="flex items-center justify-between px-3 py-2">
+            <span className="text-xs font-semibold text-gray-500 uppercase">
+              {t('profile.list')}
+            </span>
+            <button
+              onClick={() => setIsReordering(r => !r)}
+              title={t('profile.reorder')}
+              className={`rounded p-1 text-xs ${
+                isReordering
+                  ? 'bg-blue-100 text-blue-600'
+                  : `text-gray-400 hover:bg-gray-100 hover:text-gray-600 disabled:cursor-not-allowed
+                    disabled:opacity-30 disabled:hover:bg-transparent`
+              }`}
+              disabled={profiles.length < 2}
+            >
+              <ArrowsUpDownIcon className="h-4 w-4" />
+            </button>
           </div>
           <div
             className={maxHeight ? 'overflow-y-auto' : ''}
@@ -57,13 +93,37 @@ export function ProfileList({ maxHeight, onSelect }: ProfileListProps) {
                   <div className="truncate font-mono text-xs text-gray-400">ID: {profile.id}</div>
                 </div>
 
-                {/* Delete button */}
-                <div
-                  onClick={e => handleDeleteClick(e, profile)}
-                  className="shrink-0 rounded p-1 text-gray-400 hover:bg-red-100 hover:text-red-600"
-                >
-                  <TrashIcon className="h-4 w-4" />
-                </div>
+                {/* Delete / Reorder buttons */}
+                {isReordering ? (
+                  <div className="-my-2 flex w-6 shrink-0 flex-col self-stretch">
+                    <button
+                      onClick={e => handleReorderClick(e, profile.id, 'up')}
+                      disabled={profiles.indexOf(profile) === 0}
+                      className="flex flex-1 items-center justify-center rounded text-gray-400
+                        hover:bg-blue-100 hover:text-blue-600 disabled:cursor-not-allowed
+                        disabled:opacity-30 disabled:hover:bg-transparent"
+                    >
+                      <ChevronUpIcon className="h-3 w-3" />
+                    </button>
+                    <button
+                      onClick={e => handleReorderClick(e, profile.id, 'down')}
+                      disabled={profiles.indexOf(profile) === profiles.length - 1}
+                      className="flex flex-1 items-center justify-center rounded text-gray-400
+                        hover:bg-blue-100 hover:text-blue-600 disabled:cursor-not-allowed
+                        disabled:opacity-30 disabled:hover:bg-transparent"
+                    >
+                      <ChevronDownIcon className="h-3 w-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    onClick={e => handleDeleteClick(e, profile)}
+                    className="shrink-0 rounded p-1 text-gray-400 hover:bg-red-100
+                      hover:text-red-600"
+                  >
+                    <TrashIcon className="h-4 w-4" />
+                  </div>
+                )}
               </button>
             ))}
           </div>
