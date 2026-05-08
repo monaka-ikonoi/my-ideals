@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import { visualizer } from 'rollup-plugin-visualizer';
@@ -19,6 +20,20 @@ const getGitInfo = () => {
 };
 const gitInfo = getGitInfo();
 
+const removeSample = {
+  name: 'remove-sample',
+  closeBundle() {
+    const branch = process.env.CF_PAGES ? process.env.CF_PAGES_BRANCH : gitInfo.branch;
+    if (branch === 'main') {
+      const dir = path.resolve(__dirname, 'dist/sample');
+      if (fs.existsSync(dir)) {
+        fs.rmSync(dir, { recursive: true, force: true });
+        console.log('Removed sample files from production build');
+      }
+    }
+  },
+};
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -30,6 +45,7 @@ export default defineConfig({
       gzipSize: true,
       brotliSize: true,
     }),
+    removeSample,
   ],
   resolve: {
     alias: {
