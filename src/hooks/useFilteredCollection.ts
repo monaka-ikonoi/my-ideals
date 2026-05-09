@@ -1,15 +1,9 @@
-import { useMemo, useState, useDeferredValue } from 'react';
+import { useMemo, useState } from 'react';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { type TemplateCollection } from '@/domain/template';
 import { type ProfileCollection } from '@/domain/profile';
 import { debugLog } from '@/utils/debug';
 import { normalizeStatusBoolean, normalizeStatusNumber } from '@/utils/utils';
-import {
-  compileSearchIndex,
-  compileSearchQuery,
-  matchSearchIndex,
-  type SearchIndex,
-} from '@/utils/search';
 
 export type FilterItemStatus = 'all' | 'owned' | 'unowned' | 'wanted';
 
@@ -113,51 +107,9 @@ function useVisibleCollections(
   }, [filteredCollections, cachedStatus, itemStatus]);
 }
 
-function useSearchedCollections(
-  collections: TemplateCollection[],
-  indexMap: Map<string, SearchIndex>,
-  queryIndex: SearchIndex | null
-): TemplateCollection[] {
-  return useMemo(() => {
-    if (collections.length === 0) return [];
-    if (!queryIndex) return collections;
-
-    debugLog.store.log(`Search with query tokens ${queryIndex.tokens}`);
-    debugLog.perf.time('Apply search');
-    const result = collections.filter(collection =>
-      matchSearchIndex(indexMap.get(collection.id), queryIndex)
-    );
-
-    debugLog.perf.timeEnd('Apply search');
-    return result;
-  }, [collections, indexMap, queryIndex]);
-}
-
-function useSearchSuggestions(
-  collections: TemplateCollection[],
-  indexMap: Map<string, SearchIndex>,
-  queryIndex: SearchIndex | null
-): string[] {
-  return useMemo(() => {
-    if (!queryIndex) return [];
-
-    return Array.from(
-      new Set(
-        collections.filter(c => matchSearchIndex(indexMap.get(c.id), queryIndex)).map(c => c.name)
-      )
-    );
-  }, [collections, indexMap, queryIndex]);
-}
-
 export function useCollectionFilter() {
-  const [searchQuery, setSearchQuery] = useState('');
   const [hideCompleted, setHideCompleted] = useState(false);
   const [filterStatus, setFilterStatus] = useState<FilterItemStatus>('all');
-
-  const normalizedQuery = searchQuery.trim();
-  const deferredQuery = useDeferredValue(normalizedQuery);
-  const compiledQuery = useMemo(() => compileSearchQuery(normalizedQuery), [normalizedQuery]);
-  const compiledDeferredQuery = useMemo(() => compileSearchQuery(deferredQuery), [deferredQuery]);
 
   debugLog.perf.time('useCollectionFilter');
   const collections = useActiveProfileStore(state => state.template?.collections ?? []);
@@ -166,17 +118,6 @@ export function useCollectionFilter() {
   // should stay stable while the user toggles items.
   const cachedStatus = useActiveProfileStore.getState().profile?.collections ?? {};
 
-  const searchIndexMap = useMemo(() => {
-    const map = new Map<string, SearchIndex>();
-    for (const collection of collections) {
-      map.set(
-        collection.id,
-        compileSearchIndex([collection.name, ...(collection.searchTerms ?? [])])
-      );
-    }
-    return map;
-  }, [collections]);
-
   const { filteredCollections, hiddenCount } = useFilteredCollections(
     collections,
     cachedStatus,
@@ -184,13 +125,6 @@ export function useCollectionFilter() {
   );
 
   const visibleCollections = useVisibleCollections(cachedStatus, filteredCollections, filterStatus);
-
-  const searchedCollections = useSearchedCollections(
-    visibleCollections,
-    searchIndexMap,
-    compiledDeferredQuery
-  );
-  const searchSuggestions = useSearchSuggestions(visibleCollections, searchIndexMap, compiledQuery);
 
   const collectionMap = useMemo(() => {
     const map: Record<string, TemplateCollection> = {};
@@ -203,18 +137,13 @@ export function useCollectionFilter() {
 
   return {
     filterProps: {
-      searchProps: {
-        searchQuery,
-        setSearchQuery,
-        searchSuggestions,
-      },
       hideCompleted,
       setHideCompleted,
       filterStatus,
       setFilterStatus,
     },
     filteredCollections,
-    visibleCollections: searchedCollections,
+    visibleCollections,
     collectionMap,
     hiddenCount,
   };

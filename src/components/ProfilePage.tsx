@@ -1,6 +1,7 @@
 import { Virtuoso } from 'react-virtuoso';
 import { useTranslation } from 'react-i18next';
 import { useCollectionFilter } from '@/hooks/useFilteredCollection';
+import { useSearch } from '@/hooks/useSearch';
 import { CollectionPanel } from './CollectionPanel';
 import { CollectionFilter } from './CollectionFilter';
 import { ProfileInfo } from './ProfileInfo';
@@ -12,6 +13,7 @@ export function ProfilePage() {
   const { t } = useTranslation();
 
   const { visibleCollections, collectionMap, filterProps, hiddenCount } = useCollectionFilter();
+  const { searchedCollections, searchProps } = useSearch(visibleCollections);
 
   return (
     <main className="mx-auto max-w-[512px] space-y-6 px-4 py-6 md:max-w-[1024px] 2xl:max-w-[1664px]">
@@ -21,16 +23,17 @@ export function ProfilePage() {
         <div className="my-4 border-t border-gray-200" />
         <CollectionFilter
           hiddenCount={hiddenCount}
-          imageCollections={visibleCollections}
+          imageCollections={searchedCollections}
+          searchProps={searchProps}
           {...filterProps}
         />
         <div className="my-4 border-t border-gray-200" />
-        <ProfileStats visibleCollections={visibleCollections} baseCollectionMap={collectionMap} />
+        <ProfileStats visibleCollections={searchedCollections} baseCollectionMap={collectionMap} />
       </div>
 
       {/* Collections - Virtualized*/}
       <Virtuoso
-        data={visibleCollections}
+        data={searchedCollections}
         useWindowScroll
         overscan={3}
         computeItemKey={(_, collection) => collection.id}
