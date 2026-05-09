@@ -33,6 +33,7 @@ export function ProfilePage() {
         data={visibleCollections}
         useWindowScroll
         overscan={3}
+        computeItemKey={(_, collection) => collection.id}
         itemContent={(_, collection) => (
           <div className="pb-6">
             <CollectionPanel
