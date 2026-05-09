@@ -157,6 +157,9 @@ export function useCollectionFilter() {
 
   debugLog.perf.time('useCollectionFilter');
   const collections = useActiveProfileStore(state => state.template?.collections ?? []);
+
+  // Intentionally read via getState() instead of subscribing，the filter result
+  // should stay stable while the user toggles items.
   const cachedStatus = useActiveProfileStore.getState().profile?.collections ?? {};
 
   const searchIndexMap = useMemo(() => {
