@@ -62,7 +62,7 @@
     "filter": {
       "status": {
         "all": "すべて",
-        "owned": "所持",
+        "owned": "所持済",
         "unowned": "未所持",
         "wanted": "求め"
       }
@@ -163,7 +163,7 @@
   },
   "stats": {
     "collected": "{{item}}/{{totalItem}} ({{comp}}/{{totalComp}} コンプ) 収集済み",
-    "owned": "所持: {{items}} 枚、{{comps}} コンプ",
+    "owned": "所持数: {{items}} 枚、{{comps}} コンプ",
     "collections": "{{count}} セット",
     "global": {
       "view": "表示中",
