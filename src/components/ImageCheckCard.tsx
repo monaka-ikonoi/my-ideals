@@ -1,9 +1,8 @@
 import { useState, memo, useCallback } from 'react';
-import { useShallow } from 'zustand/shallow';
 import { type TemplateCollectionItem } from '@/domain/template';
+import { type TemplateResourceBaseUrl } from '@/domain/template/imageBaseUrl';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { debugLog } from '@/utils/debug';
-import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { normalizeStatusBoolean } from '@/utils/utils';
 import { formatImageUrl } from '@/utils/templateUtils';
 import { ItemCounter } from './ItemCounter';
@@ -14,6 +13,9 @@ type ImageCheckCardProps = {
   item: TemplateCollectionItem;
   mode?: 'normal' | 'export' | 'edit';
   aspectRatio?: string;
+  enableCount: boolean;
+  imageBaseUrl?: TemplateResourceBaseUrl;
+  revision?: number;
 };
 
 export const ImageCheckCard = memo(function ImageCheckCard({
@@ -21,27 +23,24 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   item,
   mode = 'normal',
   aspectRatio = '7/10',
+  enableCount,
+  imageBaseUrl,
+  revision,
 }: ImageCheckCardProps) {
   debugLog.render.log(`ImageCheckCard render: ${collectionId} ${item.id}`);
-
-  const { enableCount, imageBaseUrl, revision, toggleStatus, setCount } = useActiveProfileStore(
-    useShallow(state => ({
-      enableCount: profileHasFlag(state.profile!, ProfileFlags.ENABLE_COUNT),
-      imageBaseUrl: state.template?.imageBaseUrl,
-      revision: state.template?.revision,
-      toggleStatus: state.toggleStatus,
-      setCount: state.setCount,
-    }))
-  );
 
   const status = useActiveProfileStore(
     state => state.profile?.collections[collectionId]?.[item.id] ?? (enableCount ? 0 : false)
   );
 
   const handleSetCount = useCallback(
-    (val: number) => setCount(collectionId, item.id, val),
-    [setCount, collectionId, item.id]
+    (val: number) => useActiveProfileStore.getState().setCount(collectionId, item.id, val),
+    [collectionId, item.id]
   );
+
+  const handleToggle = useCallback(() => {
+    if (!enableCount) useActiveProfileStore.getState().toggleStatus(collectionId, item.id);
+  }, [enableCount, collectionId, item.id]);
 
   const fallbackSrc = imageBaseUrl?.fallback;
   const targetSrc = item.image ?? formatImageUrl(imageBaseUrl!, revision!, collectionId, item.id);
@@ -59,9 +58,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
     <div
       className={`flex w-full flex-col overflow-hidden rounded-md
         ${!enableCount ? 'cursor-pointer' : ''} ${item.rotated ? 'col-span-2' : ''}`}
-      onClick={() => {
-        if (!enableCount) toggleStatus(collectionId, item.id);
-      }}
+      onClick={handleToggle}
     >
       {/* Image */}
       <div

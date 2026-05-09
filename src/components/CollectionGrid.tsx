@@ -4,6 +4,7 @@ import { type TemplateCollection } from '@/domain/template';
 import { ImageCheckCard } from './ImageCheckCard';
 import { debugLog } from '@/utils/debug';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 
 type CollectionGridProps = {
   collection: TemplateCollection;
@@ -19,7 +20,14 @@ export const CollectionGrid = memo(function CollectionGrid({
   debugLog.render.log(`CollectionGrid render: ${collection.id}`);
 
   const collectionLayout = collection.layout;
-  const templateLayout = useActiveProfileStore(useShallow(state => state.template?.layout));
+  const { templateLayout, enableCount, imageBaseUrl, revision } = useActiveProfileStore(
+    useShallow(state => ({
+      templateLayout: state.template?.layout,
+      enableCount: state.profile ? profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT) : false,
+      imageBaseUrl: state.template?.imageBaseUrl,
+      revision: state.template?.revision,
+    }))
+  );
 
   const computedColumns = useMemo<[number, number, number]>(() => {
     if (columns) return columns;
@@ -59,6 +67,9 @@ export const CollectionGrid = memo(function CollectionGrid({
           item={item}
           mode={mode}
           aspectRatio={collectionLayout?.aspectRatio ?? templateLayout?.aspectRatio}
+          enableCount={enableCount}
+          imageBaseUrl={imageBaseUrl}
+          revision={revision}
         />
       ))}
     </div>
