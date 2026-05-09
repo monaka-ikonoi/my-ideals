@@ -62,7 +62,10 @@ function useFilteredCollections(
           }
         }
 
-        acc.filteredCollections.push({ ...collection, items });
+        // Reuse the original reference when items were not actually filtered
+        acc.filteredCollections.push(
+          items === collection.items ? collection : { ...collection, items }
+        );
         return acc;
       },
       { filteredCollections: [], hiddenCount: 0 }
@@ -99,7 +102,8 @@ function useVisibleCollections(
       });
 
       if (items.length > 0) {
-        acc.push({ ...collection, items });
+        // Reuse the original reference when every item passed the filter.
+        acc.push(items.length === collection.items.length ? collection : { ...collection, items });
       }
       return acc;
     }, []);
