@@ -29,6 +29,8 @@ export const CollectionGrid = memo(function CollectionGrid({
     }))
   );
 
+  const statusMap = useActiveProfileStore(state => state.profile?.collections[collection.id]);
+
   const computedColumns = useMemo<[number, number, number]>(() => {
     if (columns) return columns;
     const layoutColumns = collectionLayout?.columns ?? templateLayout?.columns;
@@ -70,6 +72,7 @@ export const CollectionGrid = memo(function CollectionGrid({
           enableCount={enableCount}
           imageBaseUrl={imageBaseUrl}
           revision={revision}
+          status={statusMap?.[item.id]}
         />
       ))}
     </div>

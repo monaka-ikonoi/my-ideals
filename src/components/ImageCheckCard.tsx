@@ -16,6 +16,7 @@ type ImageCheckCardProps = {
   enableCount: boolean;
   imageBaseUrl?: TemplateResourceBaseUrl;
   revision?: number;
+  status: boolean | number | undefined;
 };
 
 export const ImageCheckCard = memo(function ImageCheckCard({
@@ -26,12 +27,11 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   enableCount,
   imageBaseUrl,
   revision,
+  status: rawStatus,
 }: ImageCheckCardProps) {
   debugLog.render.log(`ImageCheckCard render: ${collectionId} ${item.id}`);
 
-  const status = useActiveProfileStore(
-    state => state.profile?.collections[collectionId]?.[item.id] ?? (enableCount ? 0 : false)
-  );
+  const status = rawStatus ?? (enableCount ? 0 : false);
 
   const handleSetCount = useCallback(
     (val: number) => useActiveProfileStore.getState().setCount(collectionId, item.id, val),
