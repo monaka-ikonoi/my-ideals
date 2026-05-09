@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useDeferredValue } from 'react';
 import type { TemplateCollection } from '@/domain/template';
 import type { Profile } from '@/domain/profile';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
@@ -134,14 +134,19 @@ export function useAggregatedCollectionStats(
   baseCollectionMap?: Record<string, TemplateCollection>
 ) {
   const statusMaps = useActiveProfileStore(state => state.profile?.collections ?? {});
+  // Defer the statusMaps so rapid toggles don't block the main thread on large templates
+  const deferredStatusMaps = useDeferredValue(statusMaps);
+  const deferredCollections = useDeferredValue(visibleCollectionss);
+  const deferredBaseMap = useDeferredValue(baseCollectionMap);
+
   return useMemo(() => {
     debugLog.perf.time(`calculateAggregatedCollectionStats`);
     const stats = calculateAggregatedCollectionStats(
-      visibleCollectionss,
-      statusMaps,
-      baseCollectionMap
+      deferredCollections,
+      deferredStatusMaps,
+      deferredBaseMap
     );
     debugLog.perf.timeEnd(`calculateAggregatedCollectionStats`);
     return stats;
-  }, [visibleCollectionss, baseCollectionMap, statusMaps]);
+  }, [deferredCollections, deferredBaseMap, deferredStatusMaps]);
 }
