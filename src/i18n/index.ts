@@ -11,13 +11,22 @@ const resources = {
   zh: { translation: zh },
 };
 
-i18n.use(initReactI18next).init({
-  resources,
-  lng: useSettingsStore.getState().language,
-  fallbackLng: 'en',
-  interpolation: {
-    escapeValue: false,
-  },
+i18n
+  .use(initReactI18next)
+  .init({
+    resources,
+    lng: useSettingsStore.getState().language,
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false,
+    },
+  })
+  .then(() => {
+    document.documentElement.lang = i18n.language;
+  });
+
+i18n.on('languageChanged', lng => {
+  document.documentElement.lang = lng;
 });
 
 export const supportedLanguages = Object.keys(resources) as (keyof typeof resources)[];
