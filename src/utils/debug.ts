@@ -1,6 +1,6 @@
-type LogCategory = 'render' | 'store' | 'perf' | 'network' | 'sync';
+type LogCategory = 'render' | 'store' | 'perf' | 'network' | 'sync' | 'cache';
 
-const ALL_CATEGORIES: LogCategory[] = ['render', 'store', 'perf', 'network', 'sync'];
+const ALL_CATEGORIES: LogCategory[] = ['render', 'store', 'perf', 'network', 'sync', 'cache'];
 
 function getEnabledCategories(): Set<LogCategory> {
   const debugEnabled = import.meta.env.VITE_DEBUG === 'true';
@@ -55,6 +55,7 @@ export const debugLog = {
   perf: createLogger('perf'),
   network: createLogger('network'),
   sync: createLogger('sync'),
+  cache: createLogger('cache'),
 
   log: isDebugEnabled ? (...args: unknown[]) => console.log(PREFIX, ...args) : () => {},
   warn: isDebugEnabled ? (...args: unknown[]) => console.warn(PREFIX, ...args) : () => {},

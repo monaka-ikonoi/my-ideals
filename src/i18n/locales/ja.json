@@ -36,6 +36,7 @@
     "current": "現在のプロファイル",
     "list": "プロファイル",
     "copy-template-link": "テンプレートリンクをコピー",
+    "refresh-template": "テンプレートを更新",
     "not-selected": "プロファイル未選択",
     "not-selected-hint": "プロファイルを作成またはインポートしはじめる",
     "rename": "プロファイル名を変更",
@@ -52,7 +53,8 @@
   },
   "settings": {
     "language": "言語",
-    "help": "使い方"
+    "help": "使い方",
+    "clear-template-cache": "テンプレートキャッシュをクリア"
   },
   "collection": {
     "search-placeholder": "セットを検索...",
@@ -180,6 +182,10 @@
     "error": "エラー: {{error}}",
     "profile-deleted": "プロファイル「{{name}}」を削除しました",
     "template-link-copied": "テンプレートリンクをコピーしました",
+    "template-refreshed": "テンプレートは最新です",
+    "template-updated": "テンプレートを rev. {{revision}} に更新しました",
+    "template-gone": "テンプレートURLが利用できません（HTTP {{status}}）",
+    "template-cache-cleared": "テンプレートキャッシュをクリアしました",
     "profile-duplicate": {},
     "profile-created": "プロフィール「{{name}}」を作成しました",
     "profile-template url-updated": "テンプレートリンクを更新しました",

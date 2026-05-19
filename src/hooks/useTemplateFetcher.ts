@@ -2,7 +2,11 @@ import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { debounce } from 'lodash-es';
 import { z } from 'zod';
 import { type Template } from '@/domain/template';
-import { fetchTemplate, formatTemplateError } from '@/utils/fetchTemplate';
+import {
+  fetchTemplateWithCache,
+  formatTemplateError,
+  type FetchTemplateWithCacheResult,
+} from '@/utils/fetchTemplate';
 import { extractTwitterShortenedLink, isTwitterShortenedLink } from '@/utils/twitterShortenedLink';
 
 export type TemplateFetchState =
@@ -71,7 +75,11 @@ export function useTemplateFetcher({
       }
 
       try {
-        const result = await fetchTemplate(url, undefined, abortController.signal);
+        const result: FetchTemplateWithCacheResult = await fetchTemplateWithCache(
+          url,
+          undefined,
+          { signal: abortController.signal }
+        );
         if (!result.success) {
           setState({ status: 'error', message: formatTemplateError(result.error) });
           return;

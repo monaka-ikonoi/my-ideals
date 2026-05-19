@@ -36,6 +36,7 @@
     "current": "当前档案",
     "list": "全部档案",
     "copy-template-link": "复制模板链接",
+    "refresh-template": "刷新模板",
     "not-selected": "未选择档案",
     "not-selected-hint": "创建或导入档案以开始使用",
     "rename": "重命名档案",
@@ -52,7 +53,8 @@
   },
   "settings": {
     "language": "语言",
-    "help": "使用说明"
+    "help": "使用说明",
+    "clear-template-cache": "清除模板缓存"
   },
   "collection": {
     "search-placeholder": "搜索合集...",
@@ -180,6 +182,10 @@
     "error": "错误：{{error}}",
     "profile-deleted": "已删除档案\"{{name}}\"",
     "template-link-copied": "模板链接已复制",
+    "template-refreshed": "模板已是最新",
+    "template-updated": "模板已更新到 rev. {{revision}}",
+    "template-gone": "模板链接已失效（HTTP {{status}}）",
+    "template-cache-cleared": "模板缓存已清除",
     "profile-duplicate": {},
     "profile-created": "档案 \"{{name}}\" 已创建",
     "profile-template url-updated": "模板链接已更新",

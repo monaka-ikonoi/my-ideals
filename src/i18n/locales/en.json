@@ -36,6 +36,7 @@
     "current": "Current Profile",
     "list": "Profiles",
     "copy-template-link": "Copy Template Link",
+    "refresh-template": "Refresh Template",
     "not-selected": "No Profile Selected",
     "not-selected-hint": "Create or Import a profile to get started",
     "rename": "Rename Profile",
@@ -52,7 +53,8 @@
   },
   "settings": {
     "language": "Language",
-    "help": "User Guide"
+    "help": "User Guide",
+    "clear-template-cache": "Clear Template Cache"
   },
   "collection": {
     "search-placeholder": "Search collections...",
@@ -180,6 +182,10 @@
     "error": "Error: {{error}}",
     "profile-deleted": "Profile {{name}} deleted",
     "template-link-copied": "Template link copied",
+    "template-refreshed": "Template is up to date",
+    "template-updated": "Template updated to revision {{revision}}",
+    "template-gone": "Template URL is no longer available (HTTP {{status}})",
+    "template-cache-cleared": "Template cache cleared",
     "profile-duplicate": {},
     "profile-created": "Created profile \"{{name}}\"",
     "profile-template url-updated": "Template link updated",

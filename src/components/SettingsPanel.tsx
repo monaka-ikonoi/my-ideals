@@ -1,11 +1,14 @@
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { LanguageSelector } from './LanguageSelector';
 import { useDialogStore } from '@/stores/dialogStore';
 import {
   ArrowTopRightOnSquareIcon,
   InformationCircleIcon,
   QuestionMarkCircleIcon,
+  TrashIcon,
 } from '@heroicons/react/24/outline';
+import { clearTemplateCache } from '@/storage/templateCache';
 
 type SettingsPanelProps = {
   onSelect?: () => void;
@@ -49,6 +52,18 @@ export function SettingsPanel({ onSelect }: SettingsPanelProps) {
         >
           <InformationCircleIcon className="h-4 w-4" />
           {t('dialog.about.title')}
+        </button>
+        <button
+          onClick={async () => {
+            await clearTemplateCache();
+            toast.success(t('toast.template-cache-cleared'));
+            onSelect?.();
+          }}
+          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
+            hover:bg-gray-100"
+        >
+          <TrashIcon className="h-4 w-4" />
+          {t('settings.clear-template-cache')}
         </button>
       </div>
     </>

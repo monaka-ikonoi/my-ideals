@@ -6,6 +6,7 @@ import {
   ClipboardDocumentCheckIcon,
   ArrowsRightLeftIcon,
   DocumentDuplicateIcon,
+  ArrowPathIcon,
 } from '@heroicons/react/24/outline';
 import { InlineCode } from './ui/InlineCode';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
@@ -18,13 +19,14 @@ import { getErrorMessage } from '@/utils/error';
 export function ProfileInfo() {
   const { t } = useTranslation();
 
-  const { profileId, profileName, templateId, templateName, enableCount } = useActiveProfileStore(
+  const { profileId, profileName, templateId, templateName, enableCount, isRefreshing } = useActiveProfileStore(
     useShallow(state => ({
       profileId: state.profile!.id,
       profileName: state.profile!.name,
       templateId: state.template!.id,
       templateName: state.template!.name,
       enableCount: profileHasFlag(state.profile!, ProfileFlags.ENABLE_COUNT),
+      isRefreshing: state.isRefreshing,
     }))
   );
   const profileTemplateInfo = useActiveProfileStore(state => state.profile!.template);
@@ -94,6 +96,21 @@ export function ProfileInfo() {
             ) : (
               <LinkIcon className="h-4 w-4" />
             )}
+          </button>
+          <button
+            disabled={isRefreshing}
+            onClick={async () => {
+              try {
+                await useActiveProfileStore.getState().load(profileId, { forceNetwork: true });
+                toast.success(t('toast.template-refreshed'));
+              } catch (e) {
+                toast.error(t('toast.error', { error: e instanceof Error ? e.message : String(e) }));
+              }
+            }}
+            className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed"
+            title={t('profile.refresh-template')}
+          >
+            <ArrowPathIcon className={`h-4 w-4${isRefreshing ? ' animate-spin' : ''}`} />
           </button>
           <button
             onClick={() =>
