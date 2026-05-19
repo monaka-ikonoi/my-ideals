@@ -178,6 +178,12 @@
   },
   "toast": {
     "error": "エラー: {{error}}",
+    "stale": "キャッシュ版を表示中: {{error}}",
+    "stale-reason": {
+      "offline": "オフライン",
+      "timeout": "リクエストがタイムアウトしました",
+      "network": "{{message}}"
+    },
     "profile-deleted": "プロファイル「{{name}}」を削除しました",
     "template-link-copied": "テンプレートリンクをコピーしました",
     "profile-duplicate": {},

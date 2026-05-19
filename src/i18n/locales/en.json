@@ -178,6 +178,12 @@
   },
   "toast": {
     "error": "Error: {{error}}",
+    "stale": "Showing cached version: {{error}}",
+    "stale-reason": {
+      "offline": "Offline",
+      "timeout": "Request timed out",
+      "network": "{{message}}"
+    },
     "profile-deleted": "Profile {{name}} deleted",
     "template-link-copied": "Template link copied",
     "profile-duplicate": {},

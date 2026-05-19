@@ -178,6 +178,12 @@
   },
   "toast": {
     "error": "错误：{{error}}",
+    "stale": "已使用缓存：{{error}}",
+    "stale-reason": {
+      "offline": "当前离线",
+      "timeout": "请求超时",
+      "network": "{{message}}"
+    },
     "profile-deleted": "已删除档案\"{{name}}\"",
     "template-link-copied": "模板链接已复制",
     "profile-duplicate": {},
