@@ -1,6 +1,7 @@
+import { z } from 'zod';
 import type { ProfileStorageOps } from './ProfileStorage';
 import { type Profile, ProfileSchema } from '@/domain/profile';
-import { z } from 'zod';
+import { debugLog } from '@/utils/debug';
 
 const LOCAL_STORAGE_PREFIX = 'my-ideals';
 const LOCAL_STORAGE_KEYS = {
@@ -24,7 +25,7 @@ const getProfile = async (id: string): Promise<Profile | null> => {
   try {
     return ProfileSchema.parse(JSON.parse(raw));
   } catch (e) {
-    console.error(`Unable to parse profile: ${id}:`, e);
+    debugLog.storage.error(`Unable to parse profile: ${id}:`, e);
     return null;
   }
 };

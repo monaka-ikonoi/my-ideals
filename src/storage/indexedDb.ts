@@ -1,7 +1,8 @@
+import { z } from 'zod';
+import { createStore, get, set, del, keys } from 'idb-keyval';
 import type { ProfileStorageOps } from './ProfileStorage';
 import { type Profile, ProfileSchema } from '@/domain/profile';
-import { createStore, get, set, del, keys } from 'idb-keyval';
-import { z } from 'zod';
+import { debugLog } from '@/utils/debug';
 
 const profileStore = createStore('my-ideals', 'profiles');
 
@@ -20,7 +21,7 @@ const getProfile = async (id: string): Promise<Profile | null> => {
     }
     return ProfileSchema.parse(raw);
   } catch (e) {
-    console.error(`Unable to get profile: ${id}:`, e);
+    debugLog.storage.error(`Unable to get profile: ${id}:`, e);
     return null;
   }
 };
