@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { VitePWA } from 'vite-plugin-pwa';
 
 const getGitInfo = () => {
   try {
@@ -46,6 +47,38 @@ export default defineConfig({
       brotliSize: true,
     }),
     removeSample,
+    VitePWA({
+      registerType: 'autoUpdate',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,png,svg}'],
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => /\.json(\?.*)?$/.test(url.href),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'template-cache',
+              expiration: { maxEntries: 50, maxAgeSeconds: 7 * 24 * 60 * 60 }, // 7 days
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            urlPattern: ({ url }) => /\.(webp|png|jpe?g|avif|svg)(\?.*)?$/i.test(url.href),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'image-cache',
+              expiration: { maxEntries: 2000, maxAgeSeconds: 30 * 24 * 60 * 60 }, // 30 days
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
+      },
+      manifest: {
+        name: 'My Ideals',
+        short_name: 'my-ideals',
+        description: 'Namashashin Collection Tracker',
+        display: 'standalone',
+      },
+    }),
   ],
   resolve: {
     alias: {
