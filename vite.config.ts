@@ -51,26 +51,38 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,svg}'],
-        runtimeCaching: [
-          {
-            urlPattern: ({ url }) => /\.json(\?.*)?$/.test(url.href),
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'template-cache',
-              expiration: { maxEntries: 50, maxAgeSeconds: 7 * 24 * 60 * 60 }, // 7 days
-              cacheableResponse: { statuses: [0, 200] },
+        runtimeCaching: (() => {
+          const failFastOffline = {
+            requestWillFetch: async ({ request }: { request: Request }) => {
+              if (!self.navigator.onLine) throw new Error('offline');
+              return request;
             },
-          },
-          {
-            urlPattern: ({ url }) => /\.(webp|png|jpe?g|avif|svg)(\?.*)?$/i.test(url.href),
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'image-cache',
-              expiration: { maxEntries: 2000, maxAgeSeconds: 30 * 24 * 60 * 60 }, // 30 days
-              cacheableResponse: { statuses: [0, 200] },
+            handlerDidError: async () => Response.error(),
+          };
+          return [
+            {
+              urlPattern: ({ url }: { url: URL }) => /\.json(\?.*)?$/.test(url.href),
+              handler: 'NetworkFirst' as const,
+              options: {
+                cacheName: 'template-cache',
+                expiration: { maxEntries: 50, maxAgeSeconds: 7 * 24 * 60 * 60 }, // 7 days
+                cacheableResponse: { statuses: [0, 200] },
+                plugins: [failFastOffline],
+              },
             },
-          },
-        ],
+            {
+              urlPattern: ({ url }: { url: URL }) =>
+                /\.(webp|png|jpe?g|avif|svg)(\?.*)?$/i.test(url.href),
+              handler: 'CacheFirst' as const,
+              options: {
+                cacheName: 'image-cache',
+                expiration: { maxEntries: 2000, maxAgeSeconds: 30 * 24 * 60 * 60 }, // 30 days
+                cacheableResponse: { statuses: [0, 200] },
+                plugins: [failFastOffline],
+              },
+            },
+          ];
+        })(),
       },
       manifest: {
         name: 'My Ideals',
