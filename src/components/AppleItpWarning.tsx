@@ -2,8 +2,19 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
-const isItpAffected = () => {
+const isStandalonePWA = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  if (window.matchMedia?.('(display-mode: standalone)').matches) return true;
+  // iOS Safari legacy flag (still present on home-screen-launched PWAs)
+  const nav = window.navigator as Navigator & { standalone?: boolean };
+  return nav.standalone === true;
+}
+
+const isItpAffected = (): boolean => {
   if (typeof navigator === 'undefined') return false;
+
+  // Installed PWAs on iOS is not subject to the ITP 7-day eviction rule
+  if (isStandalonePWA()) return false;
 
   const ua = navigator.userAgent;
 
