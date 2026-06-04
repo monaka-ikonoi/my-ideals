@@ -6,6 +6,7 @@ import { type BadgeProps } from './CountBadge';
 import { debugLog } from '@/utils/debug';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
+import { computeGaps, resolveAspectRatio, resolveColumns } from '@/utils/layoutUtils';
 
 type CollectionGridProps = {
   collection: TemplateCollection;
@@ -36,32 +37,34 @@ export const CollectionGrid = memo(function CollectionGrid({
 
   const computedColumns = useMemo<[number, number, number]>(() => {
     if (columns) return columns;
-    const layoutColumns = collectionLayout?.columns ?? templateLayout?.columns;
-    const base = layoutColumns?.[0] ?? 3;
-    return [base, layoutColumns?.[1] ?? base * 2, layoutColumns?.[2] ?? base * 3];
+    return resolveColumns(collectionLayout, templateLayout);
   }, [columns, collectionLayout?.columns, templateLayout?.columns]);
+
+  const computedGaps = useMemo(() => computeGaps(computedColumns), [computedColumns]);
 
   return (
     <div
       className={
         mode === 'export'
-          ? `mx-auto grid max-w-[1600px] grid-cols-[repeat(var(--cols),minmax(0,1fr))] items-start
-            gap-[calc(36*var(--spacing)/var(--cols))]`
+          ? `mx-auto grid max-w-[1600px] grid-cols-[repeat(var(--cols),minmax(0,1fr))] items-start`
           : `mx-auto grid max-w-[480px] grid-cols-[repeat(var(--cols),minmax(0,1fr))] items-start
-            gap-[var(--gap)] [--cols:var(--cols-xs)] [--gap:calc(6*var(--spacing)/var(--cols))]
-            md:max-w-[960px] md:[--cols:var(--cols-md)]
-            md:[--gap:calc(18*var(--spacing)/var(--cols))] 2xl:max-w-[1600px]
-            2xl:[--cols:var(--cols-2xl)] 2xl:[--gap:calc(36*var(--spacing)/var(--cols))]`
+            gap-[var(--gap)] [--cols:var(--cols-xs)] [--gap:var(--gap-xs)] md:max-w-[960px]
+            md:[--cols:var(--cols-md)] md:[--gap:var(--gap-md)] 2xl:max-w-[1600px]
+            2xl:[--cols:var(--cols-2xl)] 2xl:[--gap:var(--gap-2xl)]`
       }
       style={
         mode === 'export'
           ? ({
               '--cols': computedColumns[2],
+              gap: `${computedGaps[2]}px`,
             } as React.CSSProperties)
           : ({
               '--cols-xs': computedColumns[0],
               '--cols-md': computedColumns[1],
               '--cols-2xl': computedColumns[2],
+              '--gap-xs': `${computedGaps[0]}px`,
+              '--gap-md': `${computedGaps[1]}px`,
+              '--gap-2xl': `${computedGaps[2]}px`,
             } as React.CSSProperties)
       }
     >
@@ -71,7 +74,7 @@ export const CollectionGrid = memo(function CollectionGrid({
           collectionId={collection.id}
           item={item}
           mode={mode}
-          aspectRatio={collectionLayout?.aspectRatio ?? templateLayout?.aspectRatio}
+          aspectRatio={resolveAspectRatio(collectionLayout, templateLayout)}
           enableCount={enableCount}
           imageBaseUrl={imageBaseUrl}
           revision={revision}
