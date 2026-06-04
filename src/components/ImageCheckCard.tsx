@@ -6,7 +6,7 @@ import { debugLog } from '@/utils/debug';
 import { normalizeStatusBoolean } from '@/utils/utils';
 import { formatImageUrl } from '@/utils/templateUtils';
 import { ItemCounter } from './ItemCounter';
-import { HeartIcon } from '@heroicons/react/24/solid';
+import { CountBadge, type BadgeProps } from './CountBadge';
 
 type ImageCheckCardProps = {
   collectionId: string;
@@ -17,6 +17,7 @@ type ImageCheckCardProps = {
   imageBaseUrl?: TemplateResourceBaseUrl;
   revision?: number;
   status: boolean | number | undefined;
+  badgeProps?: BadgeProps;
 };
 
 export const ImageCheckCard = memo(function ImageCheckCard({
@@ -28,6 +29,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   imageBaseUrl,
   revision,
   status: rawStatus,
+  badgeProps,
 }: ImageCheckCardProps) {
   debugLog.render.log(`ImageCheckCard render: ${collectionId} ${item.id}`);
 
@@ -64,7 +66,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
     >
       {/* Image */}
       <div
-        className="relative w-full shrink-0"
+        className="relative w-full shrink-0 @container"
         style={{ aspectRatio: computedAspectRatio } as React.CSSProperties}
       >
         {/* Image placeholder: rendered underneath until the image successfully loads */}
@@ -100,24 +102,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
 
         {/* Count Badge */}
         {mode === 'export' && enableCount && typeof status === 'number' && status !== 0 && (
-          <div
-            className={`absolute top-1.5 right-1.5 flex h-10 min-w-10 transform-gpu items-center
-            justify-center gap-1 overflow-hidden rounded-lg border px-2 text-xl font-bold
-            tabular-nums backface-hidden ${
-              status > 0
-                ? 'text-gray-80 border-gray-200/60 bg-white/80'
-                : 'border-pink-200/60 bg-pink-100/80 text-pink-600'
-            }`}
-          >
-            {status > 0 ? (
-              status
-            ) : (
-              <>
-                <HeartIcon className="h-5 w-5" />
-                {status !== -1 && <span className="leading-none">{Math.abs(status)}</span>}
-              </>
-            )}
-          </div>
+          <CountBadge count={status} props={badgeProps} rotated={item.rotated} />
         )}
 
         {/* Bottom bar */}

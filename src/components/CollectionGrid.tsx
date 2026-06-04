@@ -2,6 +2,7 @@ import { memo, useMemo } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { type TemplateCollection } from '@/domain/template';
 import { ImageCheckCard } from './ImageCheckCard';
+import { type BadgeProps } from './CountBadge';
 import { debugLog } from '@/utils/debug';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
@@ -10,12 +11,14 @@ type CollectionGridProps = {
   collection: TemplateCollection;
   mode?: 'normal' | 'export' | 'edit';
   columns?: [number, number, number];
+  badgeProps?: BadgeProps;
 };
 
 export const CollectionGrid = memo(function CollectionGrid({
   collection,
   mode = 'normal',
   columns,
+  badgeProps,
 }: CollectionGridProps) {
   debugLog.render.log(`CollectionGrid render: ${collection.id}`);
 
@@ -73,6 +76,7 @@ export const CollectionGrid = memo(function CollectionGrid({
           imageBaseUrl={imageBaseUrl}
           revision={revision}
           status={statusMap?.[item.id]}
+          badgeProps={badgeProps}
         />
       ))}
     </div>
