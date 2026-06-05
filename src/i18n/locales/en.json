@@ -147,10 +147,30 @@
     },
     "image-generate": {
       "step-select": "Select",
+      "step-customize": "Customize",
       "step-preview": "Preview",
       "selected-count": "{{collections}} / {{maxCollections}} collections, {{items}} / {{maxItems}} items selected",
       "generating": "Generating…",
-      "generate": "Generate"
+      "generate": "Generate",
+      "next": "Next",
+      "options": {
+        "badge-position-label": "Position",
+        "badge-size-label": "Size",
+        "position": {
+          "top-left": "Top left",
+          "top-middle": "Top middle",
+          "top-right": "Top right",
+          "bottom-left": "Bottom left",
+          "bottom-middle": "Bottom middle",
+          "bottom-right": "Bottom right"
+        },
+        "size": {
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large",
+          "xlarge": "Extra large"
+        }
+      }
     }
   },
   "input": {

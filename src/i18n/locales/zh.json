@@ -146,11 +146,31 @@
       "switch-after": "复制后切换到副本"
     },
     "image-generate": {
+      "step-select": "选择",
+      "step-customize": "调整",
       "step-preview": "预览",
       "selected-count": "已选中 {{collections}} / {{maxCollections}} 套，{{items}} / {{maxItems}} 个项目",
       "generating": "生成中…",
       "generate": "生成",
-      "step-select": "选择"
+      "next": "下一步",
+      "options": {
+        "badge-position-label": "位置",
+        "badge-size-label": "大小",
+        "position": {
+          "top-left": "左上",
+          "top-middle": "正上",
+          "top-right": "右上",
+          "bottom-left": "左下",
+          "bottom-middle": "正下",
+          "bottom-right": "右下"
+        },
+        "size": {
+          "small": "小",
+          "medium": "中",
+          "large": "大",
+          "xlarge": "超大"
+        }
+      }
     }
   },
   "input": {

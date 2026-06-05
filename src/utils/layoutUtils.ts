@@ -41,3 +41,21 @@ export function resolveLayout(
     gaps: computeGaps(resolveColumns(collectionLayout, templateLayout)),
   };
 }
+
+function indexByWidth(width: number): number {
+  if (width >= 1536) return 2; // 2xl
+  if (width >= 768) return 1; // md
+  return 0; // xs
+}
+
+export function computeItemWidth(
+  containerWidth: number,
+  layout: ResolvedTemplateLayout,
+  rotated: boolean = false
+): number {
+  const i = indexByWidth(containerWidth);
+  const cols = layout.columns[i];
+  const gap = layout.gaps[i];
+  const width = (containerWidth - gap * (cols - 1)) / cols;
+  return rotated ? 2 * width + gap : width;
+}

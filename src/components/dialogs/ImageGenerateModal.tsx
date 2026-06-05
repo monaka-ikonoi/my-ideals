@@ -4,15 +4,19 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import type { TemplateCollection } from '@/domain/template';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { downloadFile, shareAPISupported, shareFile } from '@/utils/fileUtils';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { FullScreenModal } from '../ui/FullScreenModal';
 import { OffscreenCaptureArea, type CaptureResult } from '../ui/OffscreenCaptureArea';
 import { CollectionImageContent } from '../CollectionImageContent';
+import { ImageCheckCard } from '../ImageCheckCard';
+import { BADGE_POSITIONS, BADGE_SIZES, type BadgeProps } from '../CountBadge';
 import { StepIndicator } from '../ui/StepIndicator';
 import { getErrorMessage } from '@/utils/error';
+import { computeItemWidth, resolveLayout } from '@/utils/layoutUtils';
 
-type Step = 'select' | 'preview';
+type Step = 'select' | 'customize' | 'preview';
 
 type ImageGenerateModalProps = {
   collections: TemplateCollection[];
@@ -49,11 +53,25 @@ export function ImageGenerateModal({
 }: ImageGenerateModalProps) {
   const { t, i18n } = useTranslation();
 
-  const { templateName, templateId, profileId } = useActiveProfileStore(
+  const {
+    templateName,
+    templateId,
+    profileId,
+    enableCount,
+    imageBaseUrl,
+    revision,
+    templateLayout,
+    statusMap,
+  } = useActiveProfileStore(
     useShallow(state => ({
       templateName: state.template!.name,
       templateId: state.template!.id,
       profileId: state.profile!.id,
+      enableCount: state.profile ? profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT) : false,
+      imageBaseUrl: state.template?.imageBaseUrl,
+      revision: state.template?.revision,
+      templateLayout: state.template?.layout,
+      statusMap: state.profile?.collections,
     }))
   );
 
@@ -65,6 +83,11 @@ export function ImageGenerateModal({
   const [generating, setGenerating] = useState(false);
   const [captureTime, setCaptureTime] = useState('');
   const fileNameRef = useRef('');
+
+  const [badgeProps, setBadgeProps] = useState<BadgeProps>({
+    position: 'top-right',
+    size: 'medium',
+  });
 
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -144,6 +167,41 @@ export function ImageGenerateModal({
     setGenerating(true);
   }, [i18n.language, selectedCollections, templateId, profileId]);
 
+  const handleNextFromSelect = useCallback(() => {
+    if (selectedCollections.length === 0) return;
+    if (enableCount) {
+      setStep('customize');
+    } else {
+      handleGenerate();
+    }
+  }, [enableCount, handleGenerate, selectedCollections.length]);
+
+  // Pick the first non-zero item for preview
+  const previewItem = useMemo(() => {
+    for (const collection of selectedCollections) {
+      const collectionStatus = statusMap?.[collection.id];
+      const candidate =
+        collection.items.find(item => {
+          const status = collectionStatus?.[item.id];
+          return typeof status === 'number' && status !== 0;
+        }) ?? collection.items[0];
+      if (candidate) {
+        return { collection, item: candidate, status: collectionStatus?.[candidate.id] };
+      }
+    }
+    return null;
+  }, [selectedCollections, statusMap]);
+
+  const ImageCardLayout = useMemo(
+    () => resolveLayout(selectedCollections[0]?.layout, templateLayout),
+    [selectedCollections, templateLayout]
+  );
+  const ImageCardWidth = useMemo(
+    // Export grid width is 1600px
+    () => computeItemWidth(1600, ImageCardLayout, previewItem?.item?.rotated),
+    [ImageCardLayout, previewItem]
+  );
+
   const handleCapture = useCallback(
     (result: CaptureResult) => {
       setGenerating(false);
@@ -187,15 +245,23 @@ export function ImageGenerateModal({
         <div className="flex h-full min-h-0 flex-col">
           <div className="shrink-0 px-4 py-2 md:px-6">
             <StepIndicator
-              steps={[
-                { key: 'select', label: t('dialog.image-generate.step-select') },
-                { key: 'preview', label: t('dialog.image-generate.step-preview') },
-              ]}
+              steps={
+                enableCount
+                  ? [
+                      { key: 'select', label: t('dialog.image-generate.step-select') },
+                      { key: 'customize', label: t('dialog.image-generate.step-customize') },
+                      { key: 'preview', label: t('dialog.image-generate.step-preview') },
+                    ]
+                  : [
+                      { key: 'select', label: t('dialog.image-generate.step-select') },
+                      { key: 'preview', label: t('dialog.image-generate.step-preview') },
+                    ]
+              }
               current={step}
             />
           </div>
 
-          {step === 'select' ? (
+          {step === 'select' && (
             <>
               <div className="min-h-0 flex-1 overflow-y-auto border-t border-gray-100">
                 {collections.length === 0 ? (
@@ -291,6 +357,122 @@ export function ImageGenerateModal({
                   </p>
                   <button
                     type="button"
+                    onClick={handleNextFromSelect}
+                    disabled={generating || selectedCollections.length === 0}
+                    className="min-w-28 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium
+                      text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
+                  >
+                    {generating
+                      ? t('dialog.image-generate.generating')
+                      : enableCount
+                        ? t('dialog.image-generate.next')
+                        : t('dialog.image-generate.generate')}
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+
+          {step === 'customize' && (
+            <>
+              <div className="min-h-0 flex-1 overflow-y-auto border-t border-gray-100">
+                <div className="flex flex-col gap-6 p-4 md:flex-row md:items-start md:p-6">
+                  {/* Preview */}
+                  <div className="mx-auto flex justify-center md:mx-0 md:shrink-0 md:justify-start">
+                    {previewItem && (
+                      <div style={{ width: `${ImageCardWidth}px` }}>
+                        <ImageCheckCard
+                          collectionId={previewItem.collection.id}
+                          item={previewItem.item}
+                          mode="export"
+                          aspectRatio={ImageCardLayout.aspectRatio}
+                          enableCount
+                          imageBaseUrl={imageBaseUrl}
+                          revision={revision}
+                          status={previewItem.status}
+                          badgeProps={badgeProps}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Controls */}
+                  <div className="mx-auto space-y-6 md:mx-0 md:min-w-0">
+                    {/* Position picker */}
+                    <div>
+                      <p className="mb-2 text-sm font-medium text-gray-700">
+                        {t('dialog.image-generate.options.badge-position-label')}
+                      </p>
+                      <div className="grid max-w-md grid-cols-3 gap-2">
+                        {BADGE_POSITIONS.map(position => {
+                          const selected = badgeProps.position === position;
+                          return (
+                            <button
+                              key={position}
+                              type="button"
+                              onClick={() => setBadgeProps(prev => ({ ...prev, position }))}
+                              disabled={generating}
+                              className={`w-full rounded-lg border px-3 py-2 text-sm font-medium
+                              transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                                selected
+                                  ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                  : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                              }`}
+                            >
+                              {t(`dialog.image-generate.options.position.${position}`)}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Size picker */}
+                    <div>
+                      <p className="mb-2 text-sm font-medium text-gray-700">
+                        {t('dialog.image-generate.options.badge-size-label')}
+                      </p>
+                      <div className="grid grid-cols-4 gap-2">
+                        {BADGE_SIZES.map(size => {
+                          const selected = badgeProps.size === size;
+                          return (
+                            <button
+                              key={size}
+                              type="button"
+                              onClick={() => setBadgeProps(prev => ({ ...prev, size }))}
+                              disabled={generating}
+                              className={`w-full rounded-lg border px-3 py-2 text-sm font-medium
+                              transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                                selected
+                                  ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                  : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                              }`}
+                            >
+                              {t(`dialog.image-generate.options.size.${size}`)}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Options step footer */}
+              <div className="shrink-0 border-t border-gray-100 px-4 py-3 md:px-6 md:py-4">
+                <div className="flex items-center justify-between gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setStep('select')}
+                    disabled={generating}
+                    className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium
+                      text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed
+                      disabled:opacity-50"
+                  >
+                    <ArrowLeftIcon className="h-4 w-4" />
+                    {t('common.back')}
+                  </button>
+                  <button
+                    type="button"
                     onClick={handleGenerate}
                     disabled={generating || selectedCollections.length === 0}
                     className="min-w-28 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium
@@ -303,7 +485,9 @@ export function ImageGenerateModal({
                 </div>
               </div>
             </>
-          ) : (
+          )}
+
+          {step === 'preview' && (
             <>
               {/* Preview step body */}
               <div className="min-h-0 flex-1 overflow-auto border-t border-gray-100">
@@ -322,7 +506,7 @@ export function ImageGenerateModal({
                 <div className="flex items-center justify-between gap-4">
                   <button
                     type="button"
-                    onClick={() => setStep('select')}
+                    onClick={() => setStep(enableCount ? 'customize' : 'select')}
                     disabled={generating}
                     className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium
                       text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed
@@ -366,6 +550,7 @@ export function ImageGenerateModal({
           profileId={profileId}
           collections={selectedCollections}
           captureTime={captureTime}
+          badgeProps={badgeProps}
         />
       </OffscreenCaptureArea>
     </>

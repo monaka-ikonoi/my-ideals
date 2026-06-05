@@ -147,10 +147,30 @@
     },
     "image-generate": {
       "step-select": "選択",
+      "step-customize": "カスタマイズ",
       "step-preview": "プレビュー",
       "selected-count": "{{collections}} / {{maxCollections}} セット、{{items}} / {{maxItems}} アイテム選択中",
       "generating": "作成中…",
-      "generate": "作成"
+      "generate": "作成",
+      "next": "次へ",
+      "options": {
+        "badge-position-label": "位置",
+        "badge-size-label": "サイズ",
+        "position": {
+          "top-left": "左上",
+          "top-middle": "上中央",
+          "top-right": "右上",
+          "bottom-left": "左下",
+          "bottom-middle": "下中央",
+          "bottom-right": "右下"
+        },
+        "size": {
+          "small": "小",
+          "medium": "中",
+          "large": "大",
+          "xlarge": "特大"
+        }
+      }
     }
   },
   "input": {
