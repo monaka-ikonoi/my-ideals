@@ -69,7 +69,11 @@ export function GlobalDialogs() {
         <CollectionEditModal collectionId={activeDialog.collectionId} onClose={closeDialog} />
       )}
       {activeDialog.type === 'generate-image' && (
-        <ImageGenerateModal collections={activeDialog.collections} onClose={closeDialog} />
+        <ImageGenerateModal
+          collections={activeDialog.collections}
+          preSelectedId={activeDialog.preSelectedId}
+          onClose={closeDialog}
+        />
       )}
     </>
   );

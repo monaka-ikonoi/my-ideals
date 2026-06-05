@@ -21,6 +21,7 @@ type Step = 'select' | 'customize' | 'preview';
 type ImageGenerateModalProps = {
   collections: TemplateCollection[];
   onClose: () => void;
+  preSelectedId?: string;
   maxCollections?: number;
   maxItems?: number;
 };
@@ -48,6 +49,7 @@ function buildInitialSelectedIds(
 export function ImageGenerateModal({
   collections,
   onClose,
+  preSelectedId,
   maxCollections = 30,
   maxItems = 180,
 }: ImageGenerateModalProps) {
@@ -75,10 +77,12 @@ export function ImageGenerateModal({
     }))
   );
 
-  const [step, setStep] = useState<Step>('select');
+  const [step, setStep] = useState<Step>(() =>
+    preSelectedId ? (enableCount ? 'customize' : 'preview') : 'select'
+  );
 
   const [selectedIds, setSelectedIds] = useState<string[]>(() =>
-    buildInitialSelectedIds(collections, maxCollections, maxItems)
+    preSelectedId ? [preSelectedId] : buildInitialSelectedIds(collections, maxCollections, maxItems)
   );
   const [generating, setGenerating] = useState(false);
   const [captureTime, setCaptureTime] = useState('');
@@ -176,6 +180,16 @@ export function ImageGenerateModal({
       handleGenerate();
     }
   }, [enableCount, handleGenerate, selectedCollections.length]);
+
+  // When opened for a single pre-selected collection without count, jump straight
+  // to the preview step and start generating.
+  const didAutoGenerate = useRef(false);
+  useEffect(() => {
+    if (preSelectedId && !enableCount && !didAutoGenerate.current) {
+      didAutoGenerate.current = true;
+      handleGenerate();
+    }
+  }, [preSelectedId, enableCount, handleGenerate]);
 
   // Pick the first non-zero item for preview
   const previewItem = useMemo(() => {
@@ -459,17 +473,21 @@ export function ImageGenerateModal({
               {/* Options step footer */}
               <div className="shrink-0 border-t border-gray-100 px-4 py-3 md:px-6 md:py-4">
                 <div className="flex items-center justify-between gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setStep('select')}
-                    disabled={generating}
-                    className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium
-                      text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed
-                      disabled:opacity-50"
-                  >
-                    <ArrowLeftIcon className="h-4 w-4" />
-                    {t('common.back')}
-                  </button>
+                  {preSelectedId ? (
+                    <span />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setStep('select')}
+                      disabled={generating}
+                      className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium
+                        text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed
+                        disabled:opacity-50"
+                    >
+                      <ArrowLeftIcon className="h-4 w-4" />
+                      {t('common.back')}
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={handleGenerate}
@@ -515,17 +533,21 @@ export function ImageGenerateModal({
               {/* Preview step footer */}
               <div className="shrink-0 border-t border-gray-100 px-4 py-3 md:px-6 md:py-4">
                 <div className="flex items-center justify-between gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setStep(enableCount ? 'customize' : 'select')}
-                    disabled={generating}
-                    className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium
-                      text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed
-                      disabled:opacity-50"
-                  >
-                    <ArrowLeftIcon className="h-4 w-4" />
-                    {t('common.back')}
-                  </button>
+                  {preSelectedId && !enableCount ? (
+                    <span />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setStep(enableCount ? 'customize' : 'select')}
+                      disabled={generating}
+                      className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium
+                        text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed
+                        disabled:opacity-50"
+                    >
+                      <ArrowLeftIcon className="h-4 w-4" />
+                      {t('common.back')}
+                    </button>
+                  )}
 
                   <div className="flex items-center gap-3">
                     <button

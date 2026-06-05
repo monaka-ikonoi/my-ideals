@@ -18,7 +18,11 @@ type DialogState =
   | { type: 'collection-image-preview'; image: Blob; fileName: string }
   | { type: 'about' }
   | { type: 'edit-collection'; collectionId: string }
-  | { type: 'generate-image'; collections: TemplateCollection[] };
+  | {
+      type: 'generate-image';
+      collections: TemplateCollection[];
+      preSelectedId?: string;
+    };
 
 type DialogStore = {
   activeDialog: DialogState;
@@ -35,7 +39,7 @@ type DialogStore = {
   openAbout: () => void;
 
   openEditCollection: (collectionId: string) => void;
-  openGenerateImage: (collections: TemplateCollection[]) => void;
+  openGenerateImage: (collections: TemplateCollection[], preSelectedId?: string) => void;
 };
 
 export const useDialogStore = create<DialogStore>(set => ({
@@ -66,5 +70,6 @@ export const useDialogStore = create<DialogStore>(set => ({
 
   openEditCollection: collectionId =>
     set({ activeDialog: { type: 'edit-collection', collectionId } }),
-  openGenerateImage: collections => set({ activeDialog: { type: 'generate-image', collections } }),
+  openGenerateImage: (collections, preSelectedId) =>
+    set({ activeDialog: { type: 'generate-image', collections, preSelectedId } }),
 }));
