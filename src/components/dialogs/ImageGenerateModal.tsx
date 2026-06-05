@@ -410,13 +410,13 @@ export function ImageGenerateModal({
                   </div>
 
                   {/* Controls */}
-                  <div className="mx-auto space-y-6 md:mx-0 md:min-w-0">
+                  <div className="mx-auto min-w-xs space-y-6 md:mx-0 md:w-full">
                     {/* Position picker */}
                     <div>
                       <p className="mb-2 text-sm font-medium text-gray-700">
                         {t('dialog.image-generate.options.badge-position-label')}
                       </p>
-                      <div className="grid max-w-md grid-cols-3 gap-2">
+                      <div className="grid grid-cols-3 gap-2">
                         {BADGE_POSITIONS.map(position => {
                           const selected = badgeProps.position === position;
                           return (
