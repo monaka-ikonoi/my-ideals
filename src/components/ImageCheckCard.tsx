@@ -66,7 +66,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
     >
       {/* Image */}
       <div
-        className="relative w-full shrink-0 @container"
+        className="@container relative w-full shrink-0"
         style={{ aspectRatio: computedAspectRatio } as React.CSSProperties}
       >
         {/* Image placeholder: rendered underneath until the image successfully loads */}
@@ -107,8 +107,9 @@ export const ImageCheckCard = memo(function ImageCheckCard({
 
         {/* Bottom bar */}
         <div
-          className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-black/50
-            px-1.5 py-0.5 text-[10px] text-white sm:px-2 sm:py-1 sm:text-xs"
+          className={`absolute inset-x-0 bottom-0 flex items-center justify-between bg-black/50
+            text-white
+            ${mode === 'export' ? 'px-2 py-1 text-xs' : 'px-1.5 py-0.5 text-[10px] sm:px-2 sm:py-1 sm:text-xs'}`}
         >
           <span className="truncate">{item.name}</span>
           {!enableCount && (
