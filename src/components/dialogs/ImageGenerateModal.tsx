@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import type { TemplateCollection } from '@/domain/template';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useSettingsStore } from '@/stores/settingsStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { downloadFile, shareAPISupported, shareFile } from '@/utils/fileUtils';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
@@ -11,7 +12,7 @@ import { FullScreenModal } from '../ui/FullScreenModal';
 import { OffscreenCaptureArea, type CaptureResult } from '../ui/OffscreenCaptureArea';
 import { CollectionImageContent } from '../CollectionImageContent';
 import { ImageCheckCard } from '../ImageCheckCard';
-import { BADGE_POSITIONS, BADGE_SIZES, type BadgeProps } from '../CountBadge';
+import { BADGE_POSITIONS, BADGE_SIZES } from '../CountBadge';
 import { StepIndicator } from '../ui/StepIndicator';
 import { getErrorMessage } from '@/utils/error';
 import { computeItemWidth, resolveLayout } from '@/utils/layoutUtils';
@@ -88,10 +89,8 @@ export function ImageGenerateModal({
   const [captureTime, setCaptureTime] = useState('');
   const fileNameRef = useRef('');
 
-  const [badgeProps, setBadgeProps] = useState<BadgeProps>({
-    position: 'top-right',
-    size: 'medium',
-  });
+  const badgeProps = useSettingsStore(state => state.imageOptions.badge);
+  const setBadgeProps = useSettingsStore(state => state.setBadgeOptions);
 
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -423,7 +422,7 @@ export function ImageGenerateModal({
                             <button
                               key={position}
                               type="button"
-                              onClick={() => setBadgeProps(prev => ({ ...prev, position }))}
+                              onClick={() => setBadgeProps({ ...badgeProps, position })}
                               disabled={generating}
                               className={`w-full rounded-lg border px-3 py-2 text-sm font-medium
                               transition disabled:cursor-not-allowed disabled:opacity-50 ${
@@ -451,7 +450,7 @@ export function ImageGenerateModal({
                             <button
                               key={size}
                               type="button"
-                              onClick={() => setBadgeProps(prev => ({ ...prev, size }))}
+                              onClick={() => setBadgeProps({ ...badgeProps, size })}
                               disabled={generating}
                               className={`w-full rounded-lg border px-3 py-2 text-sm font-medium
                               transition disabled:cursor-not-allowed disabled:opacity-50 ${
