@@ -7,7 +7,6 @@ import { ProfileDeleteDialog } from './dialogs/ProfileDeleteDialog';
 import { ProfileRenameDialog } from './dialogs/ProfileRenameDialog';
 import { ProfileEditTemplateUrlDialog } from './dialogs/ProfileEditTemplateUrl';
 import { ProfileSwitchModeDialog } from './dialogs/ProfileSwitchModeDialog';
-import { CollectionImagePreviewDialog } from './dialogs/CollectionImagePreviewDialog';
 import { AboutDialog } from './dialogs/AboutDialog';
 import { CollectionEditModal } from './dialogs/CollectionEditModal';
 import { ProfileDuplicateDialog } from './dialogs/ProfileDuplicateDialog';
@@ -53,13 +52,6 @@ export function GlobalDialogs() {
         <ProfileSwitchModeDialog
           profileId={activeDialog.profileId}
           enableCount={activeDialog.enableCount}
-          onClose={closeDialog}
-        />
-      )}
-      {activeDialog.type === 'collection-image-preview' && (
-        <CollectionImagePreviewDialog
-          image={activeDialog.image}
-          fileName={activeDialog.fileName}
           onClose={closeDialog}
         />
       )}

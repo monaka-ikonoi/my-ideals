@@ -35,7 +35,6 @@ type DialogStore = {
   openDuplicateProfile: () => void;
   openEditProfileTemplateUrl: (profileId: string, templateId: string, currentUrl: string) => void;
   openSwitchProfileMode: (profileId: string, enableCount: boolean) => void;
-  openCollectionImagePreview: (image: Blob, fileName: string) => void;
   openAbout: () => void;
 
   openEditCollection: (collectionId: string) => void;
@@ -64,8 +63,6 @@ export const useDialogStore = create<DialogStore>(set => ({
     }),
   openSwitchProfileMode: (profileId: string, enableCount: boolean) =>
     set({ activeDialog: { type: 'switch-profile-mode', profileId, enableCount } }),
-  openCollectionImagePreview: (image, fileName) =>
-    set({ activeDialog: { type: 'collection-image-preview', image, fileName } }),
   openAbout: () => set({ activeDialog: { type: 'about' } }),
 
   openEditCollection: collectionId =>
