@@ -150,7 +150,7 @@
       "step-customize": "カスタマイズ",
       "step-preview": "プレビュー",
       "selected-count": "{{collections}} / {{maxCollections}} セット、{{items}} / {{maxItems}} アイテム選択中",
-      "generating": "作成中…",
+      "generating-hint": "作成中… しばらくお待ちください",
       "generate": "作成",
       "next": "次へ",
       "options": {

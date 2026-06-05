@@ -150,7 +150,7 @@
       "step-customize": "Customize",
       "step-preview": "Preview",
       "selected-count": "{{collections}} / {{maxCollections}} collections, {{items}} / {{maxItems}} items selected",
-      "generating": "Generating…",
+      "generating-hint": "Generating… Please wait",
       "generate": "Generate",
       "next": "Next",
       "options": {

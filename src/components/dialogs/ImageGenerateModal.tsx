@@ -164,6 +164,7 @@ export function ImageGenerateModal({
         ? `${templateId}-${selectedCollections[0].id}.png`
         : `${templateId}-${profileId}.png`;
 
+    setStep('preview');
     setGenerating(true);
   }, [i18n.language, selectedCollections, templateId, profileId]);
 
@@ -213,12 +214,12 @@ export function ImageGenerateModal({
           return URL.createObjectURL(result.blob);
         });
         setImageBlob(result.blob);
-        setStep('preview');
       } else {
+        setStep(enableCount ? 'customize' : 'select');
         toast.error(t('toast.error', { error: result.error }));
       }
     },
-    [t]
+    [t, enableCount]
   );
 
   const handleSave = useCallback(() => {
@@ -362,11 +363,9 @@ export function ImageGenerateModal({
                     className="min-w-28 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium
                       text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
                   >
-                    {generating
-                      ? t('dialog.image-generate.generating')
-                      : enableCount
-                        ? t('dialog.image-generate.next')
-                        : t('dialog.image-generate.generate')}
+                    {enableCount
+                      ? t('dialog.image-generate.next')
+                      : t('dialog.image-generate.generate')}
                   </button>
                 </div>
               </div>
@@ -478,9 +477,7 @@ export function ImageGenerateModal({
                     className="min-w-28 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium
                       text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
                   >
-                    {generating
-                      ? t('dialog.image-generate.generating')
-                      : t('dialog.image-generate.generate')}
+                    {t('dialog.image-generate.generate')}
                   </button>
                 </div>
               </div>
@@ -492,11 +489,25 @@ export function ImageGenerateModal({
               {/* Preview step body */}
               <div className="min-h-0 flex-1 overflow-auto border-t border-gray-100">
                 <div className="flex min-h-full flex-col p-4">
-                  {imageUrl && (
-                    <img
-                      src={imageUrl}
-                      className="h-auto max-w-full rounded-md border border-gray-200"
-                    />
+                  {generating ? (
+                    <div className="flex flex-1 items-center justify-center">
+                      <div className="flex flex-col items-center gap-3">
+                        <div
+                          className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200
+                            border-t-blue-600"
+                        />
+                        <span className="text-sm text-gray-500">
+                          {t('dialog.image-generate.generating-hint')}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    imageUrl && (
+                      <img
+                        src={imageUrl}
+                        className="h-auto max-w-full rounded-md border border-gray-200"
+                      />
+                    )
                   )}
                 </div>
               </div>

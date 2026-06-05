@@ -150,7 +150,7 @@
       "step-customize": "调整",
       "step-preview": "预览",
       "selected-count": "已选中 {{collections}} / {{maxCollections}} 套，{{items}} / {{maxItems}} 个项目",
-      "generating": "生成中…",
+      "generating-hint": "生成中… 请稍候",
       "generate": "生成",
       "next": "下一步",
       "options": {
