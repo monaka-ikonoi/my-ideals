@@ -17,7 +17,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "html-to-image": "^1.11.13",
-    "i18next": "^26.3.0",
+    "i18next": "^26.3.1",
     "idb-keyval": "^6.2.5",
     "immer": "^11.1.8",
     "lodash-es": "^4.18.1",
@@ -35,8 +35,8 @@
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.3.0",
     "@types/lodash-es": "^4.17.12",
-    "@types/node": "^25.9.1",
-    "@types/react": "^19.2.16",
+    "@types/node": "^25.9.2",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
     "eslint": "^10.4.1",
@@ -55,5 +55,5 @@
     "typescript-eslint": "^8.60.1",
     "vite": "^8.0.16"
   },
-  "packageManager": "pnpm@11.5.1+sha512.93f7b57422ea7068257235b4c16eb60762eb68e1dc23723199cc739043ea9be2c4143274a399d8c6defa2b1176226d9ca1c4b63482d6200c1a8fbaa78c1d1485"
+  "packageManager": "pnpm@11.5.2+sha512.71c631e382066efc25625d5cf029075de07b61b37f6e27350fbd84b1bda5864c8c1967adc280776b45c30a715c0359a3be08fef42d5bb09e2b99029979692916"
 }
