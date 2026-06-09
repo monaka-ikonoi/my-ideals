@@ -42,6 +42,19 @@ export const CollectionGrid = memo(function CollectionGrid({
 
   const computedGaps = useMemo(() => computeGaps(computedColumns), [computedColumns]);
 
+  const resolvedAspectRatio = useMemo(
+    () => resolveAspectRatio(collectionLayout, templateLayout),
+    [collectionLayout?.aspectRatio, templateLayout?.aspectRatio]
+  );
+
+  /* To make rotated item height = (column width) * (h/w), its width need to be height * (h/w).
+  /* Column wideth is (100% - gap) / 2.
+   */
+  const rotatedWidthFactor = useMemo(() => {
+    const [w, h] = resolvedAspectRatio.split('/').map(Number);
+    return (h / w) ** 2 / 2;
+  }, [resolvedAspectRatio]);
+
   return (
     <div
       className={
@@ -70,18 +83,28 @@ export const CollectionGrid = memo(function CollectionGrid({
       }
     >
       {collection.items.map(item => (
-        <ImageCheckCard
+        <div
           key={`${collection.id}-${item.id}`}
-          collectionId={collection.id}
-          item={item}
-          mode={mode}
-          aspectRatio={resolveAspectRatio(collectionLayout, templateLayout)}
-          enableCount={enableCount}
-          imageBaseUrl={imageBaseUrl}
-          revision={revision}
-          status={statusMap?.[item.id]}
-          badgeProps={badgeProps}
-        />
+          className={item.rotated ? 'col-span-2 justify-self-center' : undefined}
+          style={
+            item.rotated
+              ? // Limit the computed width of rotated items to 100% to avoid overflow.
+                { width: `min(calc((100% - var(--gap)) * ${rotatedWidthFactor}), 100%)` }
+              : undefined
+          }
+        >
+          <ImageCheckCard
+            collectionId={collection.id}
+            item={item}
+            mode={mode}
+            aspectRatio={resolvedAspectRatio}
+            enableCount={enableCount}
+            imageBaseUrl={imageBaseUrl}
+            revision={revision}
+            status={statusMap?.[item.id]}
+            badgeProps={badgeProps}
+          />
+        </div>
       ))}
     </div>
   );

@@ -56,26 +56,12 @@ export const ImageCheckCard = memo(function ImageCheckCard({
     ? aspectRatio.split('/').reverse().join('/')
     : aspectRatio;
 
-  /* To make rotated item height = (column width) * (h/w), its width need to be height * (h/w).
-  /* Column wideth is (100% - gap) / 2. Limit the computed width to 100% to avoid overflow.
-   */
-  const rotatedStyle = item.rotated
-    ? (() => {
-        const [w, h] = aspectRatio.split('/').map(Number);
-        const factor = (h / w) ** 2 / 2;
-        return {
-          width: `min(calc((100% - var(--gap)) * ${factor}), 100%)`,
-        } as React.CSSProperties;
-      })()
-    : undefined;
-
   const isToggled = typeof status === 'boolean' ? status : status !== 0;
 
   return (
     <div
       className={`flex w-full flex-col overflow-hidden rounded-md
-        ${!enableCount ? 'cursor-pointer' : ''} ${item.rotated ? 'col-span-2 justify-self-center' : ''}`}
-      style={rotatedStyle}
+        ${!enableCount ? 'cursor-pointer' : ''}`}
       onClick={handleToggle}
     >
       {/* Image */}
