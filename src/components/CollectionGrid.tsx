@@ -46,7 +46,8 @@ export const CollectionGrid = memo(function CollectionGrid({
     <div
       className={
         mode === 'export'
-          ? `mx-auto grid max-w-[1600px] grid-cols-[repeat(var(--cols),minmax(0,1fr))] items-start`
+          ? `mx-auto grid max-w-[1600px] grid-cols-[repeat(var(--cols),minmax(0,1fr))] items-start
+            gap-[var(--gap)]`
           : `mx-auto grid max-w-[480px] grid-cols-[repeat(var(--cols),minmax(0,1fr))] items-start
             gap-[var(--gap)] [--cols:var(--cols-xs)] [--gap:var(--gap-xs)] md:max-w-[960px]
             md:[--cols:var(--cols-md)] md:[--gap:var(--gap-md)] 2xl:max-w-[1600px]
@@ -56,7 +57,7 @@ export const CollectionGrid = memo(function CollectionGrid({
         mode === 'export'
           ? ({
               '--cols': computedColumns[2],
-              gap: `${computedGaps[2]}px`,
+              '--gap': `${computedGaps[2]}px`,
             } as React.CSSProperties)
           : ({
               '--cols-xs': computedColumns[0],
