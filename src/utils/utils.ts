@@ -1,5 +1,5 @@
-export const normalizeStatusBoolean = (status: boolean | number): boolean =>
-  typeof status === 'boolean' ? status : status > 0;
+export const normalizeStatusBoolean = (status: boolean | number | null | undefined): boolean =>
+  typeof status === 'boolean' ? status : (status ?? 0) > 0;
 
-export const normalizeStatusNumber = (status: boolean | number): number =>
-  typeof status === 'boolean' ? (status ? 1 : 0) : status;
+export const normalizeStatusNumber = (status: boolean | number | null | undefined): number =>
+  typeof status === 'boolean' ? (status ? 1 : 0) : (status ?? 0);
