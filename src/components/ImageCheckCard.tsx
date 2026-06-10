@@ -57,6 +57,11 @@ export const ImageCheckCard = memo(function ImageCheckCard({
     : aspectRatio;
 
   const isToggled = typeof status === 'boolean' ? status : status !== 0;
+  const showBadge =
+    (mode === 'export' || mode === 'edit') &&
+    enableCount &&
+    typeof status === 'number' &&
+    status !== 0;
 
   return (
     <div
@@ -101,9 +106,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
         )}
 
         {/* Count Badge */}
-        {mode === 'export' && enableCount && typeof status === 'number' && status !== 0 && (
-          <CountBadge count={status} props={badgeProps} rotated={item.rotated} />
-        )}
+        {showBadge && <CountBadge count={status} props={badgeProps} rotated={item.rotated} />}
 
         {/* Bottom bar */}
         <div
@@ -126,11 +129,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
 
       {/* Counter */}
       {mode !== 'export' && enableCount && typeof status === 'number' && (
-        <ItemCounter
-          value={status}
-          setValue={handleSetCount}
-          size={mode === 'edit' ? 'large' : 'normal'}
-        />
+        <ItemCounter value={status} setValue={handleSetCount} mode={mode} />
       )}
     </div>
   );

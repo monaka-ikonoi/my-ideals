@@ -71,7 +71,12 @@ export function CollectionEditModal({ collectionId, onClose }: CollectionEditMod
         {virtualCollection.items.length > 0 && (
           <div className="flex-1 overflow-y-auto">
             <div className="p-4 sm:px-6">
-              <CollectionGrid collection={virtualCollection} columns={[3, 6, 6]} mode="edit" />
+              <CollectionGrid
+                collection={virtualCollection}
+                columns={[3, 6, 6]}
+                mode="edit"
+                badgeProps={{ size: 'xlarge', position: 'bottom-middle' }}
+              />
             </div>
           </div>
         )}
