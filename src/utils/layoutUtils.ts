@@ -2,7 +2,7 @@ import { type TemplateLayout } from '@/domain/template';
 
 type LayoutTuple = [number, number, number];
 
-type ResolvedTemplateLayout = {
+export type ResolvedTemplateLayout = {
   aspectRatio: string;
   columns: LayoutTuple;
   gaps: LayoutTuple;
@@ -22,6 +22,17 @@ export function resolveAspectRatio(
   templateLayout?: TemplateLayout
 ): string {
   return collectionLayout?.aspectRatio ?? templateLayout?.aspectRatio ?? '7/10';
+}
+
+/**
+ * Resolve the "items per member" hint used to pad member groups with empty grid
+ * cells. Returns `undefined` when no hint is configured (padding disabled).
+ */
+export function resolveGroupHint(
+  collectionLayout?: TemplateLayout,
+  templateLayout?: TemplateLayout
+): number | undefined {
+  return collectionLayout?.groupHint ?? templateLayout?.groupHint;
 }
 
 const GAP_UNIT = 4;
@@ -46,6 +57,11 @@ function indexByWidth(width: number): number {
   if (width >= 1536) return 2; // 2xl
   if (width >= 768) return 1; // md
   return 0; // xs
+}
+
+export function computeColumn(containerWidth: number, layout: ResolvedTemplateLayout): number {
+  const i = indexByWidth(containerWidth);
+  return layout.columns[i];
 }
 
 export function computeItemWidth(

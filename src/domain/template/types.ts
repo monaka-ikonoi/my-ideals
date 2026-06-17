@@ -3,6 +3,7 @@ import { type TemplateResourceBaseUrl } from './imageBaseUrl';
 export type TemplateLayout = {
   aspectRatio?: string;
   columns?: [number, number?, number?];
+  groupHint?: number;
 };
 
 export type TemplateCollectionItem = {

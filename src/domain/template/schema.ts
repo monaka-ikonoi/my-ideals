@@ -11,6 +11,7 @@ const TemplateLayoutSchema = z.object({
   columns: z
     .tuple([z.int().min(1), z.int().min(1).optional(), z.int().min(1).optional()])
     .optional(),
+  groupHint: z.int().min(1).optional(),
 });
 
 const TemplateMember = z.object({

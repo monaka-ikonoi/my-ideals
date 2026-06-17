@@ -12,11 +12,13 @@ import { useDialogStore } from '@/stores/dialogStore';
 type CollectionPanelProps = {
   collection: TemplateCollection;
   baseCollection: TemplateCollection;
+  grouped?: boolean;
 };
 
 export const CollectionPanel = memo(function CollectionPanel({
   collection,
   baseCollection,
+  grouped = true,
 }: CollectionPanelProps) {
   debugLog.render.log(`CollectionPanel render: ${collection.id}`);
 
@@ -84,7 +86,7 @@ export const CollectionPanel = memo(function CollectionPanel({
       </div>
 
       <div className="p-4 2xl:px-8 2xl:pt-4 2xl:pb-6">
-        <CollectionGrid collection={collection} />
+        <CollectionGrid collection={collection} grouped={grouped} />
       </div>
     </div>
   );

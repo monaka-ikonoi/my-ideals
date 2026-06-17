@@ -16,6 +16,10 @@ export function ProfilePage() {
   const { visibleCollections, collectionMap, filterProps, hiddenCount } = useCollectionFilter();
   const { searchedCollections, searchProps } = useSearch(visibleCollections);
 
+  // Group layout only makes sense on the full item set; disable it whenever a
+  // status/completed filter is trimming items within collections.
+  const grouped = !filterProps.hideCompleted && filterProps.filterStatus === 'all';
+
   return (
     <main className="mx-auto max-w-[512px] space-y-6 px-4 py-6 md:max-w-[1024px] 2xl:max-w-[1664px]">
       <AppleItpWarning />
@@ -44,6 +48,7 @@ export function ProfilePage() {
             <CollectionPanel
               collection={collection}
               baseCollection={collectionMap[collection.id]}
+              grouped={grouped}
             />
           </div>
         )}
