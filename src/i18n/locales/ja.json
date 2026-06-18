@@ -137,7 +137,8 @@
       "to-standard-warn": "所持数が2以上のアイテムはすべて1として扱われ、数量データが失われます。この操作は元に戻せません。"
     },
     "collection-edit": {
-      "title": "「{{name}}」を編集"
+      "title": "「{{name}}」を編集",
+      "stats": "合計：{{owned}} 枚"
     },
     "profile-duplicate": {
       "title": "プロフィールのコピーを作成",

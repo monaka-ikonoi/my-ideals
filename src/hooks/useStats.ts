@@ -80,7 +80,7 @@ function calculateCollectionStats(
 
 export function useCollectionStats(
   visibleCollections: TemplateCollection,
-  baseCollection: TemplateCollection
+  baseCollection: TemplateCollection = visibleCollections
 ) {
   const statusMap = useActiveProfileStore(
     state => state.profile?.collections[baseCollection.id] ?? {}

@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TemplateCollection } from '@/domain/template';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useCollectionStats } from '@/hooks/useStats';
 import { FullScreenModal } from '../ui/FullScreenModal';
 import { MemberSelector } from '../MemberSelector';
 import { CollectionGrid } from '../CollectionGrid';
@@ -48,6 +49,8 @@ export function CollectionEditModal({ collectionId, onClose }: CollectionEditMod
     };
   }, [availableMembers.length, collection, selectedMember]);
 
+  const stats = useCollectionStats(collection);
+
   return (
     <FullScreenModal
       isOpen
@@ -80,6 +83,10 @@ export function CollectionEditModal({ collectionId, onClose }: CollectionEditMod
             </div>
           </div>
         )}
+
+        <div className="shrink-0 border-t border-gray-100 px-4 py-2 text-sm text-gray-500 sm:px-6">
+          {t('dialog.collection-edit.stats', { owned: stats.items.owned })}
+        </div>
       </div>
     </FullScreenModal>
   );

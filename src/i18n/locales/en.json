@@ -137,7 +137,8 @@
       "to-standard-warn": "Items with quantity 2 or more will all be reduced to 1. Count data will be lost. This cannot be undone."
     },
     "collection-edit": {
-      "title": "Edit \"{{name}}\""
+      "title": "Edit \"{{name}}\"",
+      "stats": "Total: {{owned}}"
     },
     "profile-duplicate": {
       "title": "Create Profile Copy",
