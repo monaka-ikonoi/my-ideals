@@ -1,4 +1,5 @@
 import { useMemo, useDeferredValue } from 'react';
+import { useShallow } from 'zustand/shallow';
 import type { TemplateCollection } from '@/domain/template';
 import type { Profile } from '@/domain/profile';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
@@ -83,7 +84,7 @@ export function useCollectionStats(
   baseCollection: TemplateCollection = visibleCollections
 ) {
   const statusMap = useActiveProfileStore(
-    state => state.profile?.collections[baseCollection.id] ?? {}
+    useShallow(state => state.profile?.collections[baseCollection.id] ?? {})
   );
 
   return useMemo(() => {
