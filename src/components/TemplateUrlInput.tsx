@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ArrowPathIcon,
   CheckCircleIcon,
+  ClipboardIcon,
   ExclamationCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
@@ -17,9 +18,9 @@ type TemplateUrlInputProps = {
 };
 
 function getBorderClass(status: TemplateFetchState['status'], allowIdMismatch: boolean): string {
-  const successClass = 'border-green-300 focus:border-green-500 focus:ring-green-500';
-  const errorClass = 'border-red-300 focus:border-red-500 focus:ring-red-500';
-  const warningClass = 'border-amber-300 focus:border-amber-500 focus:ring-amber-500';
+  const successClass = 'border-green-300 focus-within:border-green-500 focus-within:ring-green-500';
+  const errorClass = 'border-red-300 focus-within:border-red-500 focus-within:ring-red-500';
+  const warningClass = 'border-amber-300 focus-within:border-amber-500 focus-within:ring-amber-500';
 
   switch (status) {
     case 'id-mismatch':
@@ -33,7 +34,7 @@ function getBorderClass(status: TemplateFetchState['status'], allowIdMismatch: b
     case 'idle':
     case 'loading':
     default:
-      return 'border-gray-300 focus:border-blue-500 focus:ring-blue-500';
+      return 'border-gray-300 focus-within:border-blue-500 focus-within:ring-blue-500';
   }
 }
 
@@ -69,24 +70,46 @@ export function TemplateUrlInput({
 }: TemplateUrlInputProps) {
   const { t } = useTranslation();
 
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      onUrlChange(text);
+    } catch {
+      // clipboard access denied or not available, do nothing
+    }
+  };
+
+  const statusIcon = getStatusIcon(state.status, allowIdMismatch);
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700">
         {t('input.template-url.label')}
       </label>
-      <div className="relative mt-1">
-        <input
-          type="url"
-          value={url}
-          onChange={e => onUrlChange(e.target.value)}
-          placeholder={t('input.template-url.placeholder')}
-          className={`w-full rounded-lg border px-3 py-2 pr-10 text-base focus:ring-1
-            focus:outline-none sm:text-sm ${getBorderClass(state.status, allowIdMismatch)}`}
-          autoFocus={autoFocus}
-        />
-        <div className="absolute top-1/2 right-3 -translate-y-1/2">
-          {getStatusIcon(state.status, allowIdMismatch)}
+      <div
+        className={`mt-1 flex w-full items-center overflow-hidden rounded-lg border
+          focus-within:ring-1 focus-within:outline-none ${getBorderClass( state.status,
+          allowIdMismatch )}`}
+      >
+        <div className="flex flex-1 items-center">
+          <input
+            type="url"
+            value={url}
+            onChange={e => onUrlChange(e.target.value)}
+            placeholder={t('input.template-url.placeholder')}
+            className="min-w-0 flex-1 px-3 py-2 text-base focus:outline-none sm:text-sm"
+            autoFocus={autoFocus}
+          />
+          {statusIcon && <span className="pr-2">{statusIcon}</span>}
         </div>
+        <button
+          type="button"
+          onClick={handlePaste}
+          title={t('input.template-url.paste')}
+          className="self-stretch border-l border-gray-200 bg-gray-50 px-2 text-gray-500
+            transition-colors hover:bg-gray-200 hover:text-gray-700"
+        >
+          <ClipboardIcon className="h-4 w-4" />
+        </button>
       </div>
 
       {/* Error Messages */}

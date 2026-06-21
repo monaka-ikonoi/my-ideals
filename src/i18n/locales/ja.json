@@ -178,6 +178,7 @@
     "template-url": {
       "label": "テンプレートURL",
       "placeholder": "テンプレートのリンクを貼り付け",
+      "paste": "貼り付け",
       "invalid-url": "無効なURL形式です",
       "id-mismatch": "テンプレートIDが一致しません。期待値「{{expected}}」、実際「{{actual}}」。"
     }

@@ -178,6 +178,7 @@
     "template-url": {
       "label": "Template URL",
       "placeholder": "Paste template link here..",
+      "paste": "Paste",
       "invalid-url": "Invalid URL format",
       "id-mismatch": "Template ID mismatch. Expected \"{{expected}}\", got \"{{actual}}\"."
     }

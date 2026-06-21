@@ -178,6 +178,7 @@
     "template-url": {
       "label": "模板链接",
       "placeholder": "在此粘贴模板链接",
+      "paste": "粘贴",
       "invalid-url": "链接格式无效",
       "id-mismatch": "模板 ID 不匹配。期望 \"{{expected}}\"，实际 \"{{actual}}\"。"
     }

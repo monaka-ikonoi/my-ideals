@@ -63,7 +63,7 @@ export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
         }}
       >
         <div
-          className="w-full max-w-lg rounded-lg bg-white text-left shadow-xl"
+          className="flex w-full max-w-lg flex-col rounded-lg bg-white text-left shadow-xl"
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
