@@ -38,7 +38,10 @@ function getBorderClass(status: TemplateFetchState['status'], allowIdMismatch: b
   }
 }
 
-function getStatusIcon(status: TemplateFetchState['status'], allowIdMismatch: boolean) {
+function getStatusIcon(
+  status: TemplateFetchState['status'],
+  allowIdMismatch: boolean
+): { icon: React.ReactNode; clearInput: boolean } | null {
   const loadingIcon = <ArrowPathIcon className="h-4 w-4 animate-spin text-gray-400" />;
   const successIcon = <CheckCircleIcon className="h-4 w-4 text-green-500" />;
   const errorIcon = <XCircleIcon className="h-4 w-4 text-red-500" />;
@@ -46,15 +49,15 @@ function getStatusIcon(status: TemplateFetchState['status'], allowIdMismatch: bo
 
   switch (status) {
     case 'loading':
-      return loadingIcon;
+      return { icon: loadingIcon, clearInput: false };
     case 'success':
-      return successIcon;
+      return { icon: successIcon, clearInput: false };
     case 'id-mismatch':
-      if (allowIdMismatch) return warningIcon;
-      return errorIcon;
+      if (allowIdMismatch) return { icon: warningIcon, clearInput: false };
+      return { icon: errorIcon, clearInput: true };
     case 'invalid-url':
     case 'error':
-      return errorIcon;
+      return { icon: errorIcon, clearInput: true };
     default:
       return null;
   }
@@ -96,10 +99,18 @@ export function TemplateUrlInput({
             value={url}
             onChange={e => onUrlChange(e.target.value)}
             placeholder={t('input.template-url.placeholder')}
-            className="min-w-0 flex-1 px-3 py-2 text-base focus:outline-none sm:text-sm"
+            className="min-w-0 flex-1 py-2 pr-2 pl-3 text-base focus:outline-none sm:text-sm"
             autoFocus={autoFocus}
           />
-          {statusIcon && <span className="pr-2">{statusIcon}</span>}
+          {statusIcon && (
+            <button
+              type="button"
+              onClick={() => (statusIcon.clearInput ? onUrlChange('') : {})}
+              className="flex items-center self-stretch pr-2"
+            >
+              {statusIcon.icon}
+            </button>
+          )}
         </div>
         <button
           type="button"
