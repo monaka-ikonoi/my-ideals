@@ -48,8 +48,10 @@ export function useTemplateFetcher({
       return;
     }
 
-    // URL update trigged by code, don't fetch again
+    // Skip the single effect run triggered by setUrl after a redirect and reset the Ref,
+    // so the same URL can be fetched again if the user re-enters it.
     if (trimmed === fetchedUrlRef.current) {
+      fetchedUrlRef.current = null;
       return;
     }
 
@@ -77,8 +79,10 @@ export function useTemplateFetcher({
           return;
         }
 
-        fetchedUrlRef.current = result.url;
-        if (url !== result.url) setUrl(result.url);
+        if (url !== result.url) {
+          fetchedUrlRef.current = result.url;
+          setUrl(result.url);
+        }
 
         if (expectedId && result.template.id !== expectedId) {
           setState({
