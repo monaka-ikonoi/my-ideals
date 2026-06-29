@@ -99,7 +99,8 @@ export function TemplateUrlInput({
             value={url}
             onChange={e => onUrlChange(e.target.value)}
             placeholder={t('input.template-url.placeholder')}
-            className="min-w-0 flex-1 py-2 pr-2 pl-3 text-base focus:outline-none sm:text-sm"
+            className="min-w-0 flex-1 py-2 pr-2 pl-3 text-base placeholder:text-gray-400
+              focus:outline-none sm:text-sm"
             autoFocus={autoFocus}
           />
           {statusIcon && (
