@@ -57,7 +57,11 @@ export function DropdownSelect<T extends string | number>({
           disabled:opacity-50"
       >
         {icon && <span className="shrink-0">{icon}</span>}
-        <span className="min-w-0 flex-1 truncate text-left">
+        <span
+          className={`min-w-0 flex-1 overflow-hidden text-left text-ellipsis whitespace-pre ${
+            selected ? '' : 'text-gray-400'
+          }`}
+        >
           {selected ? selected.label : placeholder}
         </span>
         <ChevronDownIcon
@@ -94,7 +98,7 @@ export function DropdownSelect<T extends string | number>({
                 }`}
               >
                 {isSelected ? <CheckIcon className="h-4 w-4 shrink-0" /> : <span className="w-4" />}
-                <span className="truncate">{opt.label}</span>
+                <span className="overflow-hidden text-ellipsis whitespace-pre">{opt.label}</span>
               </button>
             );
           })}
