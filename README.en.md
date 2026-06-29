@@ -64,6 +64,8 @@ https://my-ideals.notequal.me/
 
 A template defines what photos exist in a set (e.g., "2024 Summer Concert Goods"). Template creators maintain these lists so you don't have to manually enter each item. Just paste a template URL to get started.
 
+> 📝 Want to create your own template? See the [Template JSON Guide](./docs/en/template.md).
+
 **Profile** = Your personal collection tracker
 
 A profile uses a template and records which items you own (and the quantity, in Count mode). You can have multiple profiles.
