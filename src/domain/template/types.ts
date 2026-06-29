@@ -53,3 +53,14 @@ export type Template = {
   members: TemplateMember[];
   collections: TemplateCollection[];
 };
+
+export type TemplateManifestEntry = {
+  name: string;
+  link: string | null;
+};
+
+export type TemplateManifest = {
+  magic: 'my-ideals-template-manifest';
+  version: 1;
+  templates: TemplateManifestEntry[];
+};

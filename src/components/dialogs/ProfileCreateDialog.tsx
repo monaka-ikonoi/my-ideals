@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { XMarkIcon, UsersIcon, LinkIcon } from '@heroicons/react/24/outline';
 import { useProfileListStore } from '@/stores/profileListStore';
 import { useTemplateFetcher } from '@/hooks/useTemplateFetcher';
+import { usePredefinedTemplates } from '@/hooks/usePredefinedTemplates';
 import { ProfileFlags, type ProfileFlag } from '@/domain/profile';
 import { TemplateUrlInput } from '../TemplateUrlInput';
 import { CommonBackdrop } from '../ui/CommonBackdrop';
+import { DropdownSelect } from '../ui/DropdownSelect';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/error';
+import { XMarkIcon, UsersIcon, LinkIcon, ListBulletIcon } from '@heroicons/react/24/outline';
 
 type ProfileCreateDialogProps = {
   onClose: () => void;
@@ -20,6 +22,16 @@ export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
   const [enableCount, setEnableCount] = useState(false);
 
   const createProfile = useProfileListStore(state => state.createProfile);
+  const predefinedTemplates = usePredefinedTemplates();
+  const predefinedTemplateOptions = useMemo(
+    () =>
+      predefinedTemplates.map((t, i) => ({
+        label: t.name,
+        value: t.link ?? `_placeholder_${i}`,
+        disabled: !t.link,
+      })),
+    [predefinedTemplates]
+  );
 
   const {
     url,
@@ -79,6 +91,16 @@ export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
           {/* Content */}
           <div className="space-y-4 px-4 py-4">
             <TemplateUrlInput url={url} onUrlChange={setUrl} state={fetchState} autoFocus />
+
+            {predefinedTemplateOptions.length > 0 && (
+              <DropdownSelect
+                icon={<ListBulletIcon className="h-4 w-4" />}
+                options={predefinedTemplateOptions}
+                value={url}
+                onChange={setUrl}
+                placeholder={t('dialog.profile-create.predefined-selector-placeholder')}
+              />
+            )}
 
             {/* Fetch Error */}
             {fetchState.status === 'error' && (

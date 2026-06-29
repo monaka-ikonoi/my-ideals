@@ -86,7 +86,8 @@
       "enable-count": {
         "label": "複数記録モード",
         "description": "有無だけでなく、所持数を記録します"
-      }
+      },
+      "predefined-selector-placeholder": "または用意されたテンプレートから選択…"
     },
     "profile-import": {
       "title": "プロファイルをインポート",

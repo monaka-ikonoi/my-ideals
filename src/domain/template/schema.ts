@@ -61,3 +61,14 @@ export const TemplateSchema = z.object({
   members: z.array(TemplateMember),
   collections: z.array(TemplateCollection),
 });
+
+const TemplateManifestEntrySchema = z.object({
+  name: z.string().min(1),
+  link: z.url().nullable(),
+});
+
+export const TemplateManifestSchema = z.object({
+  magic: z.literal('my-ideals-template-manifest'),
+  version: z.literal(1),
+  templates: z.array(TemplateManifestEntrySchema),
+});

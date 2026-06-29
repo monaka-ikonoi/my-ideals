@@ -1,2 +1,2 @@
 export type * from './types';
-export { TemplateSchema } from './schema';
+export * from './schema';

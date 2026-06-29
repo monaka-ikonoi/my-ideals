@@ -86,7 +86,8 @@
       "enable-count": {
         "label": "复数记录模式",
         "description": "记录持有数量，而非仅标记有无"
-      }
+      },
+      "predefined-selector-placeholder": "或从现成模板中选择…"
     },
     "profile-import": {
       "title": "导入档案",
