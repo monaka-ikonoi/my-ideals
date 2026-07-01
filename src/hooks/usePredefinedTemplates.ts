@@ -3,18 +3,20 @@ import { TemplateManifestSchema, type TemplateManifestEntry } from '@/domain/tem
 import { getErrorMessage } from '@/utils/error';
 import { debugLog } from '@/utils/debug';
 
+const manifestUrl = import.meta.env.VITE_PREDEFINED_TEMPLATES?.trim();
+
 export function usePredefinedTemplates() {
   const [templates, setTemplates] = useState<TemplateManifestEntry[]>([]);
+  const [loading, setLoading] = useState(Boolean(manifestUrl));
 
   useEffect(() => {
-    const listUrl = import.meta.env.VITE_PREDEFINED_TEMPLATES;
-    if (!listUrl || !listUrl.trim()) return;
+    if (!manifestUrl) return;
 
     const controller = new AbortController();
 
     (async () => {
       try {
-        const res = await fetch(listUrl, { signal: controller.signal });
+        const res = await fetch(manifestUrl, { signal: controller.signal });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         const data = await res.json();
@@ -27,11 +29,13 @@ export function usePredefinedTemplates() {
       } catch (e) {
         if ((e as Error).name === 'AbortError') return;
         debugLog.network.error('Failed to load template manifest:', getErrorMessage(e));
+      } finally {
+        setLoading(false);
       }
     })();
 
     return () => controller.abort();
   }, []);
 
-  return templates;
+  return { configured: !!manifestUrl, loading, templates };
 }

@@ -22,15 +22,15 @@ export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
   const [enableCount, setEnableCount] = useState(false);
 
   const createProfile = useProfileListStore(state => state.createProfile);
-  const predefinedTemplates = usePredefinedTemplates();
+  const { configured, loading, templates } = usePredefinedTemplates();
   const predefinedTemplateOptions = useMemo(
     () =>
-      predefinedTemplates.map((t, i) => ({
+      templates.map((t, i) => ({
         label: t.name,
         value: t.link ?? `_placeholder_${i}`,
         disabled: !t.link,
       })),
-    [predefinedTemplates]
+    [templates]
   );
 
   const {
@@ -92,13 +92,18 @@ export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
           <div className="space-y-4 px-4 py-4">
             <TemplateUrlInput url={url} onUrlChange={setUrl} state={fetchState} autoFocus />
 
-            {predefinedTemplateOptions.length > 0 && (
+            {configured && (
               <DropdownSelect
                 icon={<ListBulletIcon className="h-4 w-4" />}
                 options={predefinedTemplateOptions}
                 value={url}
                 onChange={setUrl}
-                placeholder={t('dialog.profile-create.predefined-selector-placeholder')}
+                disabled={loading}
+                placeholder={
+                  loading
+                    ? t('common.loading')
+                    : t('dialog.profile-create.predefined-selector-placeholder')
+                }
               />
             )}
 
