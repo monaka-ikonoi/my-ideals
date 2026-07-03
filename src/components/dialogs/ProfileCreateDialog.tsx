@@ -90,22 +90,23 @@ export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
 
           {/* Content */}
           <div className="space-y-4 px-4 py-4">
-            <TemplateUrlInput url={url} onUrlChange={setUrl} state={fetchState} autoFocus />
-
-            {configured && (
-              <DropdownSelect
-                icon={<ListBulletIcon className="h-4 w-4" />}
-                options={predefinedTemplateOptions}
-                value={url}
-                onChange={setUrl}
-                disabled={loading}
-                placeholder={
-                  loading
-                    ? t('common.loading')
-                    : t('dialog.profile-create.predefined-selector-placeholder')
-                }
-              />
-            )}
+            <div className="space-y-2">
+              <TemplateUrlInput url={url} onUrlChange={setUrl} state={fetchState} autoFocus />
+              {configured && (
+                <DropdownSelect
+                  icon={<ListBulletIcon className="h-4 w-4" />}
+                  options={predefinedTemplateOptions}
+                  value={url}
+                  onChange={setUrl}
+                  disabled={loading}
+                  placeholder={
+                    loading
+                      ? t('common.loading')
+                      : t('dialog.profile-create.predefined-selector-placeholder')
+                  }
+                />
+              )}
+            </div>
 
             {/* Fetch Error */}
             {fetchState.status === 'error' && (
