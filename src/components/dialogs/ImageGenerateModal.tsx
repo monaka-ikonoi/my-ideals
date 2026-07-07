@@ -571,7 +571,7 @@ export function ImageGenerateModal({
                     <button
                       type="button"
                       onClick={handleShare}
-                      disabled={!imageBlob || !shareAPISupported}
+                      disabled={generating || !imageBlob || !shareAPISupported}
                       className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
                         hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
                     >
@@ -580,7 +580,7 @@ export function ImageGenerateModal({
                     <button
                       type="button"
                       onClick={handleSave}
-                      disabled={!imageBlob}
+                      disabled={generating || !imageBlob}
                       className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
                         hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
                     >
