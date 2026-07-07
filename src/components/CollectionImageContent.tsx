@@ -1,6 +1,6 @@
 import type { TemplateCollection } from '@/domain/template';
 import { CollectionGrid } from './CollectionGrid';
-import type { BadgeProps } from './CountBadge';
+import { type ImageOptions } from '@/stores/settingsStore';
 import { APP_NAME, LONG_VERSION } from '@/utils/appInfo';
 
 type CollectionImageContentProps = {
@@ -9,7 +9,7 @@ type CollectionImageContentProps = {
   profileId: string;
   collections: TemplateCollection[];
   captureTime: string;
-  badgeProps?: BadgeProps;
+  imageOptions?: ImageOptions;
 };
 
 export function CollectionImageContent({
@@ -18,7 +18,7 @@ export function CollectionImageContent({
   profileId,
   collections,
   captureTime,
-  badgeProps,
+  imageOptions,
 }: CollectionImageContentProps) {
   const singleCollection = collections.length === 1;
 
@@ -39,7 +39,7 @@ export function CollectionImageContent({
           )}
 
           <div className="py-4">
-            <CollectionGrid collection={collection} mode="export" badgeProps={badgeProps} />
+            <CollectionGrid collection={collection} mode="export" imageOptions={imageOptions} />
           </div>
         </div>
       ))}

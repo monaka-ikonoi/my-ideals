@@ -6,7 +6,8 @@ import { debugLog } from '@/utils/debug';
 import { normalizeStatusBoolean } from '@/utils/utils';
 import { formatImageUrl } from '@/utils/templateUtils';
 import { ItemCounter } from './ItemCounter';
-import { CountBadge, type BadgeProps } from './CountBadge';
+import { CountBadge } from './CountBadge';
+import { type ImageOptions } from '@/stores/settingsStore';
 
 type ImageCheckCardProps = {
   collectionId: string;
@@ -17,7 +18,7 @@ type ImageCheckCardProps = {
   imageBaseUrl?: TemplateResourceBaseUrl;
   revision?: number;
   status: boolean | number | undefined;
-  badgeProps?: BadgeProps;
+  imageOptions?: ImageOptions;
 };
 
 export const ImageCheckCard = memo(function ImageCheckCard({
@@ -29,7 +30,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   imageBaseUrl,
   revision,
   status: rawStatus,
-  badgeProps,
+  imageOptions,
 }: ImageCheckCardProps) {
   debugLog.render.log(`ImageCheckCard render: ${collectionId} ${item.id}`);
 
@@ -57,6 +58,8 @@ export const ImageCheckCard = memo(function ImageCheckCard({
     : aspectRatio;
 
   const isToggled = typeof status === 'boolean' ? status : status !== 0;
+  const dimUntoggled = imageOptions?.dimUntoggled ?? true;
+  const hasOpacity = mode === 'export' && !dimUntoggled ? false : !isToggled;
   const showBadge =
     (mode === 'export' || mode === 'edit') &&
     enableCount &&
@@ -79,7 +82,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
           <div
             className={`absolute inset-0 flex h-full w-full items-center justify-center bg-gray-200
             p-2 text-center text-sm whitespace-pre-line text-gray-600 transition
-            ${isToggled ? '' : 'opacity-50'}`}
+            ${hasOpacity ? 'opacity-50' : ''}`}
           >
             {item.name.split(' ').join('\n')}
           </div>
@@ -101,12 +104,14 @@ export const ImageCheckCard = memo(function ImageCheckCard({
               })
             }
             className={`absolute inset-0 h-full w-full object-cover transition
-            ${isToggled ? '' : 'opacity-50'}`}
+            ${hasOpacity ? 'opacity-50' : ''}`}
           />
         )}
 
         {/* Count Badge */}
-        {showBadge && <CountBadge count={status} props={badgeProps} rotated={item.rotated} />}
+        {showBadge && (
+          <CountBadge count={status} props={imageOptions?.badge} rotated={item.rotated} />
+        )}
 
         {/* Bottom bar */}
         <div

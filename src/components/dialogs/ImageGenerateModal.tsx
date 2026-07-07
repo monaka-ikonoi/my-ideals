@@ -89,8 +89,8 @@ export function ImageGenerateModal({
   const [captureTime, setCaptureTime] = useState('');
   const fileNameRef = useRef('');
 
-  const badgeProps = useSettingsStore(state => state.imageOptions.badge);
-  const setBadgeProps = useSettingsStore(state => state.setBadgeOptions);
+  const imageOptions = useSettingsStore(state => state.imageOptions);
+  const setImageOptions = useSettingsStore(state => state.setImageOptions);
 
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -402,7 +402,7 @@ export function ImageGenerateModal({
                           imageBaseUrl={imageBaseUrl}
                           revision={revision}
                           status={previewItem.status}
-                          badgeProps={badgeProps}
+                          imageOptions={imageOptions}
                         />
                       </div>
                     )}
@@ -417,12 +417,14 @@ export function ImageGenerateModal({
                       </p>
                       <div className="grid grid-cols-3 gap-2">
                         {BADGE_POSITIONS.map(position => {
-                          const selected = badgeProps.position === position;
+                          const selected = imageOptions.badge.position === position;
                           return (
                             <button
                               key={position}
                               type="button"
-                              onClick={() => setBadgeProps({ ...badgeProps, position })}
+                              onClick={() =>
+                                setImageOptions({ badge: { ...imageOptions.badge, position } })
+                              }
                               disabled={generating}
                               className={`w-full rounded-lg border px-3 py-2 text-sm font-medium
                               transition disabled:cursor-not-allowed disabled:opacity-50 ${
@@ -445,12 +447,14 @@ export function ImageGenerateModal({
                       </p>
                       <div className="grid grid-cols-4 gap-2">
                         {BADGE_SIZES.map(size => {
-                          const selected = badgeProps.size === size;
+                          const selected = imageOptions.badge.size === size;
                           return (
                             <button
                               key={size}
                               type="button"
-                              onClick={() => setBadgeProps({ ...badgeProps, size })}
+                              onClick={() =>
+                                setImageOptions({ badge: { ...imageOptions.badge, size } })
+                              }
                               disabled={generating}
                               className={`w-full rounded-lg border px-3 py-2 text-sm font-medium
                               transition disabled:cursor-not-allowed disabled:opacity-50 ${
@@ -465,6 +469,21 @@ export function ImageGenerateModal({
                         })}
                       </div>
                     </div>
+
+                    {/* Do not dim untoggled items checkbox */}
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={!imageOptions.dimUntoggled}
+                        onChange={e => setImageOptions({ dimUntoggled: !e.target.checked })}
+                        disabled={generating}
+                        className="h-4 w-4 rounded border-gray-300 accent-blue-600
+                          focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+                      />
+                      <span className="text-sm font-medium text-gray-700">
+                        {t('dialog.image-generate.options.not-dim-untoggled-label')}
+                      </span>
+                    </label>
                   </div>
                 </div>
               </div>
@@ -582,7 +601,7 @@ export function ImageGenerateModal({
           profileId={profileId}
           collections={selectedCollections}
           captureTime={captureTime}
-          badgeProps={badgeProps}
+          imageOptions={imageOptions}
         />
       </OffscreenCaptureArea>
     </>

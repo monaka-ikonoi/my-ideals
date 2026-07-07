@@ -78,7 +78,10 @@ export function CollectionEditModal({ collectionId, onClose }: CollectionEditMod
                 collection={virtualCollection}
                 columns={[3, 6, 6]}
                 mode="edit"
-                badgeProps={{ size: 'xlarge', position: 'bottom-middle' }}
+                imageOptions={{
+                  badge: { size: 'xlarge', position: 'bottom-middle' },
+                  dimUntoggled: true,
+                }}
               />
             </div>
           </div>
