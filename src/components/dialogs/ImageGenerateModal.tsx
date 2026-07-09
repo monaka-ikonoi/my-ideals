@@ -78,9 +78,7 @@ export function ImageGenerateModal({
     }))
   );
 
-  const [step, setStep] = useState<Step>(() =>
-    preSelectedId ? (enableCount ? 'customize' : 'preview') : 'select'
-  );
+  const [step, setStep] = useState<Step>(() => (preSelectedId ? 'customize' : 'select'));
 
   const [selectedIds, setSelectedIds] = useState<string[]>(() =>
     preSelectedId ? [preSelectedId] : buildInitialSelectedIds(collections, maxCollections, maxItems)
@@ -171,25 +169,6 @@ export function ImageGenerateModal({
     setGenerating(true);
   }, [i18n.language, selectedCollections, templateId, profileId]);
 
-  const handleNextFromSelect = useCallback(() => {
-    if (selectedCollections.length === 0) return;
-    if (enableCount) {
-      setStep('customize');
-    } else {
-      handleGenerate();
-    }
-  }, [enableCount, handleGenerate, selectedCollections.length]);
-
-  // When opened for a single pre-selected collection without count, jump straight
-  // to the preview step and start generating.
-  const didAutoGenerate = useRef(false);
-  useEffect(() => {
-    if (preSelectedId && !enableCount && !didAutoGenerate.current) {
-      didAutoGenerate.current = true;
-      handleGenerate();
-    }
-  }, [preSelectedId, enableCount, handleGenerate]);
-
   // Pick the first non-zero item for preview
   const previewItem = useMemo(() => {
     for (const collection of selectedCollections) {
@@ -228,11 +207,11 @@ export function ImageGenerateModal({
         });
         setImageBlob(result.blob);
       } else {
-        setStep(enableCount ? 'customize' : 'select');
+        setStep('customize');
         toast.error(t('toast.error', { error: result.error }));
       }
     },
-    [t, enableCount]
+    [t]
   );
 
   const handleSave = useCallback(() => {
@@ -259,18 +238,11 @@ export function ImageGenerateModal({
         <div className="flex h-full min-h-0 flex-col">
           <div className="shrink-0 px-4 py-2 md:px-6">
             <StepIndicator
-              steps={
-                enableCount
-                  ? [
-                      { key: 'select', label: t('dialog.image-generate.step-select') },
-                      { key: 'customize', label: t('dialog.image-generate.step-customize') },
-                      { key: 'preview', label: t('dialog.image-generate.step-preview') },
-                    ]
-                  : [
-                      { key: 'select', label: t('dialog.image-generate.step-select') },
-                      { key: 'preview', label: t('dialog.image-generate.step-preview') },
-                    ]
-              }
+              steps={[
+                { key: 'select', label: t('dialog.image-generate.step-select') },
+                { key: 'customize', label: t('dialog.image-generate.step-customize') },
+                { key: 'preview', label: t('dialog.image-generate.step-preview') },
+              ]}
               current={step}
             />
           </div>
@@ -371,14 +343,12 @@ export function ImageGenerateModal({
                   </p>
                   <button
                     type="button"
-                    onClick={handleNextFromSelect}
+                    onClick={() => setStep('customize')}
                     disabled={generating || selectedCollections.length === 0}
                     className="min-w-28 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium
                       text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
                   >
-                    {enableCount
-                      ? t('dialog.image-generate.next')
-                      : t('dialog.image-generate.generate')}
+                    {t('dialog.image-generate.next')}
                   </button>
                 </div>
               </div>
@@ -398,7 +368,7 @@ export function ImageGenerateModal({
                           item={previewItem.item}
                           mode="export"
                           aspectRatio={ImageCardLayout.aspectRatio}
-                          enableCount
+                          enableCount={enableCount}
                           imageBaseUrl={imageBaseUrl}
                           revision={revision}
                           status={previewItem.status}
@@ -410,65 +380,70 @@ export function ImageGenerateModal({
 
                   {/* Controls */}
                   <div className="mx-auto min-w-xs space-y-6 md:mx-0 md:w-full">
-                    {/* Position picker */}
-                    <div>
-                      <p className="mb-2 text-sm font-medium text-gray-700">
-                        {t('dialog.image-generate.options.badge-position-label')}
-                      </p>
-                      <div className="grid grid-cols-3 gap-2">
-                        {BADGE_POSITIONS.map(position => {
-                          const selected = imageOptions.badge.position === position;
-                          return (
-                            <button
-                              key={position}
-                              type="button"
-                              onClick={() =>
-                                setImageOptions({ badge: { ...imageOptions.badge, position } })
-                              }
-                              disabled={generating}
-                              className={`w-full rounded-lg border px-3 py-2 text-sm font-medium
-                              transition disabled:cursor-not-allowed disabled:opacity-50 ${
-                                selected
-                                  ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                  : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
-                              }`}
-                            >
-                              {t(`dialog.image-generate.options.position.${position}`)}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
+                    {/* Badge options only apply when counts are enabled */}
+                    {enableCount && (
+                      <>
+                        {/* Position picker */}
+                        <div>
+                          <p className="mb-2 text-sm font-medium text-gray-700">
+                            {t('dialog.image-generate.options.badge-position-label')}
+                          </p>
+                          <div className="grid grid-cols-3 gap-2">
+                            {BADGE_POSITIONS.map(position => {
+                              const selected = imageOptions.badge.position === position;
+                              return (
+                                <button
+                                  key={position}
+                                  type="button"
+                                  onClick={() =>
+                                    setImageOptions({ badge: { ...imageOptions.badge, position } })
+                                  }
+                                  disabled={generating}
+                                  className={`w-full rounded-lg border px-3 py-2 text-sm font-medium
+                                  transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                                    selected
+                                      ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                      : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                                  }`}
+                                >
+                                  {t(`dialog.image-generate.options.position.${position}`)}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
 
-                    {/* Size picker */}
-                    <div>
-                      <p className="mb-2 text-sm font-medium text-gray-700">
-                        {t('dialog.image-generate.options.badge-size-label')}
-                      </p>
-                      <div className="grid grid-cols-4 gap-2">
-                        {BADGE_SIZES.map(size => {
-                          const selected = imageOptions.badge.size === size;
-                          return (
-                            <button
-                              key={size}
-                              type="button"
-                              onClick={() =>
-                                setImageOptions({ badge: { ...imageOptions.badge, size } })
-                              }
-                              disabled={generating}
-                              className={`w-full rounded-lg border px-3 py-2 text-sm font-medium
-                              transition disabled:cursor-not-allowed disabled:opacity-50 ${
-                                selected
-                                  ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                  : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
-                              }`}
-                            >
-                              {t(`dialog.image-generate.options.size.${size}`)}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
+                        {/* Size picker */}
+                        <div>
+                          <p className="mb-2 text-sm font-medium text-gray-700">
+                            {t('dialog.image-generate.options.badge-size-label')}
+                          </p>
+                          <div className="grid grid-cols-4 gap-2">
+                            {BADGE_SIZES.map(size => {
+                              const selected = imageOptions.badge.size === size;
+                              return (
+                                <button
+                                  key={size}
+                                  type="button"
+                                  onClick={() =>
+                                    setImageOptions({ badge: { ...imageOptions.badge, size } })
+                                  }
+                                  disabled={generating}
+                                  className={`w-full rounded-lg border px-3 py-2 text-sm font-medium
+                                  transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                                    selected
+                                      ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                      : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                                  }`}
+                                >
+                                  {t(`dialog.image-generate.options.size.${size}`)}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </>
+                    )}
 
                     {/* Do not dim untoggled items checkbox */}
                     <label className="flex cursor-pointer items-center gap-2">
@@ -551,21 +526,17 @@ export function ImageGenerateModal({
               {/* Preview step footer */}
               <div className="shrink-0 border-t border-gray-100 px-4 py-3 md:px-6 md:py-4">
                 <div className="flex items-center justify-between gap-4">
-                  {preSelectedId && !enableCount ? (
-                    <span />
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => setStep(enableCount ? 'customize' : 'select')}
-                      disabled={generating}
-                      className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium
-                        text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed
-                        disabled:opacity-50"
-                    >
-                      <ArrowLeftIcon className="h-4 w-4" />
-                      {t('common.back')}
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => setStep('customize')}
+                    disabled={generating}
+                    className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium
+                      text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed
+                      disabled:opacity-50"
+                  >
+                    <ArrowLeftIcon className="h-4 w-4" />
+                    {t('common.back')}
+                  </button>
 
                   <div className="flex items-center gap-3">
                     <button
