@@ -94,11 +94,11 @@
       "title": "プロファイルをインポート",
       "select-file": "クリックしてファイルを選択",
       "select-file-hint": "このアプリからエクスポートしたJSONファイル",
-      "conflict-message": "{{count}} 件のプロファイルが既に存在します",
+      "conflict-message": "{{count}} / {{total}} 件のプロファイルが既に存在します",
       "existing": "既存",
       "importing": "インポート",
       "newer": "(新しい)",
-      "count-message": "{{count}} 件のプロファイルをインポート",
+      "count-message": "{{count}} / {{total}} 件のプロファイルをインポート",
       "bundle-hint": "インポートしないプロファイルはチェックを外してください"
     },
     "profile-delete": {

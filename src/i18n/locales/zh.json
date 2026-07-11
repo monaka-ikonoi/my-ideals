@@ -94,11 +94,11 @@
       "title": "导入档案",
       "select-file": "点击选择文件",
       "select-file-hint": "从本应用导出的 JSON 文件",
-      "conflict-message": "{{count}} 个档案已存在",
+      "conflict-message": "{{count}} / {{total}} 个档案已存在",
       "existing": "现有",
       "importing": "导入",
       "newer": "(较新)",
-      "count-message": "将导入 {{count}} 个档案",
+      "count-message": "导入 {{count}} / {{total}} 个档案",
       "bundle-hint": "取消勾选可跳过对应的档案"
     },
     "profile-delete": {
