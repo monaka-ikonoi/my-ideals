@@ -18,16 +18,19 @@ import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/error';
 import { getProfileStorage } from '@/storage/ProfileStorage';
 
+type ConflictState = { hasConflict: false } | { hasConflict: true; existingLastModified: number };
+
+type PendingProfileState = {
+  profile: Readonly<Profile>;
+  conflict: ConflictState;
+  selected: boolean;
+  overwrite: boolean;
+};
+
 type ImportState =
   | { status: 'idle' }
   | { status: 'loading'; fileName: string }
-  | {
-      status: 'success';
-      fileName: string;
-      profile: Profile;
-      isConflict: boolean;
-      existingLastModified: number;
-    }
+  | { status: 'success'; fileName: string; pending: PendingProfileState[] }
   | { status: 'error'; fileName: string; message: string };
 
 const FileSelectorBoarderStyles = {
@@ -61,6 +64,20 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     onClose();
   };
 
+  const buildConflictState = async (profileId: string): Promise<ConflictState> => {
+    if (!profiles.some(p => p.id === profileId)) return { hasConflict: false };
+    const existingLastModified =
+      profileId === activeProfileId
+        ? (useActiveProfileStore.getState().profile?.lastModified ?? 0)
+        : ((await getProfileStorage().getProfile(profileId))?.lastModified ?? 0);
+    return { hasConflict: true, existingLastModified };
+  };
+
+  const buildPendingState = async (profile: Profile): Promise<PendingProfileState> => {
+    const conflict = await buildConflictState(profile.id);
+    return { profile, conflict, selected: true, overwrite: !conflict.hasConflict };
+  };
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
@@ -73,14 +90,13 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     try {
       const text = await file.text();
       const profile = ProfileSchema.parse(JSON.parse(text));
-      const isConflict = profiles.some(p => p.id === profile.id);
-      const existingLastModified = isConflict
-        ? profile.id === activeProfileId
-          ? (useActiveProfileStore.getState().profile?.lastModified ?? 0)
-          : ((await getProfileStorage().getProfile(profile.id))?.lastModified ?? 0)
-        : 0;
+      const pendingState = await buildPendingState(profile);
 
-      setState({ status: 'success', fileName, profile, isConflict, existingLastModified });
+      setState({
+        status: 'success',
+        fileName,
+        pending: [pendingState],
+      });
     } catch (e) {
       let message = 'Unknown error';
       if (e instanceof SyntaxError) {
@@ -94,18 +110,32 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     }
   };
 
-  const handleImport = async (overwrite: boolean) => {
+  const commitImport = async (pending: PendingProfileState[]) => {
+    const imported: string[] = [];
+    for (const p of pending) {
+      if (!p.selected) continue;
+      imported.push(await importProfile(p.profile, p.overwrite));
+    }
+    return imported;
+  };
+
+  const handleImportSingle = async (overwrite: boolean) => {
     if (state.status !== 'success') return;
 
+    const pending = [...state.pending];
+    if (pending.length !== 1 || !pending[0].selected) return;
+
+    pending[0].overwrite = overwrite;
+
     try {
-      const importedId = await importProfile(state.profile, overwrite);
-      setActiveProfile(importedId);
+      const importedIds = await commitImport(pending);
+      setActiveProfile(importedIds[0]);
 
       // reload on overwrite
-      if (importedId === activeProfileId) {
+      if (importedIds[0] === activeProfileId) {
         await useActiveProfileStore.getState().load(activeProfileId);
       }
-      toast.success(t('toast.profile-imported', { name: state.profile.name }));
+      toast.success(t('toast.profile-imported', { name: pending[0].profile.name }));
       handleClose();
     } catch (e) {
       toast.error(t('toast.error', { error: getErrorMessage(e) }));
@@ -207,7 +237,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
             {/* Success */}
             {state.status === 'success' && (
               <>
-                {state.isConflict && (
+                {state.pending[0].conflict.hasConflict && (
                   <div className="flex items-start gap-2 rounded-lg bg-amber-50 p-3">
                     <ExclamationTriangleIcon className="h-5 w-5 shrink-0 text-amber-500" />
                     <div className="text-sm text-amber-800">
@@ -217,20 +247,24 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
                           <span className="w-16 shrink-0 font-medium">
                             {t('dialog.profile-import.existing')}:{' '}
                           </span>
-                          <span>{formatTimestampString(state.existingLastModified)}</span>
+                          <span>
+                            {formatTimestampString(state.pending[0].conflict.existingLastModified)}
+                          </span>
                           {compareTimestamps(
-                            state.existingLastModified,
-                            state.profile.lastModified
+                            state.pending[0].conflict.existingLastModified,
+                            state.pending[0].profile.lastModified
                           ) && <span>{t('dialog.profile-import.newer')}</span>}
                         </div>
                         <div className="flex gap-2">
                           <span className="w-16 shrink-0 font-medium">
                             {t('dialog.profile-import.importing')}:{' '}
                           </span>
-                          <span>{formatTimestampString(state.profile.lastModified)}</span>
+                          <span>
+                            {formatTimestampString(state.pending[0].profile.lastModified)}
+                          </span>
                           {compareTimestamps(
-                            state.profile.lastModified,
-                            state.existingLastModified
+                            state.pending[0].profile.lastModified,
+                            state.pending[0].conflict.existingLastModified
                           ) && <span>{t('dialog.profile-import.newer')}</span>}
                         </div>
                       </div>
@@ -241,9 +275,11 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
                 <div className="rounded-lg bg-gray-50 p-4">
                   <div className="space-y-2">
                     <div>
-                      <div className="font-medium text-gray-900">{state.profile.name}</div>
+                      <div className="font-medium text-gray-900">
+                        {state.pending[0].profile.name}
+                      </div>
                       <div className="mt-0.5 font-mono text-xs text-gray-500">
-                        ID: {state.profile.id}
+                        ID: {state.pending[0].profile.id}
                       </div>
                     </div>
                   </div>
@@ -262,17 +298,17 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
             </button>
 
             {state.status === 'success' &&
-              (state.isConflict ? (
+              (state.pending[0].conflict.hasConflict ? (
                 <>
                   <button
-                    onClick={() => handleImport(true)}
+                    onClick={() => handleImportSingle(true)}
                     className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white
                       hover:bg-red-700"
                   >
                     {t('common.overwrite')}
                   </button>
                   <button
-                    onClick={() => handleImport(false)}
+                    onClick={() => handleImportSingle(false)}
                     className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
                       hover:bg-blue-700"
                   >
@@ -281,7 +317,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
                 </>
               ) : (
                 <button
-                  onClick={() => handleImport(false)}
+                  onClick={() => handleImportSingle(false)}
                   className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
                     hover:bg-blue-700"
                 >
