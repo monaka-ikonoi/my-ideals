@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
+import { useImmer } from 'use-immer';
 import { useShallow } from 'zustand/shallow';
 import { useTranslation } from 'react-i18next';
 import { ZodError } from 'zod';
@@ -48,7 +49,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
   const { t, i18n } = useTranslation();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [state, setState] = useState<ImportState>({ status: 'idle' });
+  const [state, setState] = useImmer<ImportState>({ status: 'idle' });
 
   const { profiles, activeProfileId, importProfile, setActiveProfile } = useProfileListStore(
     useShallow(state => ({
@@ -76,6 +77,13 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
   const buildPendingState = async (profile: Profile): Promise<PendingProfileState> => {
     const conflict = await buildConflictState(profile.id);
     return { profile, conflict, selected: true, overwrite: !conflict.hasConflict };
+  };
+
+  const setPendingSelected = (index: number, selected: boolean) => {
+    setState(draft => {
+      if (draft.status !== 'success') return;
+      draft.pending[index].selected = selected;
+    });
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,11 +129,9 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
 
   const handleImportSingle = async (overwrite: boolean) => {
     if (state.status !== 'success') return;
+    if (state.pending.length !== 1 || !state.pending[0].selected) return;
 
-    const pending = [...state.pending];
-    if (pending.length !== 1 || !pending[0].selected) return;
-
-    pending[0].overwrite = overwrite;
+    const pending = [{ ...state.pending[0], overwrite }];
 
     try {
       const importedIds = await commitImport(pending);
@@ -150,6 +156,11 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     if (t1 === t2) return null;
     return t1 > t2;
   };
+
+  const conflictCount =
+    state.status === 'success'
+      ? state.pending.filter(p => p.selected && p.conflict.hasConflict).length
+      : 0;
 
   return (
     <CommonBackdrop>
@@ -236,55 +247,98 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
 
             {/* Success */}
             {state.status === 'success' && (
-              <>
-                {state.pending[0].conflict.hasConflict && (
-                  <div className="flex items-start gap-2 rounded-lg bg-amber-50 p-3">
-                    <ExclamationTriangleIcon className="h-5 w-5 shrink-0 text-amber-500" />
-                    <div className="text-sm text-amber-800">
-                      {t('dialog.profile-import.conflict-message')}
-                      <div className="mt-1 space-y-0.5 text-xs text-amber-700">
-                        <div className="flex gap-2">
-                          <span className="w-16 shrink-0 font-medium">
-                            {t('dialog.profile-import.existing')}:{' '}
-                          </span>
-                          <span>
-                            {formatTimestampString(state.pending[0].conflict.existingLastModified)}
-                          </span>
-                          {compareTimestamps(
-                            state.pending[0].conflict.existingLastModified,
-                            state.pending[0].profile.lastModified
-                          ) && <span>{t('dialog.profile-import.newer')}</span>}
-                        </div>
-                        <div className="flex gap-2">
-                          <span className="w-16 shrink-0 font-medium">
-                            {t('dialog.profile-import.importing')}:{' '}
-                          </span>
-                          <span>
-                            {formatTimestampString(state.pending[0].profile.lastModified)}
-                          </span>
-                          {compareTimestamps(
-                            state.pending[0].profile.lastModified,
-                            state.pending[0].conflict.existingLastModified
-                          ) && <span>{t('dialog.profile-import.newer')}</span>}
-                        </div>
-                      </div>
-                    </div>
+              <div className="space-y-2">
+                <div className="px-2.5">
+                  <div className="text-sm font-medium text-gray-700">
+                    {t('dialog.profile-import.count-message', {
+                      count: state.pending.filter(p => p.selected).length,
+                    })}
                   </div>
-                )}
-
-                <div className="rounded-lg bg-gray-50 p-4">
-                  <div className="space-y-2">
-                    <div>
-                      <div className="font-medium text-gray-900">
-                        {state.pending[0].profile.name}
-                      </div>
-                      <div className="mt-0.5 font-mono text-xs text-gray-500">
-                        ID: {state.pending[0].profile.id}
-                      </div>
+                  {state.pending.length > 1 && (
+                    <div className="text-xs text-gray-500">
+                      {t('dialog.profile-import.bundle-hint')}
                     </div>
-                  </div>
+                  )}
+                  {conflictCount > 0 && (
+                    <div className="flex items-center gap-1 text-xs text-amber-800">
+                      <ExclamationTriangleIcon className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+                      {t('dialog.profile-import.conflict-message', { count: conflictCount })}
+                    </div>
+                  )}
                 </div>
-              </>
+
+                <div className="max-h-72 space-y-2 overflow-y-auto">
+                  {state.pending.map((p, i) => (
+                    <div
+                      key={p.profile.id}
+                      onClick={() => {
+                        if (state.pending.length === 1) return;
+                        setPendingSelected(i, !p.selected);
+                      }}
+                      className={`rounded-lg border p-2.5 ${
+                        state.pending.length > 1 ? 'cursor-pointer' : ''
+                      } ${
+                        p.selected
+                          ? p.conflict.hasConflict
+                            ? 'border-amber-200 bg-amber-50'
+                            : 'border-blue-200 bg-blue-50'
+                          : 'border-gray-200 bg-gray-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={p.selected}
+                          disabled={state.pending.length === 1}
+                          readOnly
+                          className="h-4 w-4 shrink-0 rounded border-gray-300 accent-blue-600
+                            focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+                        />
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1">
+                            <span className="truncate text-sm font-medium text-gray-900">
+                              {p.profile.name}
+                            </span>
+                          </div>
+                          <div className="truncate font-mono text-xs text-gray-500">
+                            ID: {p.profile.id}
+                          </div>
+                        </div>
+
+                        {p.conflict.hasConflict && (
+                          <ExclamationTriangleIcon className="h-4 w-4 shrink-0 text-amber-500" />
+                        )}
+                      </div>
+
+                      {p.conflict.hasConflict && (
+                        <div className="mt-1.5 space-y-0.5 pl-6 text-xs text-amber-700">
+                          <div className="flex gap-2">
+                            <span className="w-16 shrink-0 font-medium">
+                              {t('dialog.profile-import.existing')}:{' '}
+                            </span>
+                            <span>{formatTimestampString(p.conflict.existingLastModified)}</span>
+                            {compareTimestamps(
+                              p.conflict.existingLastModified,
+                              p.profile.lastModified
+                            ) && <span>{t('dialog.profile-import.newer')}</span>}
+                          </div>
+                          <div className="flex gap-2">
+                            <span className="w-16 shrink-0 font-medium">
+                              {t('dialog.profile-import.importing')}:{' '}
+                            </span>
+                            <span>{formatTimestampString(p.profile.lastModified)}</span>
+                            {compareTimestamps(
+                              p.profile.lastModified,
+                              p.conflict.existingLastModified
+                            ) && <span>{t('dialog.profile-import.newer')}</span>}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
 
@@ -298,7 +352,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
             </button>
 
             {state.status === 'success' &&
-              (state.pending[0].conflict.hasConflict ? (
+              (state.pending.some(p => p.conflict.hasConflict) ? (
                 <>
                   <button
                     onClick={() => handleImportSingle(true)}
