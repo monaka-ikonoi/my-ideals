@@ -94,10 +94,12 @@
       "title": "Import Profile",
       "select-file": "Click to select file",
       "select-file-hint": "JSON file exported from this app",
-      "conflict-message": "A profile with this ID already exists. You can overwrite it or create a copy.",
+      "conflict-message": "{{count}} profile(s) already exist",
       "existing": "Existing",
       "importing": "Importing",
-      "newer": "(Newer)"
+      "newer": "(Newer)",
+      "count-message": "{{count}} profile(s) to import",
+      "bundle-hint": "Uncheck a profile to skip importing it"
     },
     "profile-delete": {
       "title": "Delete Profile",
