@@ -3,12 +3,13 @@ import { XCircleIcon } from '@heroicons/react/24/outline';
 import { useProfileListStore } from '@/stores/profileListStore';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { useDialogStore } from '@/stores/dialogStore';
-import { ProfileExportButton } from './ProfileExportButton';
 import { ArrowPathIcon, ArrowDownTrayIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { useShallow } from 'zustand/shallow';
+import { useProfileExporter } from '@/hooks/useProfileExporter';
 
 export function ProfileErrorPage() {
   const { t } = useTranslation();
+  const { exportProfile } = useProfileExporter();
 
   const profileId = useProfileListStore(state => state.activeId!);
   const { error, hasProfile, loadProfile } = useActiveProfileStore(
@@ -50,13 +51,16 @@ export function ProfileErrorPage() {
           </button>
           {error.type === 'template' && hasProfile && (
             <>
-              <ProfileExportButton
+              <button
+                type="button"
+                onClick={exportProfile}
                 className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4
-                  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed
+                  disabled:opacity-50"
               >
                 <ArrowDownTrayIcon className="h-4 w-4" />
                 {t('profile.save-backup')}
-              </ProfileExportButton>
+              </button>
               <button
                 onClick={() =>
                   useDialogStore
