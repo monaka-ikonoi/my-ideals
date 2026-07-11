@@ -32,6 +32,7 @@
     "create": "新規プロファイル",
     "import": "プロファイルインポート",
     "export": "ファイルにエクスポート",
+    "export-all": "一括エクスポート",
     "select-placeholder": "プロファイルを選択",
     "current": "現在のプロファイル",
     "list": "プロファイル",

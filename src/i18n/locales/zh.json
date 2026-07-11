@@ -32,6 +32,7 @@
     "import": "导入档案",
     "create": "新建档案",
     "export": "导出文件",
+    "export-all": "导出全部档案",
     "select-placeholder": "选择档案",
     "current": "当前档案",
     "list": "全部档案",

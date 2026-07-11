@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { type Profile, type ProfileBundle } from '@/domain/profile/types';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { DEV_MODE } from '@/utils/appInfo';
 import { downloadFile } from '@/utils/fileUtils';
+import { getProfileStorage } from '@/storage/ProfileStorage';
 
 function buildJsonFile(data: {}, filename: string): File {
   const json = DEV_MODE ? JSON.stringify(data, null, 2) : JSON.stringify(data);
@@ -29,5 +31,33 @@ export function useProfileExporter() {
     }
   };
 
-  return { canExport, exportProfile };
+  const exportProfileBundle = async () => {
+    if (exporting) return;
+
+    try {
+      setExporting(true);
+      await useActiveProfileStore.getState().flush();
+
+      const storage = getProfileStorage();
+      const ids = await storage.listProfiles();
+      const profiles = (await Promise.all(ids.map(id => storage.getProfile(id)))).filter(
+        p => p !== null
+      ) as Profile[];
+
+      const bundle: ProfileBundle = {
+        magic: 'my-ideals-profile-bundle',
+        version: 1,
+        created: Date.now(),
+        profiles,
+      };
+
+      const date = new Date().toISOString().slice(0, 10);
+      const filename = `my-ideals-profile-bundle-${date}.json`;
+      downloadFile(buildJsonFile(bundle, filename));
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  return { canExport, exportProfile, exportProfileBundle };
 }

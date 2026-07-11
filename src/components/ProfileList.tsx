@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useProfileListStore, type ProfileListEntry } from '@/stores/profileListStore';
 import {
+  ArrowDownTrayIcon,
   ArrowUpTrayIcon,
   ArrowsUpDownIcon,
   CheckIcon,
@@ -11,6 +12,7 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/solid';
 import { useDialogStore } from '@/stores/dialogStore';
+import { useProfileExporter } from '@/hooks/useProfileExporter';
 
 type ProfileListProps = {
   maxHeight?: string;
@@ -22,6 +24,7 @@ export function ProfileList({ maxHeight, onSelect }: ProfileListProps) {
 
   const profiles = useProfileListStore(state => state.profiles);
   const activeProfileId = useProfileListStore(state => state.activeId);
+  const { canExport, exportProfileBundle } = useProfileExporter();
 
   const [isReordering, setIsReordering] = useState(false);
 
@@ -155,6 +158,19 @@ export function ProfileList({ maxHeight, onSelect }: ProfileListProps) {
           <ArrowUpTrayIcon className="h-4 w-4" />
           {t('profile.import')}
         </button>
+        {canExport && (
+          <button
+            onClick={() => {
+              exportProfileBundle();
+              onSelect?.();
+            }}
+            className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
+              hover:bg-gray-100"
+          >
+            <ArrowDownTrayIcon className="h-4 w-4" />
+            {t('profile.export-all')}
+          </button>
+        )}
       </div>
     </>
   );
