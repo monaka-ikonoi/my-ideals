@@ -1,7 +1,17 @@
+import { useProfileListStore } from '@/stores/profileListStore';
 import { DEV_MODE } from '@/utils/appInfo';
 
 export function DebugSettings({ onSelect }: { onSelect?: () => void }) {
   if (!DEV_MODE) return null;
+
+  const { profiles, deleteProfile } = useProfileListStore();
+
+  const handleClearProfiles = async () => {
+    for (const profile of profiles) {
+      await deleteProfile(profile.id);
+    }
+    onSelect?.();
+  };
 
   return (
     <>
@@ -19,6 +29,14 @@ export function DebugSettings({ onSelect }: { onSelect?: () => void }) {
             hover:bg-gray-100"
         >
           Reset settings
+        </button>
+
+        <button
+          onClick={handleClearProfiles}
+          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
+            hover:bg-gray-100"
+        >
+          Delete all profiles
         </button>
       </div>
     </>
