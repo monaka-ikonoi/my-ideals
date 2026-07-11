@@ -95,8 +95,6 @@
       "select-file": "クリックしてファイルを選択",
       "select-file-hint": "このアプリからエクスポートしたJSONファイル",
       "conflict-message": "このIDのプロファイルは既に存在します。上書きするか、コピーを作成できます。",
-      "collections-count": "{{count}} セット",
-      "stats": "{{count}} / {{total}} 収集済み",
       "existing": "既存",
       "importing": "インポート",
       "newer": "(新しい)"

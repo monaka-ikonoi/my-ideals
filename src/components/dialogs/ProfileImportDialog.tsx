@@ -121,23 +121,6 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     return t1 > t2;
   };
 
-  const collectionsCount =
-    state.status === 'success' ? Object.keys(state.profile.collections).length : 0;
-  const itemsCount =
-    state.status === 'success'
-      ? Object.values(state.profile.collections).reduce(
-          (sum, items) => sum + Object.keys(items).length,
-          0
-        )
-      : 0;
-  const checkedCount =
-    state.status === 'success'
-      ? Object.values(state.profile.collections).reduce(
-          (sum, items) => sum + Object.values(items).filter(Boolean).length,
-          0
-        )
-      : 0;
-
   return (
     <CommonBackdrop>
       <div
@@ -262,23 +245,6 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
                       <div className="mt-0.5 font-mono text-xs text-gray-500">
                         ID: {state.profile.id}
                       </div>
-                    </div>
-
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
-                      <span>
-                        {t('dialog.profile-import.collections-count', { count: collectionsCount })}
-                      </span>
-                      <span>
-                        {t('dialog.profile-import.stats', {
-                          count: checkedCount,
-                          total: itemsCount,
-                        })}
-                      </span>
-                    </div>
-
-                    <div className="text-xs text-gray-400">
-                      {t('common.template')}: {state.profile.template.id} (rev.{' '}
-                      {state.profile.template.revision})
                     </div>
                   </div>
                 </div>
