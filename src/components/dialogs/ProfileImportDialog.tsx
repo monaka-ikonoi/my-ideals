@@ -237,7 +237,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={state.status === 'loading'}
-                className={`flex w-full items-center gap-3 rounded-lg border px-4 py-3 text-left
+                className={`flex w-full items-center gap-3 rounded-lg border p-2.5 text-left
                   disabled:cursor-wait ${FileSelectorBoarderStyles[state.status]}`}
               >
                 <DocumentArrowUpIcon className="h-5 w-5 shrink-0 text-gray-400" />
