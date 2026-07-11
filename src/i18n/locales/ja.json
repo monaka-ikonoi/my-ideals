@@ -209,6 +209,7 @@
     "profile-created": "プロフィール「{{name}}」を作成しました",
     "profile-template url-updated": "テンプレートリンクを更新しました",
     "profile-imported": "プロフィール「{{name}}」をインポートしました",
+    "profiles-imported": "{{count}} 件のプロファイルをインポートしました",
     "profile-duplicated": "プロフィールのコピーを作成しました：{{name}}"
   }
 }

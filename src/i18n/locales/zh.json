@@ -209,6 +209,7 @@
     "profile-created": "档案 \"{{name}}\" 已创建",
     "profile-template url-updated": "模板链接已更新",
     "profile-imported": "档案 \"{{name}}\" 已导入",
+    "profiles-imported": "已导入 {{count}} 个档案",
     "profile-duplicated": "已创建档案副本：{{name}}"
   }
 }
