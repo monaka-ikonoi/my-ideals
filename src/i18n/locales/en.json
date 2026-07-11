@@ -95,8 +95,6 @@
       "select-file": "Click to select file",
       "select-file-hint": "JSON file exported from this app",
       "conflict-message": "A profile with this ID already exists. You can overwrite it or create a copy.",
-      "collections-count": "{{count}} collection(s)",
-      "stats": "{{count}} / {{total}} collected",
       "existing": "Existing",
       "importing": "Importing",
       "newer": "(Newer)"
