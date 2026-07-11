@@ -32,6 +32,7 @@
     "create": "New Profile",
     "import": "Import Profile",
     "export": "Export to File",
+    "export-all": "Export All Profiles",
     "select-placeholder": "Select Profile",
     "current": "Current Profile",
     "list": "Profiles",
