@@ -11,7 +11,7 @@ import {
   XCircleIcon,
   ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
-import { ProfileSchema, type Profile } from '@/domain/profile';
+import { ProfileSchema, ProfileBundleSchema, type Profile } from '@/domain/profile';
 import { useProfileListStore } from '@/stores/profileListStore';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { CommonBackdrop } from '../ui/CommonBackdrop';
@@ -31,7 +31,12 @@ type PendingProfileState = {
 type ImportState =
   | { status: 'idle' }
   | { status: 'loading'; fileName: string }
-  | { status: 'success'; fileName: string; pending: PendingProfileState[] }
+  | {
+      status: 'success';
+      fileName: string;
+      type: 'single' | 'bundle';
+      pending: PendingProfileState[];
+    }
   | { status: 'error'; fileName: string; message: string };
 
 const FileSelectorBoarderStyles = {
@@ -86,6 +91,13 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     });
   };
 
+  const setPendingOverwrite = (index: number, overwrite: boolean) => {
+    setState(draft => {
+      if (draft.status !== 'success') return;
+      draft.pending[index].overwrite = overwrite;
+    });
+  };
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = '';
@@ -96,15 +108,15 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     setState({ status: 'loading', fileName });
 
     try {
-      const text = await file.text();
-      const profile = ProfileSchema.parse(JSON.parse(text));
-      const pendingState = await buildPendingState(profile);
+      const parsed = JSON.parse(await file.text());
+      const type = parsed?.magic === 'my-ideals-profile-bundle' ? 'bundle' : 'single';
+      const parsedProfiles =
+        parsed?.magic === 'my-ideals-profile-bundle'
+          ? ProfileBundleSchema.parse(parsed).profiles
+          : [ProfileSchema.parse(parsed)];
+      const pending = await Promise.all(parsedProfiles.map(buildPendingState));
 
-      setState({
-        status: 'success',
-        fileName,
-        pending: [pendingState],
-      });
+      setState({ status: 'success', fileName, type, pending });
     } catch (e) {
       let message = 'Unknown error';
       if (e instanceof SyntaxError) {
@@ -118,30 +130,32 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     }
   };
 
-  const commitImport = async (pending: PendingProfileState[]) => {
-    const imported: string[] = [];
-    for (const p of pending) {
-      if (!p.selected) continue;
-      imported.push(await importProfile(p.profile, p.overwrite));
-    }
-    return imported;
-  };
-
-  const handleImportSingle = async (overwrite: boolean) => {
+  const handleImport = async (overwrite?: boolean) => {
     if (state.status !== 'success') return;
-    if (state.pending.length !== 1 || !state.pending[0].selected) return;
 
-    const pending = [{ ...state.pending[0], overwrite }];
+    const pending =
+      overwrite === undefined ? state.pending : state.pending.map(p => ({ ...p, overwrite }));
+    const selected = pending.filter(p => p.selected);
+    if (selected.length === 0) return;
 
     try {
-      const importedIds = await commitImport(pending);
-      setActiveProfile(importedIds[0]);
+      const importedIds: string[] = [];
+      for (const p of selected) {
+        importedIds.push(await importProfile(p.profile, p.overwrite));
+      }
 
       // reload on overwrite
-      if (importedIds[0] === activeProfileId) {
+      if (activeProfileId && importedIds.some(id => id === activeProfileId)) {
         await useActiveProfileStore.getState().load(activeProfileId);
+      } else if (state.type === 'single' || activeProfileId === null) {
+        setActiveProfile(importedIds[0]);
       }
-      toast.success(t('toast.profile-imported', { name: pending[0].profile.name }));
+
+      if (state.type === 'single') {
+        toast.success(t('toast.profile-imported', { name: selected[0].profile.name }));
+      } else {
+        toast.success(t('toast.profiles-imported', { count: selected.length }));
+      }
       handleClose();
     } catch (e) {
       toast.error(t('toast.error', { error: getErrorMessage(e) }));
@@ -156,6 +170,9 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     if (t1 === t2) return null;
     return t1 > t2;
   };
+
+  const selectedCount =
+    state.status === 'success' ? state.pending.filter(p => p.selected).length : 0;
 
   const conflictCount =
     state.status === 'success'
@@ -250,11 +267,9 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
               <div className="space-y-2">
                 <div className="px-2.5">
                   <div className="text-sm font-medium text-gray-700">
-                    {t('dialog.profile-import.count-message', {
-                      count: state.pending.filter(p => p.selected).length,
-                    })}
+                    {t('dialog.profile-import.count-message', { count: selectedCount })}
                   </div>
-                  {state.pending.length > 1 && (
+                  {state.type === 'bundle' && (
                     <div className="text-xs text-gray-500">
                       {t('dialog.profile-import.bundle-hint')}
                     </div>
@@ -272,11 +287,11 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
                     <div
                       key={p.profile.id}
                       onClick={() => {
-                        if (state.pending.length === 1) return;
+                        if (state.type === 'single') return;
                         setPendingSelected(i, !p.selected);
                       }}
                       className={`rounded-lg border p-2.5 ${
-                        state.pending.length > 1 ? 'cursor-pointer' : ''
+                        state.type === 'bundle' ? 'cursor-pointer' : ''
                       } ${
                         p.selected
                           ? p.conflict.hasConflict
@@ -289,7 +304,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
                         <input
                           type="checkbox"
                           checked={p.selected}
-                          disabled={state.pending.length === 1}
+                          disabled={state.type === 'single'}
                           readOnly
                           className="h-4 w-4 shrink-0 rounded border-gray-300 accent-blue-600
                             focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
@@ -312,27 +327,71 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
                       </div>
 
                       {p.conflict.hasConflict && (
-                        <div className="mt-1.5 space-y-0.5 pl-6 text-xs text-amber-700">
-                          <div className="flex gap-2">
-                            <span className="w-16 shrink-0 font-medium">
-                              {t('dialog.profile-import.existing')}:{' '}
-                            </span>
-                            <span>{formatTimestampString(p.conflict.existingLastModified)}</span>
-                            {compareTimestamps(
-                              p.conflict.existingLastModified,
-                              p.profile.lastModified
-                            ) && <span>{t('dialog.profile-import.newer')}</span>}
+                        <div
+                          className="mt-1.5 flex flex-wrap items-start justify-between gap-2 pl-6"
+                        >
+                          <div className="space-y-0.5 text-xs text-amber-700">
+                            <div className="flex gap-2">
+                              <span className="w-16 shrink-0 font-medium">
+                                {t('dialog.profile-import.existing')}:{' '}
+                              </span>
+                              <span>{formatTimestampString(p.conflict.existingLastModified)}</span>
+                              {compareTimestamps(
+                                p.conflict.existingLastModified,
+                                p.profile.lastModified
+                              ) && <span>{t('dialog.profile-import.newer')}</span>}
+                            </div>
+                            <div className="flex gap-2">
+                              <span className="w-16 shrink-0 font-medium">
+                                {t('dialog.profile-import.importing')}:{' '}
+                              </span>
+                              <span>{formatTimestampString(p.profile.lastModified)}</span>
+                              {compareTimestamps(
+                                p.profile.lastModified,
+                                p.conflict.existingLastModified
+                              ) && <span>{t('dialog.profile-import.newer')}</span>}
+                            </div>
                           </div>
-                          <div className="flex gap-2">
-                            <span className="w-16 shrink-0 font-medium">
-                              {t('dialog.profile-import.importing')}:{' '}
-                            </span>
-                            <span>{formatTimestampString(p.profile.lastModified)}</span>
-                            {compareTimestamps(
-                              p.profile.lastModified,
-                              p.conflict.existingLastModified
-                            ) && <span>{t('dialog.profile-import.newer')}</span>}
-                          </div>
+
+                          {state.type === 'bundle' && (
+                            <div
+                              className="inline-flex shrink-0 overflow-hidden rounded-md border
+                                border-gray-300"
+                            >
+                              <button
+                                type="button"
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  setPendingOverwrite(i, true);
+                                }}
+                                disabled={!p.selected}
+                                className={`px-3 py-1 text-xs font-medium
+                                disabled:cursor-not-allowed disabled:opacity-40 ${
+                                  p.overwrite
+                                    ? 'bg-red-600 text-white'
+                                    : 'bg-white text-gray-600 hover:bg-gray-50'
+                                }`}
+                              >
+                                {t('common.overwrite')}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  setPendingOverwrite(i, false);
+                                }}
+                                disabled={!p.selected}
+                                className={`border-l border-gray-300 px-3 py-1 text-xs font-medium
+                                disabled:cursor-not-allowed disabled:opacity-40 ${
+                                  !p.overwrite
+                                    ? 'bg-blue-600 text-white'
+                                    : 'bg-white text-gray-600 hover:bg-gray-50'
+                                }`}
+                              >
+                                {t('common.create-copy')}
+                              </button>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -352,28 +411,39 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
             </button>
 
             {state.status === 'success' &&
-              (state.pending.some(p => p.conflict.hasConflict) ? (
-                <>
+              (state.type === 'single' ? (
+                state.pending[0].conflict.hasConflict ? (
+                  <>
+                    <button
+                      onClick={() => handleImport(true)}
+                      className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white
+                        hover:bg-red-700"
+                    >
+                      {t('common.overwrite')}
+                    </button>
+                    <button
+                      onClick={() => handleImport(false)}
+                      className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
+                        hover:bg-blue-700"
+                    >
+                      {t('common.create-copy')}
+                    </button>
+                  </>
+                ) : (
                   <button
-                    onClick={() => handleImportSingle(true)}
-                    className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white
-                      hover:bg-red-700"
-                  >
-                    {t('common.overwrite')}
-                  </button>
-                  <button
-                    onClick={() => handleImportSingle(false)}
+                    onClick={() => handleImport()}
                     className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
                       hover:bg-blue-700"
                   >
-                    {t('common.create-copy')}
+                    {t('common.import')}
                   </button>
-                </>
+                )
               ) : (
                 <button
-                  onClick={() => handleImportSingle(false)}
+                  onClick={() => handleImport()}
+                  disabled={selectedCount === 0}
                   className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
-                    hover:bg-blue-700"
+                    hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {t('common.import')}
                 </button>

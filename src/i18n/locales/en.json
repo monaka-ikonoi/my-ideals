@@ -209,6 +209,7 @@
     "profile-created": "Created profile \"{{name}}\"",
     "profile-template url-updated": "Template link updated",
     "profile-imported": "Imported profile \"{{name}}\"",
+    "profiles-imported": "Imported {{count}} profiles",
     "profile-duplicated": "Created profile copy: {{name}}"
   }
 }
