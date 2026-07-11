@@ -171,10 +171,12 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     return t1 > t2;
   };
 
+  const pendingCount = state.status === 'success' ? state.pending.length : 0;
   const selectedCount =
     state.status === 'success' ? state.pending.filter(p => p.selected).length : 0;
-
   const conflictCount =
+    state.status === 'success' ? state.pending.filter(p => p.conflict.hasConflict).length : 0;
+  const conflictSelectedCount =
     state.status === 'success'
       ? state.pending.filter(p => p.selected && p.conflict.hasConflict).length
       : 0;
@@ -267,7 +269,10 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
               <div className="space-y-2">
                 <div className="px-2.5">
                   <div className="text-sm font-medium text-gray-700">
-                    {t('dialog.profile-import.count-message', { count: selectedCount })}
+                    {t('dialog.profile-import.count-message', {
+                      count: selectedCount,
+                      total: pendingCount,
+                    })}
                   </div>
                   {state.type === 'bundle' && (
                     <div className="text-xs text-gray-500">
@@ -277,7 +282,10 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
                   {conflictCount > 0 && (
                     <div className="flex items-center gap-1 text-xs text-amber-800">
                       <ExclamationTriangleIcon className="h-3.5 w-3.5 shrink-0 text-amber-500" />
-                      {t('dialog.profile-import.conflict-message', { count: conflictCount })}
+                      {t('dialog.profile-import.conflict-message', {
+                        count: conflictSelectedCount,
+                        total: conflictCount,
+                      })}
                     </div>
                   )}
                 </div>
