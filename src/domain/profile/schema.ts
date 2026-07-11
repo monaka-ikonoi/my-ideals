@@ -36,3 +36,10 @@ export const ProfileSchema = z
       }
     }
   });
+
+export const ProfileBundleSchema = z.object({
+  magic: z.literal('my-ideals-profile-bundle'),
+  version: z.literal(1),
+  created: z.number(),
+  profiles: z.array(ProfileSchema),
+});
