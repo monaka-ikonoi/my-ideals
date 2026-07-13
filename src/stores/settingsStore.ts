@@ -54,7 +54,10 @@ export const useSettingsStore = create<SettingsStore>()(
           state.storageBackend = 'localStorage';
         }
         if (version < 2) {
-          state.imageOptions = { badge: { position: 'top-right', size: 'medium' }, dimUntoggled: true };
+          state.imageOptions = {
+            badge: { position: 'top-right', size: 'medium' },
+            dimUntoggled: true,
+          };
         }
         if (version < 3) {
           state.imageOptions = {

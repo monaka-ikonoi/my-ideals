@@ -16,8 +16,8 @@ export function CollectionEditModal({ collectionId, onClose }: CollectionEditMod
   const { t } = useTranslation();
 
   const allMembers = useActiveProfileStore(state => state.template!.members);
-  const collection = useActiveProfileStore(
-    state => state.template!.collections.find(c => c.id === collectionId)!
+  const collection = useActiveProfileStore(state =>
+    state.template!.collections.find(c => c.id === collectionId)!
   );
 
   const availableMembers = useMemo(() => {

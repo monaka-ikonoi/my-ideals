@@ -8,7 +8,7 @@ const isStandalonePWA = (): boolean => {
   // iOS Safari legacy flag (still present on home-screen-launched PWAs)
   const nav = window.navigator as Navigator & { standalone?: boolean };
   return nav.standalone === true;
-}
+};
 
 const isItpAffected = (): boolean => {
   if (typeof navigator === 'undefined') return false;

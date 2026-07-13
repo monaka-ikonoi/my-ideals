@@ -4,8 +4,7 @@ import { ZodError } from 'zod';
 import { debugLog } from './debug';
 
 export type FetchTemplateResult =
-  | { success: true; url: string; template: Template }
-  | { success: false; error: TemplateError };
+  { success: true; url: string; template: Template } | { success: false; error: TemplateError };
 
 export type TemplateError =
   | { type: 'network'; message: string }

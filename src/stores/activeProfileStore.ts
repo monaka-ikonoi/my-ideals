@@ -15,8 +15,7 @@ import { ProfileFlagOperations } from '@/utils/profileFlagOperation';
 import { applyTemplateMigrations } from '@/utils/templateMigration';
 
 export type LoadError =
-  | { type: 'template'; message: string }
-  | { type: 'profile'; message: string };
+  { type: 'template'; message: string } | { type: 'profile'; message: string };
 
 type activeProfileStore = {
   // State

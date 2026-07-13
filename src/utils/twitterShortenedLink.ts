@@ -8,8 +8,7 @@ export function isTwitterShortenedLink(url: string): boolean {
 }
 
 export type TwitterShortenedLinkResult =
-  | { success: true; url: string }
-  | { success: false; error: string };
+  { success: true; url: string } | { success: false; error: string };
 
 export async function extractTwitterShortenedLink(
   url: string
