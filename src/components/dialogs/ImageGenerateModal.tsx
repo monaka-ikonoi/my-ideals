@@ -12,7 +12,7 @@ import { FullScreenModal } from '../ui/FullScreenModal';
 import { OffscreenCaptureArea, type CaptureResult } from '../ui/OffscreenCaptureArea';
 import { CollectionImageContent } from '../CollectionImageContent';
 import { ImageCheckCard } from '../ImageCheckCard';
-import { BADGE_POSITIONS, BADGE_SIZES } from '../CountBadge';
+import { BADGE_POSITIONS, BADGE_SIZES } from '../CountBadgeProps';
 import { StepIndicator } from '../ui/StepIndicator';
 import { getErrorMessage } from '@/utils/error';
 import { computeItemWidth, resolveLayout } from '@/utils/layoutUtils';

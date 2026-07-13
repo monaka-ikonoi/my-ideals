@@ -1,28 +1,10 @@
 import { HeartIcon } from '@heroicons/react/24/solid';
-
-export type BadgePosition =
-  | 'top-left'
-  | 'top-middle'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-middle'
-  | 'bottom-right';
-export type BadgeSize = 'small' | 'medium' | 'large' | 'xlarge';
+import { type BadgePosition, type BadgeSize } from './CountBadgeProps';
 
 export type BadgeProps = {
   position: BadgePosition;
   size: BadgeSize;
 };
-
-export const BADGE_POSITIONS: BadgePosition[] = [
-  'top-left',
-  'top-middle',
-  'top-right',
-  'bottom-left',
-  'bottom-middle',
-  'bottom-right',
-];
-export const BADGE_SIZES: BadgeSize[] = ['small', 'medium', 'large', 'xlarge'];
 
 // Bottom bar is ~24px tall in export mode.
 const BADGE_POSITION_CLASS: Record<BadgePosition, string> = {
