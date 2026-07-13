@@ -5,7 +5,7 @@ import { DEV_MODE } from '@/utils/appInfo';
 import { downloadFile } from '@/utils/fileUtils';
 import { getProfileStorage } from '@/storage/ProfileStorage';
 
-function buildJsonFile(data: {}, filename: string): File {
+function buildJsonFile(data: object, filename: string): File {
   const json = DEV_MODE ? JSON.stringify(data, null, 2) : JSON.stringify(data);
   return new File([json], filename, { type: 'application/json;charset=utf-8' });
 }
