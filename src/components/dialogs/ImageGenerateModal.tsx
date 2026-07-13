@@ -170,7 +170,7 @@ export function ImageGenerateModal({
   }, [i18n.language, selectedCollections, templateId, profileId]);
 
   // Pick the first non-zero item for preview
-  const previewItem = useMemo(() => {
+  const previewItem = (() => {
     for (const collection of selectedCollections) {
       const collectionStatus = statusMap?.[collection.id];
       const candidate =
@@ -183,7 +183,7 @@ export function ImageGenerateModal({
       }
     }
     return null;
-  }, [selectedCollections, statusMap]);
+  })();
 
   const ImageCardLayout = useMemo(
     () => resolveLayout(selectedCollections[0]?.layout, templateLayout),
