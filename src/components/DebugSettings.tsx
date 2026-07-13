@@ -2,8 +2,6 @@ import { useProfileListStore } from '@/stores/profileListStore';
 import { DEV_MODE } from '@/utils/appInfo';
 
 export function DebugSettings({ onSelect }: { onSelect?: () => void }) {
-  if (!DEV_MODE) return null;
-
   const { profiles, deleteProfile } = useProfileListStore();
 
   const handleClearProfiles = async () => {
@@ -12,6 +10,8 @@ export function DebugSettings({ onSelect }: { onSelect?: () => void }) {
     }
     onSelect?.();
   };
+
+  if (!DEV_MODE) return null;
 
   return (
     <>
