@@ -38,12 +38,14 @@ export const CollectionGrid = memo(function CollectionGrid({
   const computedColumns = useMemo<[number, number, number]>(() => {
     if (columns) return columns;
     return resolveColumns(collectionLayout, templateLayout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- resolveColumns only reads .columns
   }, [columns, collectionLayout?.columns, templateLayout?.columns]);
 
   const computedGaps = useMemo(() => computeGaps(computedColumns), [computedColumns]);
 
   const resolvedAspectRatio = useMemo(
     () => resolveAspectRatio(collectionLayout, templateLayout),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- resolveAspectRatio only reads .aspectRatio
     [collectionLayout?.aspectRatio, templateLayout?.aspectRatio]
   );
 
