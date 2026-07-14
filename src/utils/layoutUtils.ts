@@ -2,7 +2,7 @@ import { type TemplateLayout } from '@/domain/template';
 
 type LayoutTuple = [number, number, number];
 
-type ResolvedTemplateLayout = {
+type ResolvedLayout = {
   aspectRatio: string;
   columns: LayoutTuple;
   gaps: LayoutTuple;
@@ -28,7 +28,7 @@ export function computeGaps(columns: LayoutTuple): LayoutTuple {
 export function resolveLayout(
   primary?: TemplateLayout,
   secondary?: TemplateLayout
-): ResolvedTemplateLayout {
+): ResolvedLayout {
   return {
     aspectRatio: resolveAspectRatio(primary, secondary),
     columns: resolveColumns(primary, secondary),
@@ -44,7 +44,7 @@ function indexByWidth(width: number): number {
 
 export function computeItemWidth(
   containerWidth: number,
-  layout: ResolvedTemplateLayout,
+  layout: ResolvedLayout,
   rotated: boolean = false
 ): number {
   const i = indexByWidth(containerWidth);
