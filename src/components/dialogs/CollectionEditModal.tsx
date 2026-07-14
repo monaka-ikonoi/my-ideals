@@ -80,7 +80,6 @@ export function CollectionEditModal({ collectionId, onClose }: CollectionEditMod
                 mode="edit"
                 imageOptions={{
                   badge: { size: 'xlarge', position: 'bottom-middle' },
-                  dimUntoggled: true,
                 }}
               />
             </div>

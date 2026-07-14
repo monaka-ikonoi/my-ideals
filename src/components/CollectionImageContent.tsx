@@ -1,7 +1,11 @@
+import { useMemo } from 'react';
 import type { TemplateCollection } from '@/domain/template';
-import { CollectionGrid } from './CollectionGrid';
 import { type ImageOptions } from '@/stores/settingsStore';
+import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { APP_NAME, LONG_VERSION } from '@/utils/appInfo';
+import { resolveLayout } from '@/utils/layoutUtils';
+import { CollectionGrid } from './CollectionGrid';
+import { ImageGrid } from './ImageGrid';
 
 type CollectionImageContentProps = {
   templateName: string;
@@ -11,6 +15,33 @@ type CollectionImageContentProps = {
   captureTime: string;
   imageOptions?: ImageOptions;
 };
+
+function FlattenedCollectionGrid({
+  collections,
+  imageOptions,
+}: {
+  collections: TemplateCollection[];
+  imageOptions?: ImageOptions;
+}) {
+  const statusMaps = useActiveProfileStore(state => state.profile?.collections);
+  const flattenedItems = useMemo(
+    () =>
+      collections.flatMap(collection =>
+        collection.items.map(item => ({
+          collection: collection.id,
+          item,
+          status: statusMaps?.[collection.id]?.[item.id],
+        }))
+      ),
+    [collections, statusMaps]
+  );
+
+  const layout = resolveLayout(useActiveProfileStore.getState().template?.layout);
+
+  return (
+    <ImageGrid items={flattenedItems} layout={layout} mode="export" imageOptions={imageOptions} />
+  );
+}
 
 export function CollectionImageContent({
   templateName,
@@ -26,23 +57,29 @@ export function CollectionImageContent({
     <div className="bg-white text-gray-900">
       <div className="px-8 pt-6">
         <h1 className="text-3xl leading-tight font-semibold">
-          {singleCollection ? collections[0].name : templateName}
+          {singleCollection && !imageOptions?.flatten ? collections[0].name : templateName}
         </h1>
       </div>
 
-      {collections.map(collection => (
-        <div key={collection.id} className="px-8">
-          {singleCollection ? (
-            <p className="mt-1 text-xl font-medium text-gray-700">{templateName}</p>
-          ) : (
-            <h2 className="mt-2 text-2xl font-semibold">{collection.name}</h2>
-          )}
-
-          <div className="py-4">
-            <CollectionGrid collection={collection} mode="export" imageOptions={imageOptions} />
-          </div>
+      {imageOptions?.flatten ? (
+        <div className="px-8 py-4">
+          <FlattenedCollectionGrid collections={collections} imageOptions={imageOptions} />
         </div>
-      ))}
+      ) : (
+        collections.map(collection => (
+          <div key={collection.id} className="px-8">
+            {singleCollection ? (
+              <p className="mt-1 text-xl font-medium text-gray-700">{templateName}</p>
+            ) : (
+              <h2 className="mt-2 text-2xl font-semibold">{collection.name}</h2>
+            )}
+
+            <div className="py-4">
+              <CollectionGrid collection={collection} mode="export" imageOptions={imageOptions} />
+            </div>
+          </div>
+        ))
+      )}
 
       {/* Footer meta: left / right */}
       <div className="text-md px-8 pb-4 text-gray-500">

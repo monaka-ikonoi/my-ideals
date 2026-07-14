@@ -160,6 +160,7 @@
         "badge-position-label": "位置",
         "badge-size-label": "大小",
         "not-dim-untoggled-label": "不弱化显示未持有项",
+        "flatten-collections-label": "不按合集分组显示",
         "position": {
           "top-left": "左上",
           "top-middle": "正上",

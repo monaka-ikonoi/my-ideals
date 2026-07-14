@@ -160,6 +160,7 @@
         "badge-position-label": "Position",
         "badge-size-label": "Size",
         "not-dim-untoggled-label": "Do not dim unowned items",
+        "flatten-collections-label": "Do not group by collection",
         "position": {
           "top-left": "Top left",
           "top-middle": "Top middle",

@@ -160,6 +160,7 @@
         "badge-position-label": "位置",
         "badge-size-label": "サイズ",
         "not-dim-untoggled-label": "未所持アイテムを薄く表示しない",
+        "flatten-collections-label": "コレクションごとに表示しない",
         "position": {
           "top-left": "左上",
           "top-middle": "上中央",

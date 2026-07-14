@@ -185,14 +185,18 @@ export function ImageGenerateModal({
     return null;
   })();
 
-  const ImageCardLayout = useMemo(
-    () => resolveLayout(selectedCollections[0]?.layout, templateLayout),
-    [selectedCollections, templateLayout]
+  const imageCardLayout = useMemo(
+    () =>
+      resolveLayout(
+        imageOptions.flatten ? undefined : selectedCollections[0]?.layout,
+        templateLayout
+      ),
+    [selectedCollections, templateLayout, imageOptions.flatten]
   );
-  const ImageCardWidth = useMemo(
+  const imageCardWidth = useMemo(
     // Export grid width is 1600px
-    () => computeItemWidth(1600, ImageCardLayout, previewItem?.item?.rotated),
-    [ImageCardLayout, previewItem]
+    () => computeItemWidth(1600, imageCardLayout, previewItem?.item?.rotated),
+    [imageCardLayout, previewItem]
   );
 
   const handleCapture = useCallback(
@@ -362,12 +366,12 @@ export function ImageGenerateModal({
                   {/* Preview */}
                   <div className="mx-auto flex justify-center md:mx-0 md:shrink-0 md:justify-start">
                     {previewItem && (
-                      <div style={{ width: `${ImageCardWidth}px` }}>
+                      <div style={{ width: `${imageCardWidth}px` }}>
                         <ImageCheckCard
                           collectionId={previewItem.collection.id}
                           item={previewItem.item}
                           mode="export"
-                          aspectRatio={ImageCardLayout.aspectRatio}
+                          aspectRatio={imageCardLayout.aspectRatio}
                           enableCount={enableCount}
                           imageBaseUrl={imageBaseUrl}
                           revision={revision}
@@ -457,6 +461,21 @@ export function ImageGenerateModal({
                       />
                       <span className="text-sm font-medium text-gray-700">
                         {t('dialog.image-generate.options.not-dim-untoggled-label')}
+                      </span>
+                    </label>
+
+                    {/* Flatten collections checkbox */}
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={imageOptions.flatten}
+                        onChange={e => setImageOptions({ flatten: e.target.checked })}
+                        disabled={generating}
+                        className="h-4 w-4 rounded border-gray-300 accent-blue-600
+                          focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+                      />
+                      <span className="text-sm font-medium text-gray-700">
+                        {t('dialog.image-generate.options.flatten-collections-label')}
                       </span>
                     </label>
                   </div>
