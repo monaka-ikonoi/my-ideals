@@ -32,7 +32,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   status: rawStatus,
   imageOptions,
 }: ImageCheckCardProps) {
-  debugLog.render.log(`ImageCheckCard render: ${collectionId} ${item.id}`);
+  debugLog.render.log(`ImageCheckCard: ${collectionId} ${item.id}`);
 
   const status = rawStatus ?? (enableCount ? 0 : false);
 

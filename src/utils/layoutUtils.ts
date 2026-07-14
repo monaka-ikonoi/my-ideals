@@ -2,7 +2,7 @@ import { type TemplateLayout } from '@/domain/template';
 
 type LayoutTuple = [number, number, number];
 
-type ResolvedLayout = {
+export type ResolvedLayout = {
   aspectRatio: string;
   columns: LayoutTuple;
   gaps: LayoutTuple;
