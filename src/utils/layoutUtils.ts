@@ -8,20 +8,14 @@ type ResolvedTemplateLayout = {
   gaps: LayoutTuple;
 };
 
-export function resolveColumns(
-  collectionLayout?: TemplateLayout,
-  templateLayout?: TemplateLayout
-): LayoutTuple {
-  const layoutColumns = collectionLayout?.columns ?? templateLayout?.columns;
+export function resolveColumns(primary?: TemplateLayout, secondary?: TemplateLayout): LayoutTuple {
+  const layoutColumns = primary?.columns ?? secondary?.columns;
   const base = layoutColumns?.[0] ?? 3;
   return [base, layoutColumns?.[1] ?? base * 2, layoutColumns?.[2] ?? base * 3];
 }
 
-export function resolveAspectRatio(
-  collectionLayout?: TemplateLayout,
-  templateLayout?: TemplateLayout
-): string {
-  return collectionLayout?.aspectRatio ?? templateLayout?.aspectRatio ?? '7/10';
+export function resolveAspectRatio(primary?: TemplateLayout, secondary?: TemplateLayout): string {
+  return primary?.aspectRatio ?? secondary?.aspectRatio ?? '7/10';
 }
 
 const GAP_UNIT = 4;
@@ -32,13 +26,13 @@ export function computeGaps(columns: LayoutTuple): LayoutTuple {
 }
 
 export function resolveLayout(
-  collectionLayout?: TemplateLayout,
-  templateLayout?: TemplateLayout
+  primary?: TemplateLayout,
+  secondary?: TemplateLayout
 ): ResolvedTemplateLayout {
   return {
-    aspectRatio: resolveAspectRatio(collectionLayout, templateLayout),
-    columns: resolveColumns(collectionLayout, templateLayout),
-    gaps: computeGaps(resolveColumns(collectionLayout, templateLayout)),
+    aspectRatio: resolveAspectRatio(primary, secondary),
+    columns: resolveColumns(primary, secondary),
+    gaps: computeGaps(resolveColumns(primary, secondary)),
   };
 }
 
