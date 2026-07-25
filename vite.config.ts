@@ -25,6 +25,18 @@ const getGitInfo = () => {
   }
 };
 const gitInfo = getGitInfo();
+const longVersion = `v${process.env.npm_package_version} git-${gitInfo.branch}-${gitInfo.hash}`;
+const buildTime = new Date().valueOf();
+
+const writeVersion = {
+  name: 'write-version',
+  closeBundle() {
+    fs.writeFileSync(
+      path.resolve(__dirname, 'dist/version.json'),
+      JSON.stringify({ version: longVersion, timestamp: buildTime })
+    );
+  },
+};
 
 const removeSample = {
   name: 'remove-sample',
@@ -51,6 +63,7 @@ export default defineConfig({
       brotliSize: true,
     }),
     removeSample,
+    writeVersion,
   ],
   resolve: {
     alias: {
@@ -59,11 +72,12 @@ export default defineConfig({
     },
   },
   define: {
-    'import.meta.env.VITE_APP_NAME': JSON.stringify(process.env.npm_package_name || ''),
-    'import.meta.env.VITE_APP_VERSION': JSON.stringify(process.env.npm_package_version || '0.0.0'),
+    'import.meta.env.VITE_APP_NAME': JSON.stringify(process.env.npm_package_name),
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(process.env.npm_package_version),
     'import.meta.env.VITE_GIT_BRANCH': JSON.stringify(gitInfo.branch),
-    'import.meta.env.VITE_GIT_REVISION': JSON.stringify(gitInfo.hash),
-    'import.meta.env.VITE_BUILD_TIME': JSON.stringify(new Date().toISOString()),
+    'import.meta.env.VITE_GIT_HASH': JSON.stringify(gitInfo.hash),
+    'import.meta.env.VITE_LONG_VERSION': JSON.stringify(longVersion),
+    'import.meta.env.VITE_BUILD_TIME': JSON.stringify(buildTime),
   },
   build: {
     rollupOptions: {
