@@ -8,6 +8,12 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 const getGitInfo = () => {
   try {
+    if (process.env.CF_PAGES) {
+      return {
+        branch: process.env.CF_PAGES_BRANCH,
+        hash: process.env.CF_PAGES_COMMIT_SHA!.slice(0, 7),
+      };
+    }
     return {
       branch: execSync('git rev-parse --abbrev-ref HEAD').toString().trim(),
       hash:
@@ -23,8 +29,7 @@ const gitInfo = getGitInfo();
 const removeSample = {
   name: 'remove-sample',
   closeBundle() {
-    const branch = process.env.CF_PAGES ? process.env.CF_PAGES_BRANCH : gitInfo.branch;
-    if (branch === 'main') {
+    if (gitInfo.branch === 'main') {
       const dir = path.resolve(__dirname, 'dist/sample');
       if (fs.existsSync(dir)) {
         fs.rmSync(dir, { recursive: true, force: true });
