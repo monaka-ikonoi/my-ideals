@@ -8,9 +8,12 @@ import {
   InformationCircleIcon,
   QuestionMarkCircleIcon,
   CircleStackIcon,
+  SquaresPlusIcon,
 } from '@heroicons/react/24/outline';
 import { DebugSettings } from './DebugSettings';
 import { formatBytes } from '@/utils/utils';
+import { useInstallPrompt } from '@/hooks/useInstallPrompt';
+import { isAndroid, isIos, isStandalonePWA } from '@/utils/platform';
 
 const RUNTIME_CACHE_PREFIX = 'my-ideals-';
 
@@ -24,6 +27,7 @@ type SettingsPanelProps = {
 
 export function SettingsPanel({ onSelect }: SettingsPanelProps) {
   const { t, i18n } = useTranslation();
+  const { canInstall, promptInstall } = useInstallPrompt();
 
   const [storageUsage, setStorageUsage] = useState<StorageEstimate | null>(null);
 
@@ -38,6 +42,18 @@ export function SettingsPanel({ onSelect }: SettingsPanelProps) {
     );
     setStorageUsage(await getStorageUsage());
     toast.success(t('toast.cache-cleared'));
+  };
+
+  const installCapable = isIos() || (isAndroid() && canInstall);
+  const showInstall = !isStandalonePWA() && installCapable;
+
+  const handleInstall = () => {
+    if (isIos()) {
+      useDialogStore.getState().openInstallAppIos();
+    } else {
+      void promptInstall();
+    }
+    onSelect?.();
   };
 
   return (
@@ -76,6 +92,16 @@ export function SettingsPanel({ onSelect }: SettingsPanelProps) {
           <InformationCircleIcon className="h-4 w-4" />
           {t('dialog.about.title')}
         </button>
+        {showInstall && (
+          <button
+            onClick={handleInstall}
+            className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
+              hover:bg-gray-100"
+          >
+            <SquaresPlusIcon className="h-4 w-4" />
+            {t('notice.install-app.title')}
+          </button>
+        )}
         <button
           onClick={() => void handleClearCache()}
           className="flex w-full items-start gap-2 px-3 py-2 text-sm text-gray-700
