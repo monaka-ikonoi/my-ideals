@@ -53,7 +53,9 @@
   },
   "settings": {
     "language": "语言",
-    "help": "使用说明"
+    "help": "使用说明",
+    "clear-cache": "清除缓存",
+    "storage-usage": "已使用: {{size}} / {{quota}}"
   },
   "collection": {
     "search-placeholder": "搜索合集...",
@@ -216,6 +218,7 @@
     "profile-created": "档案 \"{{name}}\" 已创建",
     "profile-template url-updated": "模板链接已更新",
     "profile-imported": "档案 \"{{name}}\" 已导入",
-    "profiles-imported": "已导入 {{count}} 个档案"
+    "profiles-imported": "已导入 {{count}} 个档案",
+    "cache-cleared": "缓存已清除"
   }
 }

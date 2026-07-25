@@ -53,7 +53,9 @@
   },
   "settings": {
     "language": "Language",
-    "help": "User Guide"
+    "help": "User Guide",
+    "clear-cache": "Clear Cache",
+    "storage-usage": "{{size}} / {{quota}} used"
   },
   "collection": {
     "search-placeholder": "Search collections...",
@@ -217,6 +219,7 @@
     "profile-template url-updated": "Template link updated",
     "profile-imported": "Imported profile \"{{name}}\"",
     "profiles-imported": "Imported {{count}} profiles",
-    "profile-duplicated": "Created profile copy: {{name}}"
+    "profile-duplicated": "Created profile copy: {{name}}",
+    "cache-cleared": "Cache cleared"
   }
 }

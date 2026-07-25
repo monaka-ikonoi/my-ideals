@@ -1,12 +1,22 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { LanguageSelector } from './LanguageSelector';
 import { useDialogStore } from '@/stores/dialogStore';
 import {
   ArrowTopRightOnSquareIcon,
   InformationCircleIcon,
   QuestionMarkCircleIcon,
+  CircleStackIcon,
 } from '@heroicons/react/24/outline';
 import { DebugSettings } from './DebugSettings';
+import { formatBytes } from '@/utils/utils';
+
+const RUNTIME_CACHE_PREFIX = 'my-ideals-';
+
+async function getStorageUsage(): Promise<StorageEstimate | null> {
+  return navigator.storage?.estimate?.() ?? null;
+}
 
 type SettingsPanelProps = {
   onSelect?: () => void;
@@ -14,6 +24,21 @@ type SettingsPanelProps = {
 
 export function SettingsPanel({ onSelect }: SettingsPanelProps) {
   const { t, i18n } = useTranslation();
+
+  const [storageUsage, setStorageUsage] = useState<StorageEstimate | null>(null);
+
+  useEffect(() => {
+    void getStorageUsage().then(setStorageUsage);
+  }, []);
+
+  const handleClearCache = async () => {
+    const keys = await caches.keys();
+    await Promise.all(
+      keys.filter(key => key.startsWith(RUNTIME_CACHE_PREFIX)).map(key => caches.delete(key))
+    );
+    setStorageUsage(await getStorageUsage());
+    toast.success(t('toast.cache-cleared'));
+  };
 
   return (
     <>
@@ -50,6 +75,24 @@ export function SettingsPanel({ onSelect }: SettingsPanelProps) {
         >
           <InformationCircleIcon className="h-4 w-4" />
           {t('dialog.about.title')}
+        </button>
+        <button
+          onClick={() => void handleClearCache()}
+          className="flex w-full items-start gap-2 px-3 py-2 text-sm text-gray-700
+            hover:bg-gray-100"
+        >
+          <CircleStackIcon className="mt-0.5 h-4 w-4 shrink-0" />
+          <span className="flex flex-col items-start">
+            <span>{t('settings.clear-cache')}</span>
+            {storageUsage !== null && (
+              <span className="text-xs text-gray-400">
+                {t('settings.storage-usage', {
+                  size: formatBytes(storageUsage.usage ?? 0),
+                  quota: formatBytes(storageUsage.quota ?? 0),
+                })}
+              </span>
+            )}
+          </span>
         </button>
       </div>
 

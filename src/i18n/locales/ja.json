@@ -53,7 +53,9 @@
   },
   "settings": {
     "language": "言語",
-    "help": "使い方"
+    "help": "使い方",
+    "clear-cache": "キャッシュを削除",
+    "storage-usage": "使用量: {{size}} / {{quota}}"
   },
   "collection": {
     "search-placeholder": "セットを検索...",
@@ -217,6 +219,7 @@
     "profile-template url-updated": "テンプレートリンクを更新しました",
     "profile-imported": "プロフィール「{{name}}」をインポートしました",
     "profiles-imported": "{{count}} 件のプロファイルをインポートしました",
-    "profile-duplicated": "プロフィールのコピーを作成しました：{{name}}"
+    "profile-duplicated": "プロフィールのコピーを作成しました：{{name}}",
+    "cache-cleared": "キャッシュを削除しました"
   }
 }
