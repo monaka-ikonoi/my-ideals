@@ -112,6 +112,12 @@
     "about": {
       "title": "About"
     },
+    "pwa-update": {
+      "title": "New Version Available",
+      "current-version": "Current version",
+      "new-version": "New version",
+      "update": "Update Now"
+    },
     "template-diff": {
       "title": "Template Updated",
       "description": "Template <strong>{{name}}</strong> has been updated to revision {{revision}} with following changes:",

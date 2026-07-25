@@ -66,7 +66,8 @@ export default defineConfig({
     removeSample,
     writeVersion,
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
+      injectRegister: null,
       manifest: {
         name: 'My Ideals',
         short_name: 'My Ideals',

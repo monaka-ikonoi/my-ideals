@@ -112,6 +112,12 @@
     "about": {
       "title": "关于"
     },
+    "pwa-update": {
+      "title": "发现新版本",
+      "current-version": "当前版本",
+      "new-version": "新版本",
+      "update": "立即更新"
+    },
     "template-diff": {
       "title": "模板已更新",
       "description": "模板 <strong>{{name}}</strong> 已更新至版本 {{revision}}，包含以下变更:",
@@ -210,7 +216,6 @@
     "profile-created": "档案 \"{{name}}\" 已创建",
     "profile-template url-updated": "模板链接已更新",
     "profile-imported": "档案 \"{{name}}\" 已导入",
-    "profiles-imported": "已导入 {{count}} 个档案",
-    "profile-duplicated": "已创建档案副本：{{name}}"
+    "profiles-imported": "已导入 {{count}} 个档案"
   }
 }

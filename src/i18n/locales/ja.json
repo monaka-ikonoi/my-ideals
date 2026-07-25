@@ -112,6 +112,12 @@
     "about": {
       "title": "概要"
     },
+    "pwa-update": {
+      "title": "新しいバージョンがあります",
+      "current-version": "現在のバージョン",
+      "new-version": "新しいバージョン",
+      "update": "今すぐ更新"
+    },
     "template-diff": {
       "title": "テンプレートが更新されました",
       "description": "テンプレート <strong>{{name}}</strong> がリビジョン {{revision}} に更新されました。以下の変更があります:",

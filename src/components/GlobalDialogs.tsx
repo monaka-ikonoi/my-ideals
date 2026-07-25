@@ -11,6 +11,7 @@ import { AboutDialog } from './dialogs/AboutDialog';
 import { CollectionEditModal } from './dialogs/CollectionEditModal';
 import { ProfileDuplicateDialog } from './dialogs/ProfileDuplicateDialog';
 import { ImageGenerateModal } from './dialogs/ImageGenerateModal';
+import { PwaUpdateDialog } from './dialogs/PwaUpdateDialog';
 
 export function GlobalDialogs() {
   const activeDialog = useDialogStore(state => state.activeDialog);
@@ -20,6 +21,7 @@ export function GlobalDialogs() {
     <>
       <DisclaimerDialog />
       <ProfileTemplateDiffDialog />
+      <PwaUpdateDialog />
 
       {activeDialog.type === 'create-profile' && <ProfileCreateDialog onClose={closeDialog} />}
       {activeDialog.type === 'import-profile' && <ProfileImportDialog onClose={closeDialog} />}
