@@ -1,32 +1,19 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DevicePhoneMobileIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 import { useDialogStore } from '@/stores/dialogStore';
+import { useSettingsStore } from '@/stores/settingsStore';
 import { isIos, isAndroid, isStandalonePWA } from '@/utils/platform';
-
-const DISMISS_KEY = 'install-app-banner-dismissed';
 
 export function InstallAppBanner() {
   const { t } = useTranslation();
   const { canInstall, promptInstall } = useInstallPrompt();
 
-  const [dismissed, setDismissed] = useState(() => {
-    try {
-      return sessionStorage.getItem(DISMISS_KEY) === 'true';
-    } catch {
-      return false;
-    }
-  });
+  const dismissed = useSettingsStore(state => state.installBannerDismissed);
 
   const installCapable = isIos() || (isAndroid() && canInstall);
 
   if (dismissed || isStandalonePWA() || !installCapable) return null;
-
-  const handleDismiss = () => {
-    setDismissed(true);
-    sessionStorage.setItem(DISMISS_KEY, 'true');
-  };
 
   return (
     <div
@@ -52,7 +39,7 @@ export function InstallAppBanner() {
 
       <button
         type="button"
-        onClick={handleDismiss}
+        onClick={() => useSettingsStore.getState().dismissInstallBanner()}
         className="shrink-0 rounded p-1 text-blue-800 transition-colors hover:text-blue-900"
         aria-label={t('common.close')}
       >

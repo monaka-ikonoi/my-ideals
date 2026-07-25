@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { useSettingsStore } from '@/stores/settingsStore';
 import { isIos, isMacSafari, isStandalonePWA } from '@/utils/platform';
 
 const isItpAffected = () => !isStandalonePWA() && (isIos() || isMacSafari());
@@ -8,20 +8,9 @@ const isItpAffected = () => !isStandalonePWA() && (isIos() || isMacSafari());
 export function AppleItpWarning() {
   const { t } = useTranslation();
 
-  const [dismissed, setDismissed] = useState(() => {
-    try {
-      return sessionStorage.getItem('ios-itp-warning-dismissed') === 'true';
-    } catch {
-      return false;
-    }
-  });
+  const dismissed = useSettingsStore(state => state.itpWarningDismissed);
 
   if (!isItpAffected() || dismissed) return null;
-
-  const handleDismiss = () => {
-    setDismissed(true);
-    sessionStorage.setItem('ios-itp-warning-dismissed', 'true');
-  };
 
   return (
     <div
@@ -37,7 +26,7 @@ export function AppleItpWarning() {
 
       <button
         type="button"
-        onClick={handleDismiss}
+        onClick={() => useSettingsStore.getState().dismissItpWarning()}
         className="shrink-0 rounded p-1 text-amber-600 transition-colors hover:bg-amber-100
           hover:text-amber-800"
         aria-label={t('common.close')}

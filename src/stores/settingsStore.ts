@@ -22,11 +22,15 @@ type SettingsStore = {
   disclaimerAccepted: boolean;
   storageBackend: StorageBackend; // v1
   imageOptions: Required<ImageOptions>; // v2
+  itpWarningDismissed: boolean; // v5
+  installBannerDismissed: boolean; // v5
 
   // Actions
   setLanguage: (code: string) => void;
   setStorageBackend: (backend: StorageBackend) => void; // v1
   setImageOptions: (options: ImageOptions) => void; // v2 / v3 / v4
+  dismissItpWarning: () => void; // v5
+  dismissInstallBanner: () => void; // v5
 };
 
 export const useSettingsStore = create<SettingsStore>()(
@@ -51,10 +55,16 @@ export const useSettingsStore = create<SettingsStore>()(
       setImageOptions: (options: ImageOptions) => {
         set(state => ({ imageOptions: { ...state.imageOptions, ...options } }));
       },
+
+      // v5
+      itpWarningDismissed: false,
+      dismissItpWarning: () => set({ itpWarningDismissed: true }),
+      installBannerDismissed: false,
+      dismissInstallBanner: () => set({ installBannerDismissed: true }),
     }),
     {
       name: 'my-ideals:settings',
-      version: 4,
+      version: 5,
       migrate: (persisted, version) => {
         const state = persisted as Partial<SettingsStore>;
         if (version === 0) {
@@ -74,6 +84,10 @@ export const useSettingsStore = create<SettingsStore>()(
             ...(state.imageOptions ?? buildDefaultImageOptions()),
             flatten: false,
           };
+        }
+        if (version < 5) {
+          state.itpWarningDismissed = false;
+          state.installBannerDismissed = false;
         }
         return state;
       },
