@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { debugLog } from '@/utils/debug';
+import { toBlob } from 'html-to-image';
 
 const waitTwoFrames = () =>
   new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
@@ -76,7 +77,6 @@ export function OffscreenCaptureArea({
       if (cancelled) return;
 
       debugLog.perf.time('toBlob');
-      const { toBlob } = await import('html-to-image');
       const blob = await toBlob(captureNode, { pixelRatio: 1 });
       debugLog.perf.timeEnd('toBlob');
       if (cancelled) return;
