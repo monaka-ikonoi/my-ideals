@@ -19,3 +19,13 @@ export const isMacSafari = (): boolean => {
   const ua = navigator.userAgent;
   return /Macintosh/.test(ua) && /Safari/.test(ua) && !/Chrome/.test(ua);
 };
+
+export const isAndroid = (): boolean => {
+  if (typeof navigator === 'undefined') return false;
+  return /Android/.test(navigator.userAgent);
+};
+
+export const isIos3rdParty = (): boolean => {
+  if (!isIos()) return false;
+  return /CriOS|FxiOS|EdgiOS|OPiOS|mercury|GSA/i.test(navigator.userAgent);
+};

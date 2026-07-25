@@ -17,6 +17,7 @@ type DialogState =
   | { type: 'switch-profile-mode'; profileId: string; enableCount: boolean }
   | { type: 'collection-image-preview'; image: Blob; fileName: string }
   | { type: 'about' }
+  | { type: 'install-app-ios' }
   | { type: 'edit-collection'; collectionId: string }
   | {
       type: 'generate-image';
@@ -36,6 +37,7 @@ type DialogStore = {
   openEditProfileTemplateUrl: (profileId: string, templateId: string, currentUrl: string) => void;
   openSwitchProfileMode: (profileId: string, enableCount: boolean) => void;
   openAbout: () => void;
+  openInstallAppIos: () => void;
 
   openEditCollection: (collectionId: string) => void;
   openGenerateImage: (collections: TemplateCollection[], preSelectedId?: string) => void;
@@ -64,6 +66,7 @@ export const useDialogStore = create<DialogStore>(set => ({
   openSwitchProfileMode: (profileId: string, enableCount: boolean) =>
     set({ activeDialog: { type: 'switch-profile-mode', profileId, enableCount } }),
   openAbout: () => set({ activeDialog: { type: 'about' } }),
+  openInstallAppIos: () => set({ activeDialog: { type: 'install-app-ios' } }),
 
   openEditCollection: collectionId =>
     set({ activeDialog: { type: 'edit-collection', collectionId } }),

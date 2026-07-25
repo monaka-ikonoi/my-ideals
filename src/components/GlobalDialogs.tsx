@@ -12,6 +12,7 @@ import { CollectionEditModal } from './dialogs/CollectionEditModal';
 import { ProfileDuplicateDialog } from './dialogs/ProfileDuplicateDialog';
 import { ImageGenerateModal } from './dialogs/ImageGenerateModal';
 import { PwaUpdateDialog } from './dialogs/PwaUpdateDialog';
+import { IosInstallGuideDialog } from './dialogs/IosInstallGuideDialog';
 
 export function GlobalDialogs() {
   const activeDialog = useDialogStore(state => state.activeDialog);
@@ -58,6 +59,7 @@ export function GlobalDialogs() {
         />
       )}
       {activeDialog.type === 'about' && <AboutDialog onClose={closeDialog} />}
+      {activeDialog.type === 'install-app-ios' && <IosInstallGuideDialog onClose={closeDialog} />}
 
       {activeDialog.type === 'edit-collection' && (
         <CollectionEditModal collectionId={activeDialog.collectionId} onClose={closeDialog} />

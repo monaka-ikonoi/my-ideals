@@ -120,6 +120,15 @@
       "new-version": "新しいバージョン",
       "update": "今すぐ更新"
     },
+    "install-app-ios": {
+      "title": "ホーム画面に追加",
+      "open-in-safari-hint": "まずはこのページを Safari で開いてください：",
+      "step1": "「その他」をタップ",
+      "step2": "「共有」をタップ",
+      "step3": "下にスクロールして「ホーム画面に追加」をタップ（見あたらない場合は一番下の「アクションを編集」から追加できます）",
+      "step4": "「追加」をタップ",
+      "data-warning": "下のボタンから全プロファイルのバックアップをエクスポートし、インストール後のアプリでそのバックアップをインポートしてください。"
+    },
     "template-diff": {
       "title": "テンプレートが更新されました",
       "description": "テンプレート <strong>{{name}}</strong> がリビジョン {{revision}} に更新されました。以下の変更があります:",
@@ -208,6 +217,11 @@
     "ios-data-warning": {
       "title": "iOS (iPhone/iPad) および Safari ユーザーへ",
       "body": "Apple ITP 仕様により、7日間サイトを開かないと保存データが消える場合があります。ご利用後は右上の「$t(profile.export)」ボタンからバックアップを取ってください。"
+    },
+    "install-app": {
+      "title": "アプリとしてインストール",
+      "hint": "ホーム画面に追加すると、フルスクリーンですばやくアクセスできます",
+      "button": "インストール"
     }
   },
   "toast": {
@@ -220,6 +234,7 @@
     "profile-imported": "プロフィール「{{name}}」をインポートしました",
     "profiles-imported": "{{count}} 件のプロファイルをインポートしました",
     "profile-duplicated": "プロフィールのコピーを作成しました：{{name}}",
-    "cache-cleared": "キャッシュを削除しました"
+    "cache-cleared": "キャッシュを削除しました",
+    "url-copied": "リンクをコピーしました"
   }
 }

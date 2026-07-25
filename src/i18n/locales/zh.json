@@ -120,6 +120,15 @@
       "new-version": "新版本",
       "update": "立即更新"
     },
+    "install-app-ios": {
+      "title": "添加到主屏幕",
+      "open-in-safari-hint": "请先用 Safari 浏览器打开此页面：",
+      "step1": "点击更多按钮",
+      "step2": "点击分享",
+      "step3": "向下滚动并点击\"添加到主屏幕\"（如果没看到，可在最下方点击\"编辑操作\"添加）",
+      "step4": "点击\"添加\"",
+      "data-warning": "请先点击下方按钮导出全部档案备份，再在安装后的 App 中导入该备份。"
+    },
     "template-diff": {
       "title": "模板已更新",
       "description": "模板 <strong>{{name}}</strong> 已更新至版本 {{revision}}，包含以下变更:",
@@ -208,6 +217,11 @@
     "ios-data-warning": {
       "body": "由于 Apple ITP 限制，7 天未访问可能导致数据被自动清除。每次使用后请通过右上角的\"$t(profile.export)\"按钮备份数据。",
       "title": "iOS (iPhone / iPad) 及 Safari 用户须知"
+    },
+    "install-app": {
+      "title": "安装为 App",
+      "hint": "添加到主屏幕，获得更快捷的全屏体验",
+      "button": "安装"
     }
   },
   "toast": {
@@ -219,6 +233,7 @@
     "profile-template url-updated": "模板链接已更新",
     "profile-imported": "档案 \"{{name}}\" 已导入",
     "profiles-imported": "已导入 {{count}} 个档案",
-    "cache-cleared": "缓存已清除"
+    "cache-cleared": "缓存已清除",
+    "url-copied": "链接已复制"
   }
 }

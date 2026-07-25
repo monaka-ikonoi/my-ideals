@@ -120,6 +120,15 @@
       "new-version": "New version",
       "update": "Update Now"
     },
+    "install-app-ios": {
+      "title": "Add to Home Screen",
+      "open-in-safari-hint": "Please open this page in Safari first:",
+      "step1": "Tap the More button",
+      "step2": "Tap Share",
+      "step3": "Scroll down and tap \"Add to Home Screen\" (if you don't see it, tap \"Edit Actions\" at the bottom and add it)",
+      "step4": "Tap \"Add\"",
+      "data-warning": "Please export a backup of all profiles using the button below, then import it in the installed app."
+    },
     "template-diff": {
       "title": "Template Updated",
       "description": "Template <strong>{{name}}</strong> has been updated to revision {{revision}} with following changes:",
@@ -208,6 +217,11 @@
     "ios-data-warning": {
       "title": "Notice for iOS (iPhone / iPad) and Safari Users",
       "body": "Due to Apple ITP restrictions, saved data may be deleted after 7 days of inactivity. Please export a backup using the \"$t(profile.export)\" button in the top right after each use."
+    },
+    "install-app": {
+      "title": "Install as App",
+      "hint": "Add to your home screen for quick, full-screen access",
+      "button": "Install"
     }
   },
   "toast": {
@@ -220,6 +234,7 @@
     "profile-imported": "Imported profile \"{{name}}\"",
     "profiles-imported": "Imported {{count}} profiles",
     "profile-duplicated": "Created profile copy: {{name}}",
-    "cache-cleared": "Cache cleared"
+    "cache-cleared": "Cache cleared",
+    "url-copied": "Link copied"
   }
 }
