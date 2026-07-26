@@ -169,7 +169,7 @@
       "step-select": "Select",
       "step-customize": "Customize",
       "step-preview": "Preview",
-      "selected-count": "{{collections}} / {{maxCollections}} collections, {{items}} / {{maxItems}} items selected",
+      "selected-count": "{{collections}} collections, {{items}} / {{maxItems}} items selected",
       "generating-hint": "Generating… Please wait",
       "generate": "Generate",
       "next": "Next",

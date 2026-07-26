@@ -23,22 +23,20 @@ type ImageGenerateModalProps = {
   collections: TemplateCollection[];
   onClose: () => void;
   preSelectedId?: string;
-  maxCollections?: number;
   maxItems?: number;
 };
 
 function buildInitialSelectedIds(
   collections: TemplateCollection[],
-  maxCollections: number,
-  maxItems: number
+  maxCollections: number | null,
+  maxItems: number | null
 ) {
   const selectedIds: string[] = [];
   let totalItems = 0;
 
   for (const collection of collections) {
-    if (selectedIds.length >= maxCollections) break;
-    if (collection.items.length > maxItems) continue;
-    if (totalItems + collection.items.length > maxItems) continue;
+    if (maxCollections && selectedIds.length >= maxCollections) break;
+    if (maxItems && totalItems + collection.items.length > maxItems) continue;
 
     selectedIds.push(collection.id);
     totalItems += collection.items.length;
@@ -51,7 +49,6 @@ export function ImageGenerateModal({
   collections,
   onClose,
   preSelectedId,
-  maxCollections = 30,
   maxItems = 180,
 }: ImageGenerateModalProps) {
   const { t, i18n } = useTranslation();
@@ -81,7 +78,8 @@ export function ImageGenerateModal({
   const [step, setStep] = useState<Step>(() => (preSelectedId ? 'customize' : 'select'));
 
   const [selectedIds, setSelectedIds] = useState<string[]>(() =>
-    preSelectedId ? [preSelectedId] : buildInitialSelectedIds(collections, maxCollections, maxItems)
+    // Select 3 collections by default
+    preSelectedId ? [preSelectedId] : buildInitialSelectedIds(collections, 3, maxItems)
   );
   const [generating, setGenerating] = useState(false);
   const [captureTime, setCaptureTime] = useState('');
@@ -122,10 +120,9 @@ export function ImageGenerateModal({
       collections.filter(
         collection =>
           selectedIdSet.has(collection.id) ||
-          (selectedIdSet.size < maxCollections &&
-            selectedItemCount + collection.items.length <= maxItems)
+          selectedItemCount + collection.items.length <= maxItems
       ),
-    [collections, selectedIdSet, selectedItemCount, maxCollections, maxItems]
+    [collections, selectedIdSet, selectedItemCount, maxItems]
   );
 
   const allSelectableSelected = useMemo(
@@ -142,8 +139,6 @@ export function ImageGenerateModal({
           return prev.filter(id => id !== collection.id);
         }
 
-        if (prev.length >= maxCollections) return prev;
-
         const currentItemCount = prev.reduce(
           (sum, id) => sum + (collectionMap.get(id)?.items.length ?? 0),
           0
@@ -153,7 +148,7 @@ export function ImageGenerateModal({
         return [...prev, collection.id];
       });
     },
-    [collectionMap, maxCollections, maxItems]
+    [collectionMap, maxItems]
   );
 
   const handleGenerate = useCallback(() => {
@@ -269,9 +264,7 @@ export function ImageGenerateModal({
                       <button
                         type="button"
                         onClick={() =>
-                          setSelectedIds(
-                            buildInitialSelectedIds(collections, maxCollections, maxItems)
-                          )
+                          setSelectedIds(buildInitialSelectedIds(collections, null, maxItems))
                         }
                         disabled={generating || allSelectableSelected}
                         className="text-xs font-medium text-blue-600 hover:text-blue-700
@@ -294,9 +287,7 @@ export function ImageGenerateModal({
                         const checked = selectedIdSet.has(collection.id);
                         const disabled =
                           generating ||
-                          (!checked &&
-                            (selectedIdSet.size >= maxCollections ||
-                              selectedItemCount + collection.items.length > maxItems));
+                          (!checked && selectedItemCount + collection.items.length > maxItems);
 
                         return (
                           <label
@@ -340,7 +331,6 @@ export function ImageGenerateModal({
                   <p className="text-sm text-gray-400">
                     {t('dialog.image-generate.selected-count', {
                       collections: selectedCollections.length,
-                      maxCollections,
                       items: selectedItemCount,
                       maxItems,
                     })}
