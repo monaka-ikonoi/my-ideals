@@ -100,8 +100,8 @@ export default defineConfig({
               cacheName: 'my-ideals-templates-cache',
               networkTimeoutSeconds: 5,
               expiration: {
-                maxEntries: 30,
-                maxAgeSeconds: 600,
+                maxEntries: 128,
+                maxAgeSeconds: 7 * 24 * 60 * 60,
               },
               cacheableResponse: { statuses: [0, 200] },
             },
@@ -113,7 +113,7 @@ export default defineConfig({
             options: {
               cacheName: 'my-ideals-images-cache',
               expiration: {
-                maxEntries: 4096,
+                maxEntries: 8192,
                 purgeOnQuotaError: true,
               },
               cacheableResponse: { statuses: [0, 200] },
