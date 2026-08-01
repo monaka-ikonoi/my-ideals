@@ -8,7 +8,6 @@ import { ProfileInfo } from './ProfileInfo';
 import { ScrollToTop } from './ui/ScrollToTop';
 import { ProfileStats } from './ProfileStats';
 import { AppleItpWarning } from './AppleItpWarning';
-import { NotEqualMeBanner } from './NotEqualMeBanner';
 import { InstallAppBanner } from './InstallAppBanner';
 
 export function ProfilePage() {
@@ -21,7 +20,6 @@ export function ProfilePage() {
     <main className="mx-auto max-w-[512px] space-y-6 px-4 py-6 md:max-w-[1024px] 2xl:max-w-[1664px]">
       <InstallAppBanner />
       <AppleItpWarning />
-      <NotEqualMeBanner />
       <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
         <ProfileInfo />
         <div className="my-4 border-t border-gray-200" />
