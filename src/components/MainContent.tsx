@@ -7,19 +7,17 @@ import { LoadingPage } from './ui/LoadingPage';
 
 export function MainContent() {
   const activeProfileId = useProfileListStore(state => state.activeId);
-  const profileLoaded = useActiveProfileStore(state => !!state.profile);
-  const isLoading = useActiveProfileStore(state => state.isLoading);
-  const error = useActiveProfileStore(state => state.error);
+  const profileLoadState = useActiveProfileStore(state => state.loadState);
 
   if (!activeProfileId) {
     return <EmptyPage />;
   }
 
-  if (error) {
-    return <ProfileErrorPage />;
+  if (profileLoadState.status === 'error') {
+    return <ProfileErrorPage error={profileLoadState.error} />;
   }
 
-  if (isLoading || !profileLoaded) {
+  if (profileLoadState.status !== 'success') {
     return <LoadingPage />;
   }
 

@@ -5,26 +5,23 @@ import { ProfileFlags, profileHasFlag, type Profile, type ProfileFlag } from '@/
 import { type Template } from '@/domain/template';
 import { getProfileStorage } from '@/storage/ProfileStorage';
 import { debugLog } from '@/utils/debug';
-import {
-  diffProfileWithTemplate,
-  syncProfileWithTemplate,
-  type ProfileTemplateDiff,
-} from '@/utils/syncProfile';
-import { fetchTemplate, formatTemplateError } from '@/utils/fetchTemplate';
+import { syncProfileWithTemplate, type ProfileTemplateDiff } from '@/utils/syncProfile';
+import { loadActiveProfile, type LoadActiveProfileError } from '@/services/activeProfileLoader';
 import { ProfileFlagOperations } from '@/utils/profileFlagOperation';
-import { applyTemplateMigrations } from '@/utils/templateMigration';
 
-export type LoadError =
-  { type: 'template'; message: string } | { type: 'profile'; message: string };
+export type ActiveProfileLoadState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success' }
+  | { status: 'error'; error: LoadActiveProfileError };
 
-type activeProfileStore = {
+export type ActiveProfileState = {
   // State
+  loadState: ActiveProfileLoadState;
   profile: Profile | null;
   template: Template | null;
   changes: ProfileTemplateDiff | null;
   pendingSync: boolean;
-  isLoading: boolean;
-  error: LoadError | null;
 
   // Actions
   load: (profileId: string) => Promise<void>;
@@ -39,7 +36,7 @@ type activeProfileStore = {
   toggleFlag: (flag: ProfileFlag, enabled: boolean) => void;
 };
 
-export const useActiveProfileStore = create<activeProfileStore>()(
+export const useActiveProfileStore = create<ActiveProfileState>()(
   immer((set, get) => {
     const touch = (profile: Profile) => {
       profile.lastModified = Date.now();
@@ -54,17 +51,15 @@ export const useActiveProfileStore = create<activeProfileStore>()(
     }, 500);
 
     return {
+      loadState: { status: 'idle' },
       profile: null,
       template: null,
       changes: null,
-      isLoading: false,
       pendingSync: false,
-      error: null,
 
       load: async (profileId: string) => {
         set(state => {
-          state.isLoading = true;
-          state.error = null;
+          state.loadState = { status: 'loading' };
         });
 
         await Promise.resolve(debouncedSave.flush());
@@ -76,75 +71,36 @@ export const useActiveProfileStore = create<activeProfileStore>()(
           state.pendingSync = false;
         });
 
-        const setError = (
-          type: Exclude<LoadError, null>['type'],
-          message: string,
-          profile: Profile | null = null
-        ) => {
-          debugLog.store.log(`Failed to load ${type}: ${message}`);
-          set(state => {
-            state.error = { type, message: `${type}: ${message}` };
-            state.profile = profile;
-            state.isLoading = false;
-          });
-        };
-
-        let profile = await getProfileStorage().getProfile(profileId);
-        if (!profile) {
-          setError('profile', `Unable to load Profile ${profileId}`);
-          return;
-        }
-
-        const templateResult = await fetchTemplate(profile.template.link, profile.template.id);
-        if (!templateResult.success) {
-          setError('template', formatTemplateError(templateResult.error), profile);
-          return;
-        }
-        if (profile.template.link !== templateResult.url) {
-          debugLog.store.log(
-            `Template link updated from ${profile.template.link} to ${templateResult.url}`
-          );
-          profile.template.link = templateResult.url;
-          touch(profile);
-          await getProfileStorage().setProfile(profile);
-        }
-        const template = templateResult.template;
-
-        let changes: ProfileTemplateDiff | null = null;
-        let pendingSync = false;
-        if (profile.template.revision !== template.revision) {
-          if (profile.template.revision !== 0) {
-            applyTemplateMigrations(profile, template);
-            changes = diffProfileWithTemplate(profile, template);
-            pendingSync = changes.removed.length > 0;
-          }
-          if (!pendingSync) {
-            profile = syncProfileWithTemplate(profile, template, false);
-            touch(profile);
-            await getProfileStorage().setProfile(profile);
-          }
-        }
+        const result = await loadActiveProfile(profileId);
 
         set(state => {
-          state.profile = profile;
-          state.template = template;
-          state.changes = changes;
-          state.pendingSync = pendingSync;
-          state.isLoading = false;
+          if (result.status === 'error') {
+            state.loadState = { status: 'error', error: result.error };
+            state.profile = result.profile ?? null;
+            return;
+          }
+
+          state.loadState = { status: 'success' };
+          state.profile = result.profile;
+          state.template = result.template;
+          state.changes = result.changes;
+          state.pendingSync = result.pendingSync;
         });
 
-        debugLog.store.log(`Loaded profile ${profile.name}, ${profileId}`);
+        if (result.status === 'success') {
+          debugLog.store.log(`Loaded profile ${result.profile.name}, ${profileId}`);
+        }
       },
 
       clear: async () => {
         set(state => {
-          state.isLoading = true;
-          state.error = null;
+          state.loadState = { status: 'loading' };
         });
 
         await Promise.resolve(debouncedSave.flush());
 
         set(state => {
+          state.loadState = { status: 'idle' };
           state.profile = null;
           state.template = null;
           state.changes = null;
