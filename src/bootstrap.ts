@@ -40,6 +40,8 @@ export async function bootstrap() {
   }
   setStorageBackend(currentBackend);
 
+  await useProfileListStore.getState().initialize();
+
   useProfileListStore.subscribe(
     state => state.activeId,
     activeId => {
