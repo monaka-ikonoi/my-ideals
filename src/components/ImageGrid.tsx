@@ -3,7 +3,6 @@ import { useShallow } from 'zustand/shallow';
 import { type TemplateCollectionItem } from '@/domain/template';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
-import { type ImageOptions } from '@/stores/settingsStore';
 import { debugLog } from '@/utils/debug';
 import { type ResolvedLayout } from '@/utils/layoutUtils';
 import { ImageCheckCard } from './ImageCheckCard';
@@ -18,14 +17,12 @@ type ImageGridProps = {
   items: ImageGridItem[];
   layout: ResolvedLayout;
   mode?: 'normal' | 'export' | 'edit';
-  imageOptions?: ImageOptions;
 };
 
 export const ImageGrid = memo(function ImageGrid({
   items,
   layout,
   mode = 'normal',
-  imageOptions,
 }: ImageGridProps) {
   debugLog.render.log(`ImageGrid: ${items.length} items`);
 
@@ -92,7 +89,6 @@ export const ImageGrid = memo(function ImageGrid({
             imageBaseUrl={imageBaseUrl}
             revision={revision}
             status={status}
-            imageOptions={imageOptions}
           />
         </div>
       ))}

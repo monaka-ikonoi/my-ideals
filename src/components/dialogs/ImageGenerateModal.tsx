@@ -3,6 +3,7 @@ import { useShallow } from 'zustand/shallow';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import type { TemplateCollection } from '@/domain/template';
+import { ImageOptionsContext } from '@/contexts/imageOptions';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
@@ -357,17 +358,18 @@ export function ImageGenerateModal({
                   <div className="mx-auto flex justify-center md:mx-0 md:shrink-0 md:justify-start">
                     {previewItem && (
                       <div style={{ width: `${imageCardWidth}px` }}>
-                        <ImageCheckCard
-                          collectionId={previewItem.collection.id}
-                          item={previewItem.item}
-                          mode="export"
-                          aspectRatio={imageCardLayout.aspectRatio}
-                          enableCount={enableCount}
-                          imageBaseUrl={imageBaseUrl}
-                          revision={revision}
-                          status={previewItem.status}
-                          imageOptions={imageOptions}
-                        />
+                        <ImageOptionsContext value={imageOptions}>
+                          <ImageCheckCard
+                            collectionId={previewItem.collection.id}
+                            item={previewItem.item}
+                            mode="export"
+                            aspectRatio={imageCardLayout.aspectRatio}
+                            enableCount={enableCount}
+                            imageBaseUrl={imageBaseUrl}
+                            revision={revision}
+                            status={previewItem.status}
+                          />
+                        </ImageOptionsContext>
                       </div>
                     )}
                   </div>

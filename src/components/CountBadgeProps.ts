@@ -11,3 +11,8 @@ export const BADGE_POSITIONS: BadgePosition[] = [
 
 export type BadgeSize = 'small' | 'medium' | 'large' | 'xlarge';
 export const BADGE_SIZES: BadgeSize[] = ['small', 'medium', 'large', 'xlarge'];
+
+export type BadgeProps = {
+  position: BadgePosition;
+  size: BadgeSize;
+};

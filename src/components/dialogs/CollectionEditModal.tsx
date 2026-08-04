@@ -1,11 +1,18 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TemplateCollection } from '@/domain/template';
+import { DEFAULT_IMAGE_OPTIONS, ImageOptionsContext } from '@/contexts/imageOptions';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { type ImageOptions } from '@/stores/settingsStore';
 import { useCollectionStats } from '@/hooks/useStats';
 import { FullScreenModal } from '../ui/FullScreenModal';
 import { MemberSelector } from '../MemberSelector';
 import { CollectionGrid } from '../CollectionGrid';
+
+const EDIT_IMAGE_OPTIONS: Required<ImageOptions> = {
+  ...DEFAULT_IMAGE_OPTIONS,
+  badge: { size: 'xlarge', position: 'bottom-middle' },
+};
 
 type CollectionEditModalProps = {
   collectionId: string;
@@ -74,14 +81,9 @@ export function CollectionEditModal({ collectionId, onClose }: CollectionEditMod
         {virtualCollection.items.length > 0 && (
           <div className="flex-1 overflow-y-auto">
             <div className="p-4 sm:px-6">
-              <CollectionGrid
-                collection={virtualCollection}
-                columns={[3, 6, 6]}
-                mode="edit"
-                imageOptions={{
-                  badge: { size: 'xlarge', position: 'bottom-middle' },
-                }}
-              />
+              <ImageOptionsContext value={EDIT_IMAGE_OPTIONS}>
+                <CollectionGrid collection={virtualCollection} columns={[3, 6, 6]} mode="edit" />
+              </ImageOptionsContext>
             </div>
           </div>
         )}

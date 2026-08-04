@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import i18n from '@/i18n';
 import type { StorageBackend } from '@/storage/runtime';
-import type { BadgeProps } from '@/components/CountBadge';
+import type { BadgeProps } from '@/components/CountBadgeProps';
 
 export type ImageOptions = {
   badge?: BadgeProps; // v2
@@ -10,7 +10,7 @@ export type ImageOptions = {
   flatten?: boolean; // v4
 };
 
-const buildDefaultImageOptions = (): Required<ImageOptions> => ({
+export const buildDefaultImageOptions = (): Required<ImageOptions> => ({
   badge: { position: 'top-right', size: 'medium' },
   dimUntoggled: true,
   flatten: false,

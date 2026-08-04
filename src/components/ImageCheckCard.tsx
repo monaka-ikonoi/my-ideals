@@ -1,13 +1,13 @@
 import { useState, memo, useCallback } from 'react';
 import { type TemplateCollectionItem } from '@/domain/template';
 import { type TemplateResourceBaseUrl } from '@/domain/template/imageBaseUrl';
+import { useImageOptions } from '@/contexts/imageOptions';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { debugLog } from '@/utils/debug';
 import { normalizeStatusBoolean } from '@/utils/utils';
 import { formatImageUrl } from '@/utils/templateUtils';
 import { ItemCounter } from './ItemCounter';
 import { CountBadge } from './CountBadge';
-import { type ImageOptions } from '@/stores/settingsStore';
 
 type ImageCheckCardProps = {
   collectionId: string;
@@ -18,7 +18,6 @@ type ImageCheckCardProps = {
   imageBaseUrl?: TemplateResourceBaseUrl;
   revision?: number;
   status: boolean | number | undefined;
-  imageOptions?: ImageOptions;
 };
 
 export const ImageCheckCard = memo(function ImageCheckCard({
@@ -30,9 +29,10 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   imageBaseUrl,
   revision,
   status: rawStatus,
-  imageOptions,
 }: ImageCheckCardProps) {
   debugLog.render.log(`ImageCheckCard: ${collectionId} ${item.id}`);
+
+  const imageOptions = useImageOptions();
 
   const status = rawStatus ?? (enableCount ? 0 : false);
 
@@ -58,8 +58,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
     : aspectRatio;
 
   const isToggled = typeof status === 'boolean' ? status : status !== 0;
-  const dimUntoggled = imageOptions?.dimUntoggled ?? true;
-  const hasOpacity = mode === 'export' && !dimUntoggled ? false : !isToggled;
+  const hasOpacity = mode === 'export' && !imageOptions.dimUntoggled ? false : !isToggled;
   const showBadge =
     (mode === 'export' || mode === 'edit') &&
     enableCount &&
@@ -109,9 +108,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
         )}
 
         {/* Count Badge */}
-        {showBadge && (
-          <CountBadge count={status} props={imageOptions?.badge} rotated={item.rotated} />
-        )}
+        {showBadge && <CountBadge count={status} rotated={item.rotated} />}
 
         {/* Bottom bar */}
         <div

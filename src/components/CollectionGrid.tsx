@@ -1,7 +1,6 @@
 import { memo, useMemo } from 'react';
 import { type TemplateCollection } from '@/domain/template';
 import { useActiveProfileStore } from '@/stores/activeProfileStore';
-import { type ImageOptions } from '@/stores/settingsStore';
 import { debugLog } from '@/utils/debug';
 import {
   computeGaps,
@@ -15,14 +14,12 @@ type CollectionGridProps = {
   collection: TemplateCollection;
   mode?: 'normal' | 'export' | 'edit';
   columns?: [number, number, number];
-  imageOptions?: ImageOptions;
 };
 
 export const CollectionGrid = memo(function CollectionGrid({
   collection,
   mode = 'normal',
   columns,
-  imageOptions,
 }: CollectionGridProps) {
   debugLog.render.log(`CollectionGrid: ${collection.id}`);
 
@@ -48,7 +45,6 @@ export const CollectionGrid = memo(function CollectionGrid({
       }))}
       layout={computedLayout}
       mode={mode}
-      imageOptions={imageOptions}
     />
   );
 });

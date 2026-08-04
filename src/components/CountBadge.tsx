@@ -1,10 +1,6 @@
 import { HeartIcon } from '@heroicons/react/24/solid';
+import { useImageOptions } from '@/contexts/imageOptions';
 import { type BadgePosition, type BadgeSize } from './CountBadgeProps';
-
-export type BadgeProps = {
-  position: BadgePosition;
-  size: BadgeSize;
-};
 
 // Bottom bar is ~24px tall in export mode.
 const BADGE_POSITION_CLASS: Record<BadgePosition, string> = {
@@ -52,21 +48,19 @@ function buildSizeStyle(
 
 type CountBadgeProps = {
   count: number;
-  props?: BadgeProps;
   rotated?: boolean;
 };
 
-export function CountBadge({
-  count,
-  props = { position: 'top-right', size: 'medium' },
-  rotated,
-}: CountBadgeProps) {
+export function CountBadge({ count, rotated }: CountBadgeProps) {
+  const { badge: badgeProps } = useImageOptions();
+
   // Rotated cards has their width doubled. The scaling factor ensures same badge size
-  const sizeStyle = buildSizeStyle(BADGE_SIZE[props.size], rotated ? 0.5 : 1);
+  const sizeStyle = buildSizeStyle(BADGE_SIZE[badgeProps.size], rotated ? 0.5 : 1);
   return (
     <div
       className={`absolute z-10 flex transform-gpu items-center justify-center overflow-hidden
-        border font-bold tabular-nums backface-hidden ${BADGE_POSITION_CLASS[props.position]} ${
+        border font-bold tabular-nums backface-hidden ${BADGE_POSITION_CLASS[badgeProps.position]}
+        ${
           count > 0
             ? 'text-gray-80 border-gray-200/60 bg-white/80'
             : 'border-pink-200/60 bg-pink-100/80 text-pink-600'
