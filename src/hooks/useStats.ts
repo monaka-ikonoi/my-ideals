@@ -2,7 +2,7 @@ import { useMemo, useDeferredValue } from 'react';
 import { useShallow } from 'zustand/shallow';
 import type { TemplateCollection } from '@/domain/template';
 import type { Profile } from '@/domain/profile';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/activeProfileStore';
 import { normalizeStatusNumber } from '@/utils/utils';
 import { debugLog } from '@/utils/debug';
 
@@ -20,7 +20,6 @@ type CollectionStats = {
 type CollectionStatus = Profile['collections'][string];
 
 const EMPTY_COLLECTION_STATUS: CollectionStatus = {};
-const EMPTY_PROFILE_STATUS: Profile['collections'] = {};
 
 function calculateItemStats(
   collection: TemplateCollection,
@@ -117,8 +116,8 @@ export function useCollectionStats(
   visibleCollections: TemplateCollection,
   baseCollection: TemplateCollection = visibleCollections
 ) {
-  const statusMap = useActiveProfileStore(
-    useShallow(state => state.profile?.collections[baseCollection.id] ?? EMPTY_COLLECTION_STATUS)
+  const statusMap = useActiveProfile(
+    useShallow(state => state.profile.collections[baseCollection.id] ?? EMPTY_COLLECTION_STATUS)
   );
 
   return useMemo(() => {
@@ -168,9 +167,7 @@ export function useAggregatedCollectionStats(
   visibleCollectionss: TemplateCollection[],
   baseCollectionMap?: Record<string, TemplateCollection>
 ) {
-  const statusMaps = useActiveProfileStore(
-    state => state.profile?.collections ?? EMPTY_PROFILE_STATUS
-  );
+  const statusMaps = useActiveProfile(state => state.profile.collections);
   // Defer the statusMaps so rapid toggles don't block the main thread on large templates
   const deferredStatusMaps = useDeferredValue(statusMaps);
   const deferredCollections = useDeferredValue(visibleCollectionss);

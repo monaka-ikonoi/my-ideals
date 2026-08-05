@@ -68,11 +68,9 @@ function ProfileTemplateDiffContent({
   changes,
 }: {
   template: Template;
-  changes: ProfileTemplateDiff | null;
+  changes: ProfileTemplateDiff;
 }) {
   const { t } = useTranslation();
-
-  if (!changes) return null;
 
   const totalAdded = changes.added.reduce((sum, c) => sum + c.items.length, 0);
   const totalRemoved = changes.removed.reduce((sum, c) => sum + c.items.length, 0);
@@ -124,7 +122,7 @@ function ProfileTemplateDiffContent({
 export function ProfileTemplateDiffDialog() {
   const { t } = useTranslation();
 
-  const template = useActiveProfileStore(state => state.template!);
+  const template = useActiveProfileStore(state => state.template);
   const changes = useActiveProfileStore(state => state.changes);
   const confirmSyncChanges = useActiveProfileStore(state => state.confirmSyncChanges);
 
@@ -139,6 +137,8 @@ export function ProfileTemplateDiffDialog() {
     }
   };
 
+  if (!template || !hasChanges) return null;
+
   const options = hasRemovals
     ? [
         { label: t('dialog.template-diff.keep'), value: 'keep', variant: 'secondary' as const },
@@ -148,7 +148,7 @@ export function ProfileTemplateDiffDialog() {
 
   return (
     <ConfirmDialog
-      isOpen={!!hasChanges}
+      isOpen
       title={t('dialog.template-diff.title')}
       options={options}
       showCancel={false}

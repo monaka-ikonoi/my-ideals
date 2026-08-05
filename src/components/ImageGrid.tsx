@@ -2,7 +2,7 @@ import { memo, useMemo } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { type TemplateCollectionItem } from '@/domain/template';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/activeProfileStore';
 import { debugLog } from '@/utils/debug';
 import { type ResolvedLayout } from '@/utils/layoutUtils';
 import { ImageCheckCard } from './ImageCheckCard';
@@ -26,11 +26,11 @@ export const ImageGrid = memo(function ImageGrid({
 }: ImageGridProps) {
   debugLog.render.log(`ImageGrid: ${items.length} items`);
 
-  const { enableCount, imageBaseUrl, revision } = useActiveProfileStore(
+  const { enableCount, imageBaseUrl, revision } = useActiveProfile(
     useShallow(state => ({
-      enableCount: state.profile ? profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT) : false,
-      imageBaseUrl: state.template?.imageBaseUrl,
-      revision: state.template?.revision,
+      enableCount: profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT),
+      imageBaseUrl: state.template.imageBaseUrl,
+      revision: state.template.revision,
     }))
   );
 

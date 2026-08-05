@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/shallow';
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useProfileListStore } from '@/stores/profileListStore';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { getActiveProfile } from '@/stores/activeProfileStore';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/error';
 
@@ -20,7 +20,7 @@ export function ProfileDuplicateDialog({ onClose }: ProfileDuplicateDialogProps)
     }))
   );
 
-  const profile = useActiveProfileStore.getState().profile!;
+  const profile = getActiveProfile().profile;
 
   const [newName, setNewName] = useState(
     t('dialog.profile-duplicate.name-default', { name: profile.name })

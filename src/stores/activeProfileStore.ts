@@ -234,3 +234,16 @@ export const useActiveProfileStore = create<ActiveProfileState>()(
     };
   })
 );
+
+export type LoadedProfileState = Omit<ActiveProfileState, 'profile' | 'template'> & {
+  profile: Profile;
+  template: Template;
+};
+
+export function useActiveProfile<T>(selector: (state: LoadedProfileState) => T): T {
+  return useActiveProfileStore(selector as (state: ActiveProfileState) => T);
+}
+
+export function getActiveProfile(): LoadedProfileState {
+  return useActiveProfileStore.getState() as LoadedProfileState;
+}

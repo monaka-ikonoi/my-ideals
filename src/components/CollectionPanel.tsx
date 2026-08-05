@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type TemplateCollection } from '@/domain/template';
 import { debugLog } from '@/utils/debug';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/activeProfileStore';
 import { useCollectionStats } from '@/hooks/useStats';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile/flags';
 import { CollectionGrid } from './CollectionGrid';
@@ -24,8 +24,8 @@ export const CollectionPanel = memo(function CollectionPanel({
 
   const stats = useCollectionStats(collection, baseCollection);
 
-  const enableCount = useActiveProfileStore(state =>
-    profileHasFlag(state.profile!, ProfileFlags.ENABLE_COUNT)
+  const enableCount = useActiveProfile(state =>
+    profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT)
   );
 
   return (

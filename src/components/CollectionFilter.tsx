@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MagnifyingGlassIcon, PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/activeProfileStore';
 import { CollectionStatusFilter } from './CollectionStatusFilter';
 import type { FilterItemStatus } from '@/hooks/useFilteredCollection';
 import { MemberSelector } from './MemberSelector';
@@ -185,9 +185,9 @@ export function CollectionFilter({
 }: CollectionFilterProps) {
   const { t } = useTranslation();
 
-  const members = useActiveProfileStore(state => state.template!.members);
-  const selectedMembers = useActiveProfileStore(state => state.profile!.selectedMembers);
-  const toggleMember = useActiveProfileStore(state => state.toggleMember);
+  const members = useActiveProfile(state => state.template.members);
+  const selectedMembers = useActiveProfile(state => state.profile.selectedMembers);
+  const toggleMember = useActiveProfile(state => state.toggleMember);
 
   return (
     <div className="space-y-3">

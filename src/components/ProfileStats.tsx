@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import type { TemplateCollection } from '@/domain/template';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/activeProfileStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { useAggregatedCollectionStats } from '@/hooks/useStats';
 
@@ -9,19 +9,15 @@ type ProfileStatsProps = {
   baseCollectionMap: Record<string, TemplateCollection>;
 };
 
-const EMPTY_COLLECTIONS: TemplateCollection[] = [];
-
 export function ProfileStats({ visibleCollections, baseCollectionMap }: ProfileStatsProps) {
   const { t } = useTranslation();
 
-  const allCollections = useActiveProfileStore(
-    state => state.template?.collections ?? EMPTY_COLLECTIONS
-  );
+  const allCollections = useActiveProfile(state => state.template.collections);
   const globalStats = useAggregatedCollectionStats(allCollections);
   const currentStats = useAggregatedCollectionStats(visibleCollections, baseCollectionMap);
 
-  const enableCount = useActiveProfileStore(state =>
-    profileHasFlag(state.profile!, ProfileFlags.ENABLE_COUNT)
+  const enableCount = useActiveProfile(state =>
+    profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT)
   );
 
   const renderStatRow = (label: string, stats: typeof currentStats, isTotal?: boolean) => (

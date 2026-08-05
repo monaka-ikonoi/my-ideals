@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import type { TemplateCollection } from '@/domain/template';
 import { ImageOptionsContext } from '@/contexts/imageOptions';
 import { type ImageOptions } from '@/stores/settingsStore';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { getActiveProfile, useActiveProfile } from '@/stores/activeProfileStore';
 import { APP_NAME, LONG_VERSION } from '@/utils/appInfo';
 import { resolveLayout } from '@/utils/layoutUtils';
 import { CollectionGrid } from './CollectionGrid';
@@ -18,7 +18,7 @@ type CollectionImageContentProps = {
 };
 
 function FlattenedCollectionGrid({ collections }: { collections: TemplateCollection[] }) {
-  const statusMaps = useActiveProfileStore(state => state.profile?.collections);
+  const statusMaps = useActiveProfile(state => state.profile.collections);
   const flattenedItems = useMemo(
     () =>
       collections.flatMap(collection =>
@@ -31,7 +31,7 @@ function FlattenedCollectionGrid({ collections }: { collections: TemplateCollect
     [collections, statusMaps]
   );
 
-  const layout = resolveLayout(useActiveProfileStore.getState().template?.layout);
+  const layout = resolveLayout(getActiveProfile().template.layout);
 
   return <ImageGrid items={flattenedItems} layout={layout} mode="export" />;
 }

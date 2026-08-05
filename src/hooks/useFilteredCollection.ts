@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { getActiveProfile, useActiveProfile } from '@/stores/activeProfileStore';
 import { type TemplateCollection } from '@/domain/template';
 import { type ProfileCollection } from '@/domain/profile';
 import { debugLog } from '@/utils/debug';
@@ -17,7 +17,7 @@ function useFilteredCollections(
   cachedStatus: ProfileCollection,
   hideCompleted: boolean
 ): FilteredCollectionsResult {
-  const selectedMembers = useActiveProfileStore(state => state.profile?.selectedMembers);
+  const selectedMembers = useActiveProfile(state => state.profile.selectedMembers);
 
   return useMemo((): FilteredCollectionsResult => {
     if (collections.length === 0) return { filteredCollections: [], hiddenCount: 0 };
@@ -112,11 +112,11 @@ export function useCollectionFilter() {
   const [filterStatus, setFilterStatus] = useState<FilterItemStatus>('all');
 
   debugLog.perf.time('useCollectionFilter');
-  const collections = useActiveProfileStore(state => state.template?.collections ?? []);
+  const collections = useActiveProfile(state => state.template.collections);
 
   // Intentionally read via getState() instead of subscribing，the filter result
   // should stay stable while the user toggles items.
-  const cachedStatus = useActiveProfileStore.getState().profile?.collections ?? {};
+  const cachedStatus = getActiveProfile().profile.collections;
 
   const { filteredCollections, hiddenCount } = useFilteredCollections(
     collections,

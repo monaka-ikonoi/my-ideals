@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import type { TemplateCollection } from '@/domain/template';
 import { ImageOptionsContext } from '@/contexts/imageOptions';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/activeProfileStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { downloadFile, shareAPISupported, shareFile } from '@/utils/fileUtils';
@@ -63,16 +63,16 @@ export function ImageGenerateModal({
     revision,
     templateLayout,
     statusMap,
-  } = useActiveProfileStore(
+  } = useActiveProfile(
     useShallow(state => ({
-      templateName: state.template!.name,
-      templateId: state.template!.id,
-      profileId: state.profile!.id,
-      enableCount: state.profile ? profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT) : false,
-      imageBaseUrl: state.template?.imageBaseUrl,
-      revision: state.template?.revision,
-      templateLayout: state.template?.layout,
-      statusMap: state.profile?.collections,
+      templateName: state.template.name,
+      templateId: state.template.id,
+      profileId: state.profile.id,
+      enableCount: profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT),
+      imageBaseUrl: state.template.imageBaseUrl,
+      revision: state.template.revision,
+      templateLayout: state.template.layout,
+      statusMap: state.profile.collections,
     }))
   );
 

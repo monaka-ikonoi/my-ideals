@@ -1,5 +1,5 @@
 import { useDeferredValue, useMemo, useState } from 'react';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/activeProfileStore';
 import { type TemplateCollection } from '@/domain/template';
 import { debugLog } from '@/utils/debug';
 import {
@@ -11,7 +11,7 @@ import {
 
 // Index is cached per-template so it is only recompiled when the template changes
 function useTemplateSearchIndex(): Map<string, SearchIndex> {
-  const collections = useActiveProfileStore(state => state.template?.collections ?? []);
+  const collections = useActiveProfile(state => state.template.collections);
 
   return useMemo(() => {
     debugLog.perf.time('Build search index map');

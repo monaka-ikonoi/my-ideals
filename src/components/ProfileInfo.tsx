@@ -8,7 +8,7 @@ import {
   DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
 import { InlineCode } from './ui/InlineCode';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/activeProfileStore';
 import { useDialogStore } from '@/stores/dialogStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { toast } from 'sonner';
@@ -18,16 +18,16 @@ import { getErrorMessage } from '@/utils/error';
 export function ProfileInfo() {
   const { t } = useTranslation();
 
-  const { profileId, profileName, templateId, templateName, enableCount } = useActiveProfileStore(
+  const { profileId, profileName, templateId, templateName, enableCount } = useActiveProfile(
     useShallow(state => ({
-      profileId: state.profile!.id,
-      profileName: state.profile!.name,
-      templateId: state.template!.id,
-      templateName: state.template!.name,
-      enableCount: profileHasFlag(state.profile!, ProfileFlags.ENABLE_COUNT),
+      profileId: state.profile.id,
+      profileName: state.profile.name,
+      templateId: state.template.id,
+      templateName: state.template.name,
+      enableCount: profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT),
     }))
   );
-  const profileTemplateInfo = useActiveProfileStore(state => state.profile!.template);
+  const profileTemplateInfo = useActiveProfile(state => state.profile.template);
 
   const [copied, setCopied] = useState(false);
 
