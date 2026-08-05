@@ -17,9 +17,15 @@ type CollectionStats = {
   comps: StatsCounter;
 };
 
-type StatusMap = Profile['collections'][string];
+type CollectionStatus = Profile['collections'][string];
 
-function calculateItemStats(collection: TemplateCollection, statusMap: StatusMap): StatsCounter {
+const EMPTY_COLLECTION_STATUS: CollectionStatus = {};
+const EMPTY_PROFILE_STATUS: Profile['collections'] = {};
+
+function calculateItemStats(
+  collection: TemplateCollection,
+  statusMap: CollectionStatus
+): StatsCounter {
   let collected = 0;
   let owned = 0;
 
@@ -38,7 +44,10 @@ function calculateItemStats(collection: TemplateCollection, statusMap: StatusMap
   };
 }
 
-function calculateCompStats(collection: TemplateCollection, statusMap: StatusMap): StatsCounter {
+function calculateCompStats(
+  collection: TemplateCollection,
+  statusMap: CollectionStatus
+): StatsCounter {
   let collected = 0;
   let owned = 0;
 
@@ -68,14 +77,39 @@ function calculateCompStats(collection: TemplateCollection, statusMap: StatusMap
   };
 }
 
+type StatsCache = WeakMap<TemplateCollection, WeakMap<CollectionStatus, StatsCounter>>;
+
+const itemStatsCache: StatsCache = new WeakMap();
+const compStatsCache: StatsCache = new WeakMap();
+
+function calculateStatsCached(
+  cache: StatsCache,
+  calculate: (collection: TemplateCollection, statusMap: CollectionStatus) => StatsCounter,
+  collection: TemplateCollection,
+  statusMap: CollectionStatus
+): StatsCounter {
+  let cachedCollectionStats = cache.get(collection);
+  if (!cachedCollectionStats) {
+    cachedCollectionStats = new WeakMap();
+    cache.set(collection, cachedCollectionStats);
+  }
+
+  let cachedCounter = cachedCollectionStats.get(statusMap);
+  if (!cachedCounter) {
+    cachedCounter = calculate(collection, statusMap);
+    cachedCollectionStats.set(statusMap, cachedCounter);
+  }
+  return cachedCounter;
+}
+
 function calculateCollectionStats(
   visibleCollections: TemplateCollection,
   baseCollection: TemplateCollection,
-  statusMap: Profile['collections'][string]
+  statusMap: CollectionStatus
 ): CollectionStats {
   return {
-    items: calculateItemStats(visibleCollections, statusMap),
-    comps: calculateCompStats(baseCollection, statusMap),
+    items: calculateStatsCached(itemStatsCache, calculateItemStats, visibleCollections, statusMap),
+    comps: calculateStatsCached(compStatsCache, calculateCompStats, baseCollection, statusMap),
   };
 }
 
@@ -84,7 +118,7 @@ export function useCollectionStats(
   baseCollection: TemplateCollection = visibleCollections
 ) {
   const statusMap = useActiveProfileStore(
-    useShallow(state => state.profile?.collections[baseCollection.id] ?? {})
+    useShallow(state => state.profile?.collections[baseCollection.id] ?? EMPTY_COLLECTION_STATUS)
   );
 
   return useMemo(() => {
@@ -134,7 +168,9 @@ export function useAggregatedCollectionStats(
   visibleCollectionss: TemplateCollection[],
   baseCollectionMap?: Record<string, TemplateCollection>
 ) {
-  const statusMaps = useActiveProfileStore(state => state.profile?.collections ?? {});
+  const statusMaps = useActiveProfileStore(
+    state => state.profile?.collections ?? EMPTY_PROFILE_STATUS
+  );
   // Defer the statusMaps so rapid toggles don't block the main thread on large templates
   const deferredStatusMaps = useDeferredValue(statusMaps);
   const deferredCollections = useDeferredValue(visibleCollectionss);

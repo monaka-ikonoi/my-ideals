@@ -9,10 +9,14 @@ type ProfileStatsProps = {
   baseCollectionMap: Record<string, TemplateCollection>;
 };
 
+const EMPTY_COLLECTIONS: TemplateCollection[] = [];
+
 export function ProfileStats({ visibleCollections, baseCollectionMap }: ProfileStatsProps) {
   const { t } = useTranslation();
 
-  const allCollections = useActiveProfileStore(state => state.template?.collections) ?? [];
+  const allCollections = useActiveProfileStore(
+    state => state.template?.collections ?? EMPTY_COLLECTIONS
+  );
   const globalStats = useAggregatedCollectionStats(allCollections);
   const currentStats = useAggregatedCollectionStats(visibleCollections, baseCollectionMap);
 
