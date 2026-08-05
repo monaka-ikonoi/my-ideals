@@ -43,7 +43,6 @@ export function useSearch(currentCollections: TemplateCollection[]): UseSearchRe
   const normalizedQuery = searchQuery.trim();
   const deferredQuery = useDeferredValue(normalizedQuery);
 
-  const compiledQuery = useMemo(() => compileSearchQuery(normalizedQuery), [normalizedQuery]);
   const compiledDeferredQuery = useMemo(() => compileSearchQuery(deferredQuery), [deferredQuery]);
 
   const searchedCollections = useMemo(() => {
@@ -60,16 +59,9 @@ export function useSearch(currentCollections: TemplateCollection[]): UseSearchRe
   }, [currentCollections, indexMap, compiledDeferredQuery]);
 
   const searchSuggestions = useMemo(() => {
-    if (!compiledQuery) return [];
-
-    return Array.from(
-      new Set(
-        currentCollections
-          .filter(c => matchSearchIndex(indexMap.get(c.id), compiledQuery))
-          .map(c => c.name)
-      )
-    );
-  }, [currentCollections, indexMap, compiledQuery]);
+    if (!compiledDeferredQuery) return [];
+    return Array.from(new Set(searchedCollections.map(c => c.name)));
+  }, [searchedCollections, compiledDeferredQuery]);
 
   return {
     searchedCollections,
