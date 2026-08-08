@@ -10,9 +10,16 @@ import { ProfileStats } from './ProfileStats';
 import { AppleItpWarning } from './AppleItpWarning';
 import { InstallAppBanner } from './InstallAppBanner';
 
-export function ProfilePage() {
+function NoResultPlaceholder() {
   const { t } = useTranslation();
+  return (
+    <div className="flex h-40 items-center justify-center text-gray-500">
+      {t('collection.no-result')}
+    </div>
+  );
+}
 
+export function ProfilePage() {
   const { visibleCollections, collectionMap, filterProps, hiddenCount } = useCollectionFilter();
   const { searchedCollections, searchProps } = useSearch(visibleCollections);
 
@@ -47,13 +54,7 @@ export function ProfilePage() {
             />
           </div>
         )}
-        components={{
-          EmptyPlaceholder: () => (
-            <div className="flex h-40 items-center justify-center text-gray-500">
-              {t('collection.no-result')}
-            </div>
-          ),
-        }}
+        components={{ EmptyPlaceholder: NoResultPlaceholder }}
       />
 
       <ScrollToTop />
