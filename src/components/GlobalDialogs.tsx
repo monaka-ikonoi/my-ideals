@@ -1,16 +1,10 @@
 import { useDialogStore } from '@/stores/dialogStore';
 import { DisclaimerDialog } from './dialogs/DisclaimerDialog';
-import { ProfileTemplateDiffDialog } from './dialogs/ProfileTemplateDiffDialog';
 import { ProfileCreateDialog } from './dialogs/ProfileCreateDialog';
 import { ProfileImportDialog } from './dialogs/ProfileImportDialog';
 import { ProfileDeleteDialog } from './dialogs/ProfileDeleteDialog';
-import { ProfileRenameDialog } from './dialogs/ProfileRenameDialog';
 import { ProfileEditTemplateUrlDialog } from './dialogs/ProfileEditTemplateUrl';
-import { ProfileSwitchModeDialog } from './dialogs/ProfileSwitchModeDialog';
 import { AboutDialog } from './dialogs/AboutDialog';
-import { CollectionEditModal } from './dialogs/CollectionEditModal';
-import { ProfileDuplicateDialog } from './dialogs/ProfileDuplicateDialog';
-import { ImageGenerateModal } from './dialogs/ImageGenerateModal';
 import { PwaUpdateDialog } from './dialogs/PwaUpdateDialog';
 import { IosInstallGuideDialog } from './dialogs/IosInstallGuideDialog';
 
@@ -21,7 +15,6 @@ export function GlobalDialogs() {
   return (
     <>
       <DisclaimerDialog />
-      <ProfileTemplateDiffDialog />
       <PwaUpdateDialog />
 
       {activeDialog.type === 'create-profile' && <ProfileCreateDialog onClose={closeDialog} />}
@@ -33,16 +26,6 @@ export function GlobalDialogs() {
           onClose={closeDialog}
         />
       )}
-      {activeDialog.type === 'rename-profile' && (
-        <ProfileRenameDialog
-          profileId={activeDialog.profileId}
-          profileName={activeDialog.profileName}
-          onClose={closeDialog}
-        />
-      )}
-      {activeDialog.type === 'duplicate-profile' && (
-        <ProfileDuplicateDialog onClose={closeDialog} />
-      )}
       {activeDialog.type === 'edit-profile-template-url' && (
         <ProfileEditTemplateUrlDialog
           profileId={activeDialog.profileId}
@@ -51,26 +34,8 @@ export function GlobalDialogs() {
           onClose={closeDialog}
         />
       )}
-      {activeDialog.type === 'switch-profile-mode' && (
-        <ProfileSwitchModeDialog
-          profileId={activeDialog.profileId}
-          enableCount={activeDialog.enableCount}
-          onClose={closeDialog}
-        />
-      )}
       {activeDialog.type === 'about' && <AboutDialog onClose={closeDialog} />}
       {activeDialog.type === 'install-app-ios' && <IosInstallGuideDialog onClose={closeDialog} />}
-
-      {activeDialog.type === 'edit-collection' && (
-        <CollectionEditModal collectionId={activeDialog.collectionId} onClose={closeDialog} />
-      )}
-      {activeDialog.type === 'generate-image' && (
-        <ImageGenerateModal
-          collections={activeDialog.collections}
-          preSelectedId={activeDialog.preSelectedId}
-          onClose={closeDialog}
-        />
-      )}
     </>
   );
 }

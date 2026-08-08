@@ -2,6 +2,7 @@ import { useActiveProfileStore } from '@/stores/activeProfileStore';
 import { useProfileListStore } from '@/stores/profileListStore';
 import { ProfileErrorPage } from './ProfileErrorPage';
 import { ProfilePage } from './ProfilePage';
+import { ProfileDialogs } from './ProfileDialogs';
 import { EmptyPage } from './EmptyPage';
 import { LoadingPage } from './ui/LoadingPage';
 
@@ -21,5 +22,10 @@ export function MainContent() {
     return <LoadingPage />;
   }
 
-  return <ProfilePage />;
+  return (
+    <>
+      <ProfileDialogs />
+      <ProfilePage />
+    </>
+  );
 }
