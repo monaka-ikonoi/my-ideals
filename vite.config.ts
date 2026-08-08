@@ -94,7 +94,7 @@ export default defineConfig({
         runtimeCaching: [
           {
             // User-provided template JSON files, favor freshness over cache.
-            urlPattern: ({ url }) => url.pathname.endsWith('.json'),
+            urlPattern: ({ url, sameOrigin }) => url.pathname.endsWith('.json') && !sameOrigin,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'my-ideals-templates-cache',
