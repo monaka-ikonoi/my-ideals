@@ -29,7 +29,7 @@ function calculateItemStats(
   let owned = 0;
 
   for (const item of collection.items) {
-    const count = normalizeStatusNumber(statusMap?.[item.id]);
+    const count = normalizeStatusNumber(statusMap[item.id]);
     if (count > 0) {
       collected++;
       owned += count;
@@ -54,7 +54,7 @@ function calculateCompStats(
   const memberMinCounts = new Map<string, number>();
 
   for (const item of collection.items) {
-    const count = normalizeStatusNumber(statusMap?.[item.id]);
+    const count = normalizeStatusNumber(statusMap[item.id]);
 
     const members = Array.isArray(item.member) ? item.member : [item.member];
     for (const m of members) {
@@ -155,7 +155,11 @@ function calculateAggregatedCollectionStats(
     // for global stats where visible equals base
     const baseCollection = baseCollectionMap?.[c.id] ?? c;
 
-    const stats = calculateCollectionStats(c, baseCollection, statusMaps[baseCollection.id]);
+    const stats = calculateCollectionStats(
+      c,
+      baseCollection,
+      statusMaps[baseCollection.id] ?? EMPTY_COLLECTION_STATUS
+    );
     addStatsCounter(result.items, stats.items);
     addStatsCounter(result.comps, stats.comps);
   }
