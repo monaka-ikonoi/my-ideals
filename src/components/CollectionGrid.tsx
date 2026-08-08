@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react';
 import { type TemplateCollection } from '@/domain/template';
-import { useActiveProfile } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/profileSessionStore';
 import { debugLog } from '@/utils/debug';
 import {
   computeGaps,

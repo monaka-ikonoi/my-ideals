@@ -2,7 +2,7 @@ import { useMemo, useDeferredValue } from 'react';
 import { useShallow } from 'zustand/shallow';
 import type { TemplateCollection } from '@/domain/template';
 import type { Profile } from '@/domain/profile';
-import { useActiveProfile } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/profileSessionStore';
 import { normalizeStatusNumber } from '@/utils/utils';
 import { debugLog } from '@/utils/debug';
 

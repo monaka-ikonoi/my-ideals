@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type TemplateCollection } from '@/domain/template';
 import { debugLog } from '@/utils/debug';
-import { useActiveProfile } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useCollectionStats } from '@/hooks/useStats';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile/flags';
 import { CollectionGrid } from './CollectionGrid';

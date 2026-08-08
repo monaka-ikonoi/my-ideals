@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { type Profile, type ProfileBundle } from '@/domain/profile/types';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { getSessionProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
 import { DEV_MODE } from '@/utils/appInfo';
 import { downloadFile } from '@/utils/fileUtils';
 import { getProfileStorage } from '@/storage/ProfileStorage';
@@ -14,12 +14,12 @@ export function useProfileExporter() {
   const [exporting, setExporting] = useState(false);
 
   // Must have at least 1 profile to export, check it with active profile
-  const canExport = useActiveProfileStore(state => !!state.profile);
+  const canExport = useProfileSessionStore(state => !!state.store || !!state.recoveryProfile);
 
   const exportProfile = () => {
     if (exporting) return;
 
-    const { profile } = useActiveProfileStore.getState();
+    const profile = getSessionProfile();
     if (!profile) return;
 
     try {
@@ -36,7 +36,7 @@ export function useProfileExporter() {
 
     try {
       setExporting(true);
-      await useActiveProfileStore.getState().flush();
+      await useProfileSessionStore.getState().flush();
 
       const storage = getProfileStorage();
       const ids = await storage.listProfiles();

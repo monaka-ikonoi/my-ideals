@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MagnifyingGlassIcon, PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { useActiveProfile } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/profileSessionStore';
 import { CollectionStatusFilter } from './CollectionStatusFilter';
 import type { FilterItemStatus } from '@/hooks/useFilteredCollection';
 import { MemberSelector } from './MemberSelector';

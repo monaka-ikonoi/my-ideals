@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navbar } from '@/components/Navbar';
-import { useActiveProfileStore } from './stores/activeProfileStore';
+import { useProfileSessionStore } from './stores/profileSessionStore';
 import { GlobalDialogs } from './components/GlobalDialogs';
 import { GlobalToaster } from './components/GlobalToaster';
 import { MainContent } from './components/MainContent';
@@ -17,7 +17,7 @@ export default function App() {
 
   useEffect(() => {
     const flushSafely = () => {
-      void useActiveProfileStore.getState().flush();
+      void useProfileSessionStore.getState().flush();
     };
 
     const handleVisibilityChange = () => {

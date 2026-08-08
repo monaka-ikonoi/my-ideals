@@ -2,7 +2,7 @@ import { memo, useMemo } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { type TemplateCollectionItem } from '@/domain/template';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
-import { useActiveProfile } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/profileSessionStore';
 import { debugLog } from '@/utils/debug';
 import { type ResolvedLayout } from '@/utils/layoutUtils';
 import { ImageCheckCard } from './ImageCheckCard';

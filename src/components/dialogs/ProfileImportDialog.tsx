@@ -13,7 +13,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { ProfileSchema, ProfileBundleSchema, type Profile } from '@/domain/profile';
 import { useProfileListStore } from '@/stores/profileListStore';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { getSessionProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
 import { CommonBackdrop } from '../ui/CommonBackdrop';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/error';
@@ -74,7 +74,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     if (!profiles.some(p => p.id === profileId)) return { hasConflict: false };
     const existingLastModified =
       profileId === activeProfileId
-        ? (useActiveProfileStore.getState().profile?.lastModified ?? 0)
+        ? (getSessionProfile()?.lastModified ?? 0)
         : ((await getProfileStorage().getProfile(profileId))?.lastModified ?? 0);
     return { hasConflict: true, existingLastModified };
   };
@@ -146,7 +146,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
 
       // reload on overwrite
       if (activeProfileId && importedIds.some(id => id === activeProfileId)) {
-        await useActiveProfileStore.getState().load(activeProfileId);
+        await useProfileSessionStore.getState().load(activeProfileId);
       } else if (state.type === 'single' || activeProfileId === null) {
         setActiveProfile(importedIds[0]);
       }

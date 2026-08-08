@@ -1,7 +1,7 @@
 import { setStorageBackend } from './storage/runtime';
 import { useSettingsStore } from './stores/settingsStore';
 import { useProfileListStore } from './stores/profileListStore';
-import { useActiveProfileStore } from './stores/activeProfileStore';
+import { useProfileSessionStore } from './stores/profileSessionStore';
 import { migrateProfileStorage } from './storage/migrate';
 import { debugLog } from './utils/debug';
 import { getConfiguredStorageBackend } from './storage/config';
@@ -46,9 +46,9 @@ export async function bootstrap() {
     state => state.activeId,
     activeId => {
       if (activeId) {
-        void useActiveProfileStore.getState().load(activeId);
+        void useProfileSessionStore.getState().load(activeId);
       } else {
-        void useActiveProfileStore.getState().clear();
+        void useProfileSessionStore.getState().clear();
       }
     },
     { fireImmediately: true }

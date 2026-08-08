@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useTemplateFetcher } from '@/hooks/useTemplateFetcher';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { getActiveProfileOrNull, useProfileSessionStore } from '@/stores/profileSessionStore';
 import { TemplateUrlInput } from '../TemplateUrlInput';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/error';
@@ -37,11 +37,11 @@ export function ProfileEditTemplateUrlDialog({
     }
     try {
       if (state.status === 'success') {
-        useActiveProfileStore.getState().updateTemplateInfo(trimmedUrl);
-        await useActiveProfileStore.getState().load(profileId); // Trigger reload
+        getActiveProfileOrNull()?.updateTemplateInfo(trimmedUrl);
+        await useProfileSessionStore.getState().load(profileId); // Trigger reload
       } else if (allowIdMismatch && state.status === 'id-mismatch') {
-        useActiveProfileStore.getState().updateTemplateInfo(trimmedUrl, state.actualId);
-        await useActiveProfileStore.getState().load(profileId); // Trigger reload
+        getActiveProfileOrNull()?.updateTemplateInfo(trimmedUrl, state.actualId);
+        await useProfileSessionStore.getState().load(profileId); // Trigger reload
       } else {
         return;
       }

@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TemplateCollection } from '@/domain/template';
 import { DEFAULT_IMAGE_OPTIONS, ImageOptionsContext } from '@/contexts/imageOptions';
-import { useActiveProfile } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/profileSessionStore';
 import { type ImageOptions } from '@/stores/settingsStore';
 import { useCollectionStats } from '@/hooks/useStats';
 import { FullScreenModal } from '../ui/FullScreenModal';

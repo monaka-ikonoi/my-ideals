@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useProfileListStore } from '@/stores/profileListStore';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { getActiveProfile } from '@/stores/profileSessionStore';
 
 type ProfileRenameDialogProps = {
   onClose: () => void;
@@ -18,7 +18,7 @@ export function ProfileRenameDialog({ onClose, profileId, profileName }: Profile
   const handleSaveName = () => {
     const name = newName.trim();
     if (profileId && name && name !== profileName) {
-      useActiveProfileStore.getState().updateName(name);
+      getActiveProfile().updateName(name);
       useProfileListStore.getState().updateProfileName(profileId, name);
     }
     onClose();

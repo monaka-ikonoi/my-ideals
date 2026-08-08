@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import type { TemplateCollection } from '@/domain/template';
 import { ImageOptionsContext } from '@/contexts/imageOptions';
-import { useActiveProfile } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { downloadFile, shareAPISupported, shareFile } from '@/utils/fileUtils';

@@ -1,4 +1,4 @@
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useProfileSessionStore } from '@/stores/profileSessionStore';
 import { useProfileListStore } from '@/stores/profileListStore';
 import { ProfileErrorPage } from './ProfileErrorPage';
 import { ProfilePage } from './ProfilePage';
@@ -8,7 +8,7 @@ import { LoadingPage } from './ui/LoadingPage';
 
 export function MainContent() {
   const activeProfileId = useProfileListStore(state => state.activeId);
-  const profileLoadState = useActiveProfileStore(state => state.loadState);
+  const profileLoadState = useProfileSessionStore(state => state.loadState);
 
   if (!activeProfileId) {
     return <EmptyPage />;

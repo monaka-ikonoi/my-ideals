@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { Template } from '@/domain/template';
 import type { ProfileTemplateDiff, CollectionChange } from '@/utils/syncProfile';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useActiveProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 
@@ -122,9 +122,9 @@ function ProfileTemplateDiffContent({
 export function ProfileTemplateDiffDialog() {
   const { t } = useTranslation();
 
-  const template = useActiveProfileStore(state => state.template);
-  const changes = useActiveProfileStore(state => state.changes);
-  const confirmSyncChanges = useActiveProfileStore(state => state.confirmSyncChanges);
+  const template = useActiveProfile(state => state.template);
+  const changes = useProfileSessionStore(state => state.changes);
+  const confirmSyncChanges = useProfileSessionStore(state => state.confirmSyncChanges);
 
   const hasChanges = changes && (changes.added.length > 0 || changes.removed.length > 0);
   const hasRemovals = changes && changes.removed.length > 0;
@@ -137,7 +137,7 @@ export function ProfileTemplateDiffDialog() {
     }
   };
 
-  if (!template || !hasChanges) return null;
+  if (!hasChanges) return null;
 
   const options = hasRemovals
     ? [

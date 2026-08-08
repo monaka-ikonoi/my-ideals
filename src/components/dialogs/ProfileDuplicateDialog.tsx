@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/shallow';
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { useProfileListStore } from '@/stores/profileListStore';
-import { getActiveProfile } from '@/stores/activeProfileStore';
+import { getActiveProfile } from '@/stores/profileSessionStore';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/error';
 

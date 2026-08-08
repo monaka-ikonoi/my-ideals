@@ -2,7 +2,7 @@ import { useState, memo, useCallback } from 'react';
 import { type TemplateCollectionItem } from '@/domain/template';
 import { type TemplateResourceBaseUrl } from '@/domain/template/imageBaseUrl';
 import { useImageOptions } from '@/contexts/imageOptions';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { getActiveProfile } from '@/stores/profileSessionStore';
 import { debugLog } from '@/utils/debug';
 import { normalizeStatusBoolean } from '@/utils/utils';
 import { formatImageUrl } from '@/utils/templateUtils';
@@ -37,12 +37,12 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   const status = rawStatus ?? (enableCount ? 0 : false);
 
   const handleSetCount = useCallback(
-    (val: number) => useActiveProfileStore.getState().setCount(collectionId, item.id, val),
+    (val: number) => getActiveProfile().setCount(collectionId, item.id, val),
     [collectionId, item.id]
   );
 
   const handleToggle = useCallback(() => {
-    if (!enableCount) useActiveProfileStore.getState().toggleStatus(collectionId, item.id);
+    if (!enableCount) getActiveProfile().toggleStatus(collectionId, item.id);
   }, [enableCount, collectionId, item.id]);
 
   const fallbackSrc = imageBaseUrl?.fallback;

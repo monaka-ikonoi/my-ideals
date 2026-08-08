@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import type { FilterItemStatus } from '@/hooks/useFilteredCollection';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
-import { useActiveProfile } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/profileSessionStore';
 
 type StatusFilterProps = {
   value: FilterItemStatus;

@@ -8,7 +8,7 @@ import {
   DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
 import { InlineCode } from './ui/InlineCode';
-import { useActiveProfile } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useDialogStore } from '@/stores/dialogStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { toast } from 'sonner';

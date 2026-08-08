@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { getActiveProfile } from '@/stores/profileSessionStore';
 import { ProfileFlags } from '@/domain/profile';
 
 type ProfileSwitchModeDialogProps = {
@@ -18,7 +18,7 @@ export function ProfileSwitchModeDialog({
 
   const handleConfirmSwitch = (value: string) => {
     if (value === 'switch' && profileId) {
-      useActiveProfileStore.getState().toggleFlag(ProfileFlags.ENABLE_COUNT, enableCount);
+      getActiveProfile().toggleFlag(ProfileFlags.ENABLE_COUNT, enableCount);
     }
     onClose();
   };

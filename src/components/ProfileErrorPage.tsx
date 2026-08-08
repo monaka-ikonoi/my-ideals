@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import { useProfileListStore } from '@/stores/profileListStore';
-import { useActiveProfileStore } from '@/stores/activeProfileStore';
+import { useProfileSessionStore } from '@/stores/profileSessionStore';
 import { type LoadActiveProfileError } from '@/services/activeProfileLoader';
 import { useDialogStore } from '@/stores/dialogStore';
 import { ArrowPathIcon, ArrowDownTrayIcon, PencilIcon } from '@heroicons/react/24/outline';
@@ -12,7 +12,7 @@ export function ProfileErrorPage({ error }: { error: LoadActiveProfileError }) {
   const { exportProfile } = useProfileExporter();
 
   const profileId = useProfileListStore(state => state.activeId!);
-  const templateInfo = useActiveProfileStore(state => state.profile?.template);
+  const templateInfo = useProfileSessionStore(state => state.recoveryProfile?.template);
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center">
@@ -35,7 +35,7 @@ export function ProfileErrorPage({ error }: { error: LoadActiveProfileError }) {
         {/* Actions */}
         <div className="mt-2 flex gap-2">
           <button
-            onClick={() => useActiveProfileStore.getState().load(profileId)}
+            onClick={() => useProfileSessionStore.getState().load(profileId)}
             className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2
               text-sm font-medium text-gray-700 hover:bg-gray-50"
           >

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import type { TemplateCollection } from '@/domain/template';
-import { useActiveProfile } from '@/stores/activeProfileStore';
+import { useActiveProfile } from '@/stores/profileSessionStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { useAggregatedCollectionStats } from '@/hooks/useStats';
 

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { getActiveProfile, useActiveProfile } from '@/stores/activeProfileStore';
+import { getActiveProfile, useActiveProfile } from '@/stores/profileSessionStore';
 import { type TemplateCollection } from '@/domain/template';
 import { type ProfileCollection } from '@/domain/profile';
 import { debugLog } from '@/utils/debug';
