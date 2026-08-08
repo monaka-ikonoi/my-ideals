@@ -1,18 +1,25 @@
 import { useTranslation } from 'react-i18next';
 import { XCircleIcon } from '@heroicons/react/24/outline';
+import { type LoadActiveProfileError } from '@/services/activeProfileLoader';
+import { type Profile } from '@/domain/profile';
 import { useProfileListStore } from '@/stores/profileListStore';
 import { useProfileSessionStore } from '@/stores/profileSessionStore';
-import { type LoadActiveProfileError } from '@/services/activeProfileLoader';
 import { useDialogStore } from '@/stores/dialogStore';
 import { ArrowPathIcon, ArrowDownTrayIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { useProfileExporter } from '@/hooks/useProfileExporter';
 
-export function ProfileErrorPage({ error }: { error: LoadActiveProfileError }) {
+export function ProfileErrorPage({
+  error,
+  profile,
+}: {
+  error: LoadActiveProfileError;
+  profile: Profile | null;
+}) {
   const { t } = useTranslation();
   const { exportProfile } = useProfileExporter();
 
   const profileId = useProfileListStore(state => state.activeId!);
-  const templateInfo = useProfileSessionStore(state => state.recoveryProfile?.template);
+  const templateInfo = profile?.template;
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center">

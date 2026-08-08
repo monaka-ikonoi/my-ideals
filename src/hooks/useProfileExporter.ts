@@ -14,7 +14,9 @@ export function useProfileExporter() {
   const [exporting, setExporting] = useState(false);
 
   // Must have at least 1 profile to export, check it with active profile
-  const canExport = useProfileSessionStore(state => !!state.store || !!state.recoveryProfile);
+  const canExport = useProfileSessionStore(
+    state => !!state.store || (state.loadState.status === 'error' && !!state.loadState.profile)
+  );
 
   const exportProfile = () => {
     if (exporting) return;

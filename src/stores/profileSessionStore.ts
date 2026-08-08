@@ -9,12 +9,11 @@ export type ProfileLoadState =
   | { status: 'idle' }
   | { status: 'loading' }
   | { status: 'success' }
-  | { status: 'error'; error: LoadActiveProfileError };
+  | { status: 'error'; error: LoadActiveProfileError; profile: Profile | null };
 
 type ProfileSessionState = {
   loadState: ProfileLoadState;
   store: ProfileStore | null;
-  recoveryProfile: Profile | null;
   changes: ProfileTemplateDiff | null;
   pendingSync: boolean;
 
@@ -27,7 +26,6 @@ type ProfileSessionState = {
 export const useProfileSessionStore = create<ProfileSessionState>()((set, get) => ({
   loadState: { status: 'idle' },
   store: null,
-  recoveryProfile: null,
   changes: null,
   pendingSync: false,
 
@@ -40,9 +38,8 @@ export const useProfileSessionStore = create<ProfileSessionState>()((set, get) =
 
     if (result.status === 'error') {
       set({
-        loadState: { status: 'error', error: result.error },
+        loadState: { status: 'error', error: result.error, profile: result.profile ?? null },
         store: null,
-        recoveryProfile: result.profile ?? null,
         changes: null,
         pendingSync: false,
       });
@@ -52,7 +49,6 @@ export const useProfileSessionStore = create<ProfileSessionState>()((set, get) =
     set({
       loadState: { status: 'success' },
       store: createProfileStore(result),
-      recoveryProfile: null,
       changes: result.changes,
       pendingSync: result.pendingSync,
     });
@@ -67,7 +63,6 @@ export const useProfileSessionStore = create<ProfileSessionState>()((set, get) =
     set({
       loadState: { status: 'idle' },
       store: null,
-      recoveryProfile: null,
       changes: null,
       pendingSync: false,
     });
@@ -104,6 +99,7 @@ export function getActiveProfileOrNull(): ProfileState | null {
 }
 
 export function getSessionProfile(): Profile | null {
-  const { store, recoveryProfile } = useProfileSessionStore.getState();
-  return store?.getState().profile ?? recoveryProfile;
+  const { store, loadState } = useProfileSessionStore.getState();
+  if (store) return store.getState().profile;
+  return loadState.status === 'error' ? loadState.profile : null;
 }
