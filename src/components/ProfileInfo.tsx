@@ -11,7 +11,7 @@ import { InlineCode } from './ui/InlineCode';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useTemplate } from '@/contexts/template';
 import { useDialogStore } from '@/stores/dialogStore';
-import { ProfileFlags, profileHasFlag } from '@/domain/profile';
+import { getPrimaryField, isNumberField } from '@/domain/profile';
 import { toast } from 'sonner';
 import { useShallow } from 'zustand/shallow';
 import { getErrorMessage } from '@/utils/error';
@@ -23,7 +23,7 @@ export function ProfileInfo() {
     useShallow(state => ({
       profileId: state.profile.id,
       profileName: state.profile.name,
-      enableCount: profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT),
+      enableCount: isNumberField(getPrimaryField(state.fields)),
     }))
   );
   const { id: templateId, name: templateName } = useTemplate();

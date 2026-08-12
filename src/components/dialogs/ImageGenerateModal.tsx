@@ -7,7 +7,7 @@ import { ImageOptionsContext } from '@/contexts/imageOptions';
 import { useTemplate } from '@/contexts/template';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useSettingsStore } from '@/stores/settingsStore';
-import { ProfileFlags, profileHasFlag } from '@/domain/profile';
+import { getPrimaryField, isNumberField } from '@/domain/profile';
 import { downloadFile, shareAPISupported, shareFile } from '@/utils/fileUtils';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { FullScreenModal } from '../ui/FullScreenModal';
@@ -60,7 +60,7 @@ export function ImageGenerateModal({
   const { profileId, enableCount, statusMap } = useActiveProfile(
     useShallow(state => ({
       profileId: state.profile.id,
-      enableCount: profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT),
+      enableCount: isNumberField(getPrimaryField(state.fields)),
       statusMap: state.profile.collections,
     }))
   );
