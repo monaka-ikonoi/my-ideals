@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import type { FilterItemStatus } from '@/hooks/useFilteredCollection';
-import { ProfileFlags, profileHasFlag } from '@/domain/profile';
+import { getPrimaryField, isNumberField } from '@/domain/profile';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 
 type StatusFilterProps = {
@@ -18,9 +18,7 @@ const options = [
 export function CollectionStatusFilter({ value, setValue }: StatusFilterProps) {
   const { t } = useTranslation();
 
-  const hasWanted = useActiveProfile(state =>
-    profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT)
-  );
+  const hasWanted = useActiveProfile(state => isNumberField(getPrimaryField(state.fields)));
 
   return (
     <div className="inline-flex shrink-0 rounded-lg bg-gray-100 p-1 text-sm">

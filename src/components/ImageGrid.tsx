@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react';
 import { type TemplateCollectionItem } from '@/domain/template';
-import { ProfileFlags, profileHasFlag } from '@/domain/profile';
+import { getPrimaryField, isNumberField } from '@/domain/profile';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { debugLog } from '@/utils/debug';
 import { type ResolvedLayout } from '@/utils/layoutUtils';
@@ -25,9 +25,7 @@ export const ImageGrid = memo(function ImageGrid({
 }: ImageGridProps) {
   debugLog.render.log(`ImageGrid: ${items.length} items`);
 
-  const enableCount = useActiveProfile(state =>
-    profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT)
-  );
+  const enableCount = useActiveProfile(state => isNumberField(getPrimaryField(state.fields)));
 
   /* To make rotated item height = (column width) * (h/w), its width need to be height * (h/w).
   /* Column wideth is (100% - gap) / 2.
