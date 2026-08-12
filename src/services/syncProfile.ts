@@ -1,4 +1,4 @@
-import { ProfileFlags, profileHasFlag, type Profile } from '@/domain/profile';
+import { buildRecordFields, getPrimaryField, isNumberField, type Profile } from '@/domain/profile';
 import { type Template } from '@/domain/template';
 import { debugLog } from '../utils/debug';
 
@@ -100,7 +100,7 @@ export function syncProfileWithTemplate(
     `Sync template ${template.id} from ${profile.template.revision} to ${template.revision}`
   );
 
-  const enableCount = profileHasFlag(profile, ProfileFlags.ENABLE_COUNT);
+  const enableCount = isNumberField(getPrimaryField(buildRecordFields(profile)));
   debugLog.sync.log(`${template.id}: enableCount: ${enableCount}`);
 
   if (template.revision < profile.template.revision) {

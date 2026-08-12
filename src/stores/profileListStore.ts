@@ -2,7 +2,12 @@ import { create } from 'zustand';
 import { subscribeWithSelector, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { nanoid } from 'nanoid';
-import { type Profile, type ProfileFlag, type ProfileTemplateInfo } from '@/domain/profile';
+import {
+  CURRENT_PROFILE_VERSION,
+  type Profile,
+  type ProfileTemplateInfo,
+  type RecordMode,
+} from '@/domain/profile';
 import { getProfileStorage } from '@/storage/ProfileStorage';
 
 export type ProfileListEntry = {
@@ -21,7 +26,7 @@ type ProfileListStore = {
   createProfile: (
     name: string,
     templateInfo: ProfileTemplateInfo,
-    flags?: ProfileFlag[]
+    mode?: RecordMode
   ) => Promise<string>;
   importProfile: (profile: Profile, overwrite: boolean) => Promise<string>;
   deleteProfile: (id: string) => Promise<void>;
@@ -72,15 +77,15 @@ export const useProfileListStore = create<ProfileListStore>()(
           });
         },
 
-        createProfile: async (name, templateInfo, flags = []) => {
+        createProfile: async (name, templateInfo, mode = 'standard') => {
           const id = nanoid();
           const newProfile: Profile = {
             magic: 'my-ideals-profile',
-            version: 1,
+            version: CURRENT_PROFILE_VERSION,
             id,
             name,
             template: templateInfo,
-            flags,
+            mode,
             selectedMembers: [],
             collections: {},
             lastModified: Date.now(),

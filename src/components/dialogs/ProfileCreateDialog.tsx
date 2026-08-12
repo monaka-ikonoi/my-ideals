@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useProfileListStore } from '@/stores/profileListStore';
 import { useTemplateFetcher } from '@/hooks/useTemplateFetcher';
 import { usePredefinedTemplates } from '@/hooks/usePredefinedTemplates';
-import { ProfileFlags, type ProfileFlag } from '@/domain/profile';
 import { TemplateUrlInput } from '../TemplateUrlInput';
 import { CommonBackdrop } from '../ui/CommonBackdrop';
 import { DropdownSelect } from '../ui/DropdownSelect';
@@ -48,14 +47,11 @@ export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
     const name = profileName.trim();
     if (fetchState.status !== 'success' || !name || !template) return;
 
-    const flags: ProfileFlag[] = [];
-    if (enableCount) flags.push(ProfileFlags.ENABLE_COUNT);
-
     try {
       await createProfile(
         name,
         { id: template.id, link: url.trim(), revision: template.revision },
-        flags
+        enableCount ? 'count' : 'standard'
       );
       toast.success(t('toast.profile-created', { name }));
       onClose();
