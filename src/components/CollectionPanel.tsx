@@ -4,7 +4,7 @@ import { type TemplateCollection } from '@/domain/template';
 import { debugLog } from '@/utils/debug';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useCollectionStats } from '@/hooks/useStats';
-import { ProfileFlags, profileHasFlag } from '@/domain/profile/flags';
+import { getPrimaryField, isNumberField } from '@/domain/profile';
 import { CollectionGrid } from './CollectionGrid';
 import { PencilSquareIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import { useDialogStore } from '@/stores/dialogStore';
@@ -24,9 +24,7 @@ export const CollectionPanel = memo(function CollectionPanel({
 
   const stats = useCollectionStats(collection, baseCollection);
 
-  const enableCount = useActiveProfile(state =>
-    profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT)
-  );
+  const enableCount = useActiveProfile(state => isNumberField(getPrimaryField(state.fields)));
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
