@@ -26,11 +26,15 @@ function touch(profile: Profile) {
 }
 
 export async function loadActiveProfile(profileId: string): Promise<LoadActiveProfileResult> {
-  let profile = await getProfileStorage().getProfile(profileId);
-  if (!profile) {
+  const profileResult = await getProfileStorage().getProfile(profileId);
+  if (!profileResult.success) {
     debugLog.store.log(`Failed to load profile ${profileId}`);
-    return { status: 'error', message: `Unable to load Profile ${profileId}` };
+    return {
+      status: 'error',
+      message: `Unable to load Profile ${profileId}\n${profileResult.message}`,
+    };
   }
+  let profile = profileResult.profile;
 
   const templateResult = await fetchTemplate(profile.template.link, profile.template.id);
   if (!templateResult.success) {

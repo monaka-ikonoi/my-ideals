@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import { createStore, get, set, del, keys } from 'idb-keyval';
-import type { ProfileStorageOps } from './ProfileStorage';
+import { type GetProfileResult, type ProfileStorageOps } from './ProfileStorage';
 import { type Profile, ProfileSchema } from '@/domain/profile';
 import { debugLog } from '@/utils/debug';
+import { getErrorMessage } from '@/utils/error';
 
 const profileStore = createStore('my-ideals', 'profiles');
 
@@ -13,17 +14,24 @@ const listProfiles = async (): Promise<string[]> => {
     .filter(id => z.nanoid().safeParse(id).success);
 };
 
-const getProfile = async (id: string): Promise<Profile | null> => {
+const getProfile = async (id: string): Promise<GetProfileResult> => {
+  let raw: unknown;
   try {
-    const raw = await get<unknown>(id, profileStore);
-    if (!raw) {
-      return null;
-    }
-    return ProfileSchema.parse(raw);
+    raw = await get<unknown>(id, profileStore);
   } catch (e) {
-    debugLog.storage.error(`Unable to get profile: ${id}:`, e);
-    return null;
+    debugLog.storage.error(`Unable to read profile ${id}:`, e);
+    return { success: false, message: `IndexedDB error: ${getErrorMessage(e)}` };
   }
+  if (raw === undefined) {
+    return { success: false, message: 'Profile not found' };
+  }
+
+  const parsed = ProfileSchema.safeParse(raw);
+  if (!parsed.success) {
+    debugLog.storage.error(`Invalid profile ${id}:`, parsed.error);
+    return { success: false, message: `Invalid profile:\n${getErrorMessage(parsed.error)}` };
+  }
+  return { success: true, profile: parsed.data };
 };
 
 const setProfile = async (profile: Profile): Promise<void> => {

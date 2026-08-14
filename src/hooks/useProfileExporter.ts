@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { type Profile, type ProfileBundle } from '@/domain/profile/types';
+import { type ProfileBundle } from '@/domain/profile/types';
 import { getSessionProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
 import { DEV_MODE } from '@/utils/appInfo';
 import { downloadFile } from '@/utils/fileUtils';
@@ -40,9 +40,8 @@ export function useProfileExporter() {
 
       const storage = getProfileStorage();
       const ids = await storage.listProfiles();
-      const profiles = (await Promise.all(ids.map(id => storage.getProfile(id)))).filter(
-        p => p !== null
-      ) as Profile[];
+      const results = await Promise.all(ids.map(id => storage.getProfile(id)));
+      const profiles = results.flatMap(result => (result.success ? [result.profile] : []));
 
       const bundle: ProfileBundle = {
         magic: 'my-ideals-profile-bundle',

@@ -54,9 +54,9 @@ export const useProfileListStore = create<ProfileListStore>()(
           });
 
           for (const id of existingIds) {
-            const profile = await getProfileStorage().getProfile(id);
-            if (profile) {
-              validProfiles.push({ id, name: profile.name });
+            const result = await getProfileStorage().getProfile(id);
+            if (result.success) {
+              validProfiles.push({ id, name: result.profile.name });
               console.log(`Found unrecorded profile ${id}`);
             }
           }

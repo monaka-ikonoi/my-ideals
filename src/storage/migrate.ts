@@ -21,13 +21,13 @@ export async function migrateProfileStorage(
   const target = getProfileStorage(to);
 
   for (const id of await source.listProfiles()) {
-    const profile = await source.getProfile(id);
-    if (!profile) {
-      debugLog.store.error(`Failed to migrate ${id} from ${from} to ${to}`);
+    const result = await source.getProfile(id);
+    if (!result.success) {
+      debugLog.store.error(`Failed to migrate ${id} from ${from} to ${to}: ${result.message}`);
       continue;
     }
 
-    await target.setProfile(profile);
+    await target.setProfile(result.profile);
     if (cleanup) await source.deleteProfile(id);
   }
 
