@@ -2,7 +2,6 @@ import { useRef } from 'react';
 import { useImmer } from 'use-immer';
 import { useShallow } from 'zustand/shallow';
 import { useTranslation } from 'react-i18next';
-import { ZodError } from 'zod';
 import {
   ArrowPathIcon,
   XMarkIcon,
@@ -72,11 +71,15 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
 
   const buildConflictState = async (profileId: string): Promise<ConflictState> => {
     if (!profiles.some(p => p.id === profileId)) return { hasConflict: false };
-    const existingLastModified =
-      profileId === activeProfileId
-        ? (getActiveProfile().profile.lastModified ?? 0)
-        : ((await getProfileStorage().getProfile(profileId))?.lastModified ?? 0);
-    return { hasConflict: true, existingLastModified };
+
+    if (profileId === activeProfileId) {
+      return { hasConflict: true, existingLastModified: getActiveProfile().profile.lastModified };
+    }
+    const stored = await getProfileStorage().getProfile(profileId);
+    return {
+      hasConflict: true,
+      existingLastModified: stored.success ? stored.profile.lastModified : 0,
+    };
   };
 
   const buildPendingState = async (profile: Profile): Promise<PendingProfileState> => {
@@ -118,15 +121,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
 
       setState({ status: 'success', fileName, type, pending });
     } catch (e) {
-      let message = 'Unknown error';
-      if (e instanceof SyntaxError) {
-        message = `Invalid JSON: ${e.message}`;
-      } else if (e instanceof ZodError) {
-        message = e.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('\n');
-      } else if (e instanceof Error) {
-        message = e.message;
-      }
-      setState({ status: 'error', fileName, message });
+      setState({ status: 'error', fileName, message: getErrorMessage(e) });
     }
   };
 

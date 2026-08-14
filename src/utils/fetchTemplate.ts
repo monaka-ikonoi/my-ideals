@@ -1,7 +1,7 @@
 // services/templateService.ts
 import { TemplateSchema, type Template } from '@/domain/template';
-import { ZodError } from 'zod';
 import { debugLog } from './debug';
+import { getErrorMessage } from './error';
 
 export type FetchTemplateResult =
   { success: true; url: string; template: Template } | { success: false; error: TemplateError };
@@ -63,15 +63,9 @@ export async function fetchTemplate(
     const data = await response.json();
     template = TemplateSchema.parse(data);
   } catch (e) {
-    let message = 'Unknown parse error';
-    if (e instanceof ZodError) {
-      message = e.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('\n');
-    } else if (e instanceof Error) {
-      message = e.message;
-    }
     return {
       success: false,
-      error: { type: 'parse', message },
+      error: { type: 'parse', message: getErrorMessage(e) },
     };
   }
 
