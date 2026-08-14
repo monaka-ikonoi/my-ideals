@@ -8,7 +8,7 @@ import {
   type ProfileTemplateDiff,
 } from '@/services/syncProfile';
 import { fetchTemplate, formatTemplateError } from '@/services/fetchTemplate';
-import { applyTemplateMigrations } from '@/utils/templateMigration';
+import { applyTemplateMigrations } from '@/services/templateMigration';
 
 export type LoadActiveProfileResult =
   | {
