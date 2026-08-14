@@ -4,8 +4,6 @@ import { ImageOptionsContext } from '@/contexts/imageOptions';
 import { useTemplate } from '@/contexts/template';
 import { type ImageOptions } from '@/stores/settingsStore';
 import { useActiveProfile } from '@/stores/profileSessionStore';
-import { getPrimaryField } from '@/domain/profile';
-import { readField } from '@/utils/recordUtils';
 import { APP_NAME, LONG_VERSION } from '@/utils/appInfo';
 import { resolveLayout } from '@/utils/layoutUtils';
 import { CollectionGrid } from './CollectionGrid';
@@ -22,17 +20,16 @@ type CollectionImageContentProps = {
 
 function FlattenedCollectionGrid({ collections }: { collections: TemplateCollection[] }) {
   const statusMaps = useActiveProfile(state => state.profile.collections);
-  const primaryField = useActiveProfile(state => getPrimaryField(state.fields));
   const flattenedItems = useMemo(
     () =>
       collections.flatMap(collection =>
         collection.items.map(item => ({
           collection: collection.id,
           item,
-          status: readField(statusMaps?.[collection.id]?.[item.id], primaryField),
+          record: statusMaps?.[collection.id]?.[item.id],
         }))
       ),
-    [collections, statusMaps, primaryField]
+    [collections, statusMaps]
   );
 
   const layout = resolveLayout(useTemplate().layout);

@@ -58,9 +58,10 @@ export function ImageGenerateModal({
 }: ImageGenerateModalProps) {
   const { t, i18n } = useTranslation();
 
-  const { profileId, enableCount, primaryField, statusMap } = useActiveProfile(
+  const { profileId, fields, enableCount, primaryField, statusMap } = useActiveProfile(
     useShallow(state => ({
       profileId: state.profile.id,
+      fields: state.fields,
       enableCount: isNumberField(getPrimaryField(state.fields)),
       primaryField: getPrimaryField(state.fields),
       statusMap: state.profile.collections,
@@ -170,7 +171,7 @@ export function ImageGenerateModal({
         return {
           collection,
           item: candidate,
-          status: readField(collectionStatus?.[candidate.id], primaryField),
+          record: collectionStatus?.[candidate.id],
         };
       }
     }
@@ -360,8 +361,8 @@ export function ImageGenerateModal({
                             item={previewItem.item}
                             mode="export"
                             aspectRatio={imageCardLayout.aspectRatio}
-                            enableCount={enableCount}
-                            status={previewItem.status}
+                            fields={fields}
+                            record={previewItem.record}
                           />
                         </ImageOptionsContext>
                       </div>
