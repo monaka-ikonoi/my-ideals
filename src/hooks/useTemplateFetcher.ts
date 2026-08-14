@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { debounce } from 'lodash-es';
 import { z } from 'zod';
 import { type Template } from '@/domain/template';
-import { fetchTemplate, formatTemplateError } from '@/utils/fetchTemplate';
+import { fetchTemplate, formatTemplateError } from '@/services/fetchTemplate';
 import { extractTwitterShortenedLink, isTwitterShortenedLink } from '@/utils/twitterShortenedLink';
 
 export type TemplateFetchState =

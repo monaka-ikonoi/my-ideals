@@ -1,7 +1,7 @@
 // services/templateService.ts
 import { TemplateSchema, type Template } from '@/domain/template';
-import { debugLog } from './debug';
-import { getErrorMessage } from './error';
+import { debugLog } from '../utils/debug';
+import { getErrorMessage } from '../utils/error';
 
 export type FetchTemplateResult =
   { success: true; url: string; template: Template } | { success: false; error: TemplateError };

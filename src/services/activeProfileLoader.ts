@@ -7,7 +7,7 @@ import {
   syncProfileWithTemplate,
   type ProfileTemplateDiff,
 } from '@/services/syncProfile';
-import { fetchTemplate, formatTemplateError } from '@/utils/fetchTemplate';
+import { fetchTemplate, formatTemplateError } from '@/services/fetchTemplate';
 import { applyTemplateMigrations } from '@/utils/templateMigration';
 
 export type LoadActiveProfileResult =
