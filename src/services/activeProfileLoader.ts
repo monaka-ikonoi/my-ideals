@@ -10,8 +10,6 @@ import {
 import { fetchTemplate, formatTemplateError } from '@/utils/fetchTemplate';
 import { applyTemplateMigrations } from '@/utils/templateMigration';
 
-export type LoadActiveProfileError = { type: 'template' | 'profile'; message: string };
-
 export type LoadActiveProfileResult =
   | {
       status: 'success';
@@ -20,7 +18,8 @@ export type LoadActiveProfileResult =
       changes: ProfileTemplateDiff | null;
       pendingSync: boolean;
     }
-  | { status: 'error'; error: LoadActiveProfileError; profile?: Profile };
+  | { status: 'template-error'; profile: Profile; message: string }
+  | { status: 'error'; message: string };
 
 function touch(profile: Profile) {
   profile.lastModified = Date.now();
@@ -30,10 +29,7 @@ export async function loadActiveProfile(profileId: string): Promise<LoadActivePr
   let profile = await getProfileStorage().getProfile(profileId);
   if (!profile) {
     debugLog.store.log(`Failed to load profile ${profileId}`);
-    return {
-      status: 'error',
-      error: { type: 'profile', message: `Unable to load Profile ${profileId}` },
-    };
+    return { status: 'error', message: `Unable to load Profile ${profileId}` };
   }
 
   const templateResult = await fetchTemplate(profile.template.link, profile.template.id);
@@ -42,9 +38,9 @@ export async function loadActiveProfile(profileId: string): Promise<LoadActivePr
       `Failed to load template for profile ${profileId}: ${formatTemplateError(templateResult.error)}`
     );
     return {
-      status: 'error',
-      error: { type: 'template', message: formatTemplateError(templateResult.error) },
+      status: 'template-error',
       profile,
+      message: formatTemplateError(templateResult.error),
     };
   }
   if (profile.template.link !== templateResult.url) {

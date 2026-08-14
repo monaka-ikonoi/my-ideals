@@ -14,8 +14,8 @@ export function MainContent() {
     return <EmptyPage />;
   }
 
-  if (profileLoadState.status === 'error') {
-    return <ProfileErrorPage error={profileLoadState.error} profile={profileLoadState.profile} />;
+  if (profileLoadState.status === 'error' || profileLoadState.status === 'template-error') {
+    return <ProfileErrorPage message={profileLoadState.message} />;
   }
 
   if (profileLoadState.status !== 'success') {

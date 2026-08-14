@@ -10,7 +10,7 @@ import { ProfileFlagOperations } from '@/utils/profileFlagOperation';
 
 export type LoadedProfile = {
   profile: Profile;
-  template: Template;
+  template: Template | null;
 };
 
 export type ProfileState = LoadedProfile & {
@@ -49,6 +49,7 @@ export function createProfileStore(loaded: LoadedProfile): ProfileStore {
 
         syncWithTemplate: async (cleanup: boolean) => {
           const { profile, template } = get();
+          if (!template) return;
 
           const synced = syncProfileWithTemplate(profile, template, cleanup);
           touch(synced);

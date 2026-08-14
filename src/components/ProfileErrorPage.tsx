@@ -1,25 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { XCircleIcon } from '@heroicons/react/24/outline';
-import { type LoadActiveProfileError } from '@/services/activeProfileLoader';
-import { type Profile } from '@/domain/profile';
 import { useProfileListStore } from '@/stores/profileListStore';
-import { useProfileSessionStore } from '@/stores/profileSessionStore';
+import { useProfileSessionStore, useSessionProfile } from '@/stores/profileSessionStore';
 import { useDialogStore } from '@/stores/dialogStore';
 import { ArrowPathIcon, ArrowDownTrayIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { useProfileExporter } from '@/hooks/useProfileExporter';
 
-export function ProfileErrorPage({
-  error,
-  profile,
-}: {
-  error: LoadActiveProfileError;
-  profile: Profile | null;
-}) {
+export function ProfileErrorPage({ message }: { message: string }) {
   const { t } = useTranslation();
-  const { exportProfile } = useProfileExporter();
 
   const profileId = useProfileListStore(state => state.activeId!);
-  const templateInfo = profile?.template;
+  const profileLoaded = useProfileSessionStore(state => !!state.store);
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center">
@@ -35,7 +26,7 @@ export function ProfileErrorPage({
         {/* Error message box */}
         <div className="w-full max-w-lg rounded-lg border border-red-200 bg-red-50 p-4">
           <pre className="text-left font-mono text-sm break-words whitespace-pre-wrap text-red-700">
-            {error.message}
+            {message}
           </pre>
         </div>
 
@@ -49,34 +40,42 @@ export function ProfileErrorPage({
             <ArrowPathIcon className="h-4 w-4" />
             {t('common.try-again')}
           </button>
-          {error.type === 'template' && templateInfo && (
-            <>
-              <button
-                type="button"
-                onClick={exportProfile}
-                className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4
-                  py-2 text-sm font-medium text-gray-700 hover:bg-gray-50
-                  disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <ArrowDownTrayIcon className="h-4 w-4" />
-                {t('profile.save-backup')}
-              </button>
-              <button
-                onClick={() =>
-                  useDialogStore
-                    .getState()
-                    .openEditProfileTemplateUrl(profileId, templateInfo.id, templateInfo.link)
-                }
-                className="flex items-center gap-2 rounded-lg border border-blue-600 bg-blue-600
-                  px-4 py-2 text-sm font-medium text-white hover:border-blue-600 hover:bg-blue-700"
-              >
-                <PencilIcon className="h-4 w-4" />
-                {t('profile.edit-template-url')}
-              </button>
-            </>
-          )}
+          {profileLoaded && <ProfileRecoveryActions profileId={profileId} />}
         </div>
       </div>
     </div>
+  );
+}
+
+function ProfileRecoveryActions({ profileId }: { profileId: string }) {
+  const { t } = useTranslation();
+  const { exportProfile } = useProfileExporter();
+  const templateInfo = useSessionProfile(state => state.profile.template);
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={exportProfile}
+        className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2
+          text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed
+          disabled:opacity-50"
+      >
+        <ArrowDownTrayIcon className="h-4 w-4" />
+        {t('profile.save-backup')}
+      </button>
+      <button
+        onClick={() =>
+          useDialogStore
+            .getState()
+            .openEditProfileTemplateUrl(profileId, templateInfo.id, templateInfo.link)
+        }
+        className="flex items-center gap-2 rounded-lg border border-blue-600 bg-blue-600 px-4 py-2
+          text-sm font-medium text-white hover:border-blue-600 hover:bg-blue-700"
+      >
+        <PencilIcon className="h-4 w-4" />
+        {t('profile.edit-template-url')}
+      </button>
+    </>
   );
 }
