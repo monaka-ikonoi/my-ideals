@@ -1,4 +1,4 @@
-import { debugLog } from './debug';
+import { debugLog } from '../utils/debug';
 
 export function isTwitterShortenedLink(url: string): boolean {
   if (!url) return false;

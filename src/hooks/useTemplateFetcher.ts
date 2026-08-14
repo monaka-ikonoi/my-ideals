@@ -3,7 +3,10 @@ import { debounce } from 'lodash-es';
 import { z } from 'zod';
 import { type Template } from '@/domain/template';
 import { fetchTemplate, formatTemplateError } from '@/services/fetchTemplate';
-import { extractTwitterShortenedLink, isTwitterShortenedLink } from '@/utils/twitterShortenedLink';
+import {
+  extractTwitterShortenedLink,
+  isTwitterShortenedLink,
+} from '@/services/twitterShortenedLink';
 
 export type TemplateFetchState =
   | { status: 'idle' }
