@@ -7,7 +7,7 @@ import {
   compileSearchQuery,
   matchSearchIndex,
   type SearchIndex,
-} from '@/utils/search';
+} from '@/services/search';
 
 // Index is cached per-template so it is only recompiled when the template changes
 function useTemplateSearchIndex(): Map<string, SearchIndex> {
