@@ -5,7 +5,7 @@ import { ProfileFlags, profileHasFlag, type Profile, type ProfileFlag } from '@/
 import { type Template } from '@/domain/template';
 import { getProfileStorage } from '@/storage/ProfileStorage';
 import { debugLog } from '@/utils/debug';
-import { syncProfileWithTemplate } from '@/utils/syncProfile';
+import { syncProfileWithTemplate } from '@/services/syncProfile';
 import { ProfileFlagOperations } from '@/utils/profileFlagOperation';
 
 export type LoadedProfile = {

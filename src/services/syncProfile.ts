@@ -1,6 +1,6 @@
 import { ProfileFlags, profileHasFlag, type Profile } from '@/domain/profile';
 import { type Template } from '@/domain/template';
-import { debugLog } from './debug';
+import { debugLog } from '../utils/debug';
 
 export type ItemChange = {
   id: string;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { Template } from '@/domain/template';
-import type { ProfileTemplateDiff, CollectionChange } from '@/utils/syncProfile';
+import type { ProfileTemplateDiff, CollectionChange } from '@/services/syncProfile';
 import { useActiveProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { ConfirmDialog } from '../ui/ConfirmDialog';

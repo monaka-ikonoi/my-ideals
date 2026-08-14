@@ -2,7 +2,7 @@ import { create, useStore } from 'zustand';
 import { loadActiveProfile } from '@/services/activeProfileLoader';
 import { type Template } from '@/domain/template';
 import { debugLog } from '@/utils/debug';
-import { type ProfileTemplateDiff } from '@/utils/syncProfile';
+import { type ProfileTemplateDiff } from '@/services/syncProfile';
 import { createProfileStore, type ProfileState, type ProfileStore } from './profileStore';
 
 export type ProfileLoadState =

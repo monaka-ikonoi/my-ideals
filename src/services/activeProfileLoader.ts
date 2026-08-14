@@ -6,7 +6,7 @@ import {
   diffProfileWithTemplate,
   syncProfileWithTemplate,
   type ProfileTemplateDiff,
-} from '@/utils/syncProfile';
+} from '@/services/syncProfile';
 import { fetchTemplate, formatTemplateError } from '@/utils/fetchTemplate';
 import { applyTemplateMigrations } from '@/utils/templateMigration';
 
