@@ -3,18 +3,15 @@ import { immer } from 'zustand/middleware/immer';
 import { debounce } from 'lodash-es';
 import {
   buildRecordFields,
-  getPrimaryField,
-  isBooleanField,
-  isNumberField,
   type Profile,
   type RecordField,
   type RecordMode,
+  type RecordValue,
 } from '@/domain/profile';
 import { type Template } from '@/domain/template';
 import { getProfileStorage } from '@/storage/ProfileStorage';
 import { debugLog } from '@/utils/debug';
-import { normalizeStatusBoolean } from '@/utils/utils';
-import { readField, writeField } from '@/utils/recordUtils';
+import { writeField } from '@/utils/recordUtils';
 import { syncProfileWithTemplate } from '@/services/syncProfile';
 import { applyRecordMode } from '@/services/recordMode';
 
@@ -27,8 +24,12 @@ export type ProfileState = LoadedProfile & {
   fields: RecordField[];
   flush: () => Promise<void>;
   syncWithTemplate: (cleanup: boolean) => Promise<void>;
-  toggleStatus: (collectionId: string, itemId: string) => void;
-  setCount: (collectionId: string, itemId: string, value: number) => void;
+  setFieldValue: (
+    collectionId: string,
+    itemId: string,
+    fieldId: string,
+    value: RecordValue
+  ) => void;
   toggleMember: (member: string) => void;
   updateName: (name: string) => void;
   updateTemplateInfo: (url: string, templateId?: string) => void;
@@ -72,34 +73,22 @@ export function createProfileStore(loaded: LoadedProfile): ProfileStore {
           });
         },
 
-        toggleStatus: (collectionId: string, itemId: string) => {
+        setFieldValue: (
+          collectionId: string,
+          itemId: string,
+          fieldId: string,
+          value: RecordValue
+        ) => {
           set(state => {
-            const field = getPrimaryField(state.fields);
-            if (isNumberField(field)) return;
+            const field = state.fields.find(f => f.id === fieldId);
+            if (!field) return;
+            if (field.type === 'boolean' && typeof value !== 'boolean') return;
+            if (field.type === 'number' && !Number.isInteger(value)) return;
 
             if (!state.profile.collections[collectionId]) {
               state.profile.collections[collectionId] = {};
             }
 
-            const record = state.profile.collections[collectionId][itemId];
-            const current = normalizeStatusBoolean(readField(record, field));
-            state.profile.collections[collectionId][itemId] = writeField(record, field, !current);
-            touch(state.profile);
-          });
-
-          debouncedSave();
-        },
-
-        setCount: (collectionId: string, itemId: string, value: number) => {
-          set(state => {
-            if (!Number.isInteger(value)) return;
-
-            const field = getPrimaryField(state.fields);
-            if (isBooleanField(field)) return;
-
-            if (!state.profile.collections[collectionId]) {
-              state.profile.collections[collectionId] = {};
-            }
             const record = state.profile.collections[collectionId][itemId];
             state.profile.collections[collectionId][itemId] = writeField(record, field, value);
             touch(state.profile);
