@@ -13,6 +13,8 @@ import {
 import { type Template } from '@/domain/template';
 import { getProfileStorage } from '@/storage/ProfileStorage';
 import { debugLog } from '@/utils/debug';
+import { normalizeStatusBoolean } from '@/utils/utils';
+import { readField, writeField } from '@/utils/recordUtils';
 import { syncProfileWithTemplate } from '@/services/syncProfile';
 import { applyRecordMode } from '@/services/recordMode';
 
@@ -30,7 +32,7 @@ export type ProfileState = LoadedProfile & {
   toggleMember: (member: string) => void;
   updateName: (name: string) => void;
   updateTemplateInfo: (url: string, templateId?: string) => void;
-  setMode: (mode: RecordMode) => void;
+  setMode: (mode: RecordMode, customFields?: RecordField[]) => void;
 };
 
 export type ProfileStore = StoreApi<ProfileState>;
@@ -72,14 +74,16 @@ export function createProfileStore(loaded: LoadedProfile): ProfileStore {
 
         toggleStatus: (collectionId: string, itemId: string) => {
           set(state => {
-            if (isNumberField(getPrimaryField(state.fields))) return;
+            const field = getPrimaryField(state.fields);
+            if (isNumberField(field)) return;
 
             if (!state.profile.collections[collectionId]) {
               state.profile.collections[collectionId] = {};
             }
 
-            const current = state.profile.collections[collectionId][itemId] ?? false;
-            state.profile.collections[collectionId][itemId] = !current;
+            const record = state.profile.collections[collectionId][itemId];
+            const current = normalizeStatusBoolean(readField(record, field));
+            state.profile.collections[collectionId][itemId] = writeField(record, field, !current);
             touch(state.profile);
           });
 
@@ -90,12 +94,14 @@ export function createProfileStore(loaded: LoadedProfile): ProfileStore {
           set(state => {
             if (!Number.isInteger(value)) return;
 
-            if (isBooleanField(getPrimaryField(state.fields))) return;
+            const field = getPrimaryField(state.fields);
+            if (isBooleanField(field)) return;
 
             if (!state.profile.collections[collectionId]) {
               state.profile.collections[collectionId] = {};
             }
-            state.profile.collections[collectionId][itemId] = value;
+            const record = state.profile.collections[collectionId][itemId];
+            state.profile.collections[collectionId][itemId] = writeField(record, field, value);
             touch(state.profile);
           });
 
@@ -139,12 +145,12 @@ export function createProfileStore(loaded: LoadedProfile): ProfileStore {
           debouncedSave();
         },
 
-        setMode: (mode: RecordMode) => {
+        setMode: (mode: RecordMode, customFields?: RecordField[]) => {
           set(state => {
-            if (state.profile.mode === mode) return;
+            if (state.profile.mode === mode && mode !== 'custom') return;
 
             debugLog.perf.time(`Apply record mode ${mode}`);
-            applyRecordMode(state.profile, mode);
+            applyRecordMode(state.profile, mode, customFields);
             state.fields = buildRecordFields(state.profile);
             touch(state.profile);
             debugLog.perf.timeEnd(`Apply record mode ${mode}`);

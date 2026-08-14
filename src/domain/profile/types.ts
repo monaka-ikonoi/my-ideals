@@ -1,5 +1,5 @@
 import { type ProfileFlag } from './flags';
-import { type RecordMode } from './record';
+import { type ItemRecord, type RecordField, type RecordMode } from './record';
 
 export type ProfileTemplateInfo = {
   id: string;
@@ -7,7 +7,7 @@ export type ProfileTemplateInfo = {
   revision: number;
 };
 
-export type ProfileCollection = Record<string, Record<string, boolean | number>>;
+export type ProfileCollection = Record<string, Record<string, ItemRecord>>;
 
 export type Profile = {
   magic: 'my-ideals-profile';
@@ -18,6 +18,7 @@ export type Profile = {
   /** Unused since v2, kept as a home for future orthogonal switches. */
   flags?: ProfileFlag[];
   mode: RecordMode;
+  customFields?: RecordField[];
   selectedMembers: string[];
   collections: ProfileCollection;
   lastModified: number;

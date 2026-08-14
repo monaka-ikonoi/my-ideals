@@ -2,8 +2,9 @@ import { useMemo, useState } from 'react';
 import { getActiveProfile, useActiveProfile } from '@/stores/profileSessionStore';
 import { useTemplate } from '@/contexts/template';
 import { type TemplateCollection } from '@/domain/template';
-import { type ProfileCollection } from '@/domain/profile';
+import { type ProfileCollection, type RecordField, getPrimaryField } from '@/domain/profile';
 import { debugLog } from '@/utils/debug';
+import { readField } from '@/utils/recordUtils';
 import { normalizeStatusBoolean, normalizeStatusNumber } from '@/utils/utils';
 
 export type FilterItemStatus = 'all' | 'owned' | 'unowned' | 'wanted';
@@ -16,6 +17,7 @@ type FilteredCollectionsResult = {
 function useFilteredCollections(
   collections: TemplateCollection[],
   cachedStatus: ProfileCollection,
+  primaryField: RecordField,
   hideCompleted: boolean
 ): FilteredCollectionsResult {
   const selectedMembers = useActiveProfile(state => state.profile.selectedMembers);
@@ -51,7 +53,11 @@ function useFilteredCollections(
         if (hideCompleted) {
           const status = cachedStatus[collection.id] ?? {};
 
-          if (items.every(item => normalizeStatusBoolean(status[item.id]) === true)) {
+          if (
+            items.every(
+              item => normalizeStatusBoolean(readField(status[item.id], primaryField)) === true
+            )
+          ) {
             acc.hiddenCount++;
             return acc;
           }
@@ -68,12 +74,13 @@ function useFilteredCollections(
 
     debugLog.perf.timeEnd('Apply filter');
     return result;
-  }, [collections, cachedStatus, selectedMembers, hideCompleted]);
+  }, [collections, cachedStatus, selectedMembers, hideCompleted, primaryField]);
 }
 
 function useVisibleCollections(
   cachedStatus: ProfileCollection,
   filteredCollections: TemplateCollection[],
+  primaryField: RecordField,
   itemStatus: FilterItemStatus
 ) {
   return useMemo(() => {
@@ -83,7 +90,9 @@ function useVisibleCollections(
     debugLog.perf.time(`Apply visible filter`);
     const result = filteredCollections.reduce<TemplateCollection[]>((acc, collection) => {
       const items = collection.items.filter(item => {
-        const count = normalizeStatusNumber(cachedStatus[collection.id]?.[item.id] ?? 0);
+        const count = normalizeStatusNumber(
+          readField(cachedStatus[collection.id]?.[item.id], primaryField)
+        );
         switch (itemStatus) {
           case 'owned':
             return count > 0;
@@ -105,7 +114,7 @@ function useVisibleCollections(
 
     debugLog.perf.timeEnd(`Apply visible filter`);
     return result;
-  }, [filteredCollections, cachedStatus, itemStatus]);
+  }, [filteredCollections, cachedStatus, itemStatus, primaryField]);
 }
 
 export function useCollectionFilter() {
@@ -118,14 +127,21 @@ export function useCollectionFilter() {
   // Intentionally read via getState() instead of subscribing，the filter result
   // should stay stable while the user toggles items.
   const cachedStatus = getActiveProfile().profile.collections;
+  const primaryField = useActiveProfile(state => getPrimaryField(state.fields));
 
   const { filteredCollections, hiddenCount } = useFilteredCollections(
     collections,
     cachedStatus,
+    primaryField,
     hideCompleted
   );
 
-  const visibleCollections = useVisibleCollections(cachedStatus, filteredCollections, filterStatus);
+  const visibleCollections = useVisibleCollections(
+    cachedStatus,
+    filteredCollections,
+    primaryField,
+    filterStatus
+  );
 
   const collectionMap = useMemo(() => {
     const map: Record<string, TemplateCollection> = {};
