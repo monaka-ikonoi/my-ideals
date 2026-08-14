@@ -1,9 +1,11 @@
 import { useMemo, useDeferredValue } from 'react';
 import { useShallow } from 'zustand/shallow';
 import type { TemplateCollection } from '@/domain/template';
-import type { Profile } from '@/domain/profile';
+import type { Profile, RecordField } from '@/domain/profile';
+import { getPrimaryField } from '@/domain/profile';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { normalizeStatusNumber } from '@/utils/utils';
+import { readField } from '@/utils/recordUtils';
 import { debugLog } from '@/utils/debug';
 
 type StatsCounter = {
@@ -23,13 +25,14 @@ const EMPTY_COLLECTION_STATUS: CollectionStatus = {};
 
 function calculateItemStats(
   collection: TemplateCollection,
-  statusMap: CollectionStatus
+  statusMap: CollectionStatus,
+  primaryField: RecordField
 ): StatsCounter {
   let collected = 0;
   let owned = 0;
 
   for (const item of collection.items) {
-    const count = normalizeStatusNumber(statusMap[item.id]);
+    const count = normalizeStatusNumber(readField(statusMap[item.id], primaryField));
     if (count > 0) {
       collected++;
       owned += count;
@@ -45,7 +48,8 @@ function calculateItemStats(
 
 function calculateCompStats(
   collection: TemplateCollection,
-  statusMap: CollectionStatus
+  statusMap: CollectionStatus,
+  primaryField: RecordField
 ): StatsCounter {
   let collected = 0;
   let owned = 0;
@@ -54,7 +58,7 @@ function calculateCompStats(
   const memberMinCounts = new Map<string, number>();
 
   for (const item of collection.items) {
-    const count = normalizeStatusNumber(statusMap[item.id]);
+    const count = normalizeStatusNumber(readField(statusMap[item.id], primaryField));
 
     const members = Array.isArray(item.member) ? item.member : [item.member];
     for (const m of members) {
@@ -76,16 +80,23 @@ function calculateCompStats(
   };
 }
 
-type StatsCache = WeakMap<TemplateCollection, WeakMap<CollectionStatus, StatsCounter>>;
+type CachedStats = { primaryField: RecordField; counter: StatsCounter };
+
+type StatsCache = WeakMap<TemplateCollection, WeakMap<CollectionStatus, CachedStats>>;
 
 const itemStatsCache: StatsCache = new WeakMap();
 const compStatsCache: StatsCache = new WeakMap();
 
 function calculateStatsCached(
   cache: StatsCache,
-  calculate: (collection: TemplateCollection, statusMap: CollectionStatus) => StatsCounter,
+  calculate: (
+    collection: TemplateCollection,
+    statusMap: CollectionStatus,
+    primaryField: RecordField
+  ) => StatsCounter,
   collection: TemplateCollection,
-  statusMap: CollectionStatus
+  statusMap: CollectionStatus,
+  primaryField: RecordField
 ): StatsCounter {
   let cachedCollectionStats = cache.get(collection);
   if (!cachedCollectionStats) {
@@ -93,22 +104,36 @@ function calculateStatsCached(
     cache.set(collection, cachedCollectionStats);
   }
 
-  let cachedCounter = cachedCollectionStats.get(statusMap);
-  if (!cachedCounter) {
-    cachedCounter = calculate(collection, statusMap);
-    cachedCollectionStats.set(statusMap, cachedCounter);
+  // The same values can mean different things once the primary field changes.
+  let cached = cachedCollectionStats.get(statusMap);
+  if (!cached || cached.primaryField !== primaryField) {
+    cached = { primaryField, counter: calculate(collection, statusMap, primaryField) };
+    cachedCollectionStats.set(statusMap, cached);
   }
-  return cachedCounter;
+  return cached.counter;
 }
 
 function calculateCollectionStats(
   visibleCollections: TemplateCollection,
   baseCollection: TemplateCollection,
-  statusMap: CollectionStatus
+  statusMap: CollectionStatus,
+  primaryField: RecordField
 ): CollectionStats {
   return {
-    items: calculateStatsCached(itemStatsCache, calculateItemStats, visibleCollections, statusMap),
-    comps: calculateStatsCached(compStatsCache, calculateCompStats, baseCollection, statusMap),
+    items: calculateStatsCached(
+      itemStatsCache,
+      calculateItemStats,
+      visibleCollections,
+      statusMap,
+      primaryField
+    ),
+    comps: calculateStatsCached(
+      compStatsCache,
+      calculateCompStats,
+      baseCollection,
+      statusMap,
+      primaryField
+    ),
   };
 }
 
@@ -119,13 +144,19 @@ export function useCollectionStats(
   const statusMap = useActiveProfile(
     useShallow(state => state.profile.collections[baseCollection.id] ?? EMPTY_COLLECTION_STATUS)
   );
+  const primaryField = useActiveProfile(state => getPrimaryField(state.fields));
 
   return useMemo(() => {
     debugLog.perf.time(`calculateCollectionStats: ${baseCollection.id}`);
-    const stats = calculateCollectionStats(visibleCollections, baseCollection, statusMap);
+    const stats = calculateCollectionStats(
+      visibleCollections,
+      baseCollection,
+      statusMap,
+      primaryField
+    );
     debugLog.perf.timeEnd(`calculateCollectionStats: ${baseCollection.id}`);
     return stats;
-  }, [baseCollection, visibleCollections, statusMap]);
+  }, [baseCollection, visibleCollections, statusMap, primaryField]);
 }
 
 type AggregatedCollectionStats = {
@@ -143,6 +174,7 @@ function addStatsCounter(target: StatsCounter, source: StatsCounter) {
 function calculateAggregatedCollectionStats(
   visibleCollectionss: TemplateCollection[],
   statusMaps: Profile['collections'],
+  primaryField: RecordField,
   baseCollectionMap?: Record<string, TemplateCollection>
 ): AggregatedCollectionStats {
   const result: AggregatedCollectionStats = {
@@ -158,7 +190,8 @@ function calculateAggregatedCollectionStats(
     const stats = calculateCollectionStats(
       c,
       baseCollection,
-      statusMaps[baseCollection.id] ?? EMPTY_COLLECTION_STATUS
+      statusMaps[baseCollection.id] ?? EMPTY_COLLECTION_STATUS,
+      primaryField
     );
     addStatsCounter(result.items, stats.items);
     addStatsCounter(result.comps, stats.comps);
@@ -172,6 +205,7 @@ export function useAggregatedCollectionStats(
   baseCollectionMap?: Record<string, TemplateCollection>
 ) {
   const statusMaps = useActiveProfile(state => state.profile.collections);
+  const primaryField = useActiveProfile(state => getPrimaryField(state.fields));
   // Defer the statusMaps so rapid toggles don't block the main thread on large templates
   const deferredStatusMaps = useDeferredValue(statusMaps);
   const deferredCollections = useDeferredValue(visibleCollectionss);
@@ -182,9 +216,10 @@ export function useAggregatedCollectionStats(
     const stats = calculateAggregatedCollectionStats(
       deferredCollections,
       deferredStatusMaps,
+      primaryField,
       deferredBaseMap
     );
     debugLog.perf.timeEnd(`calculateAggregatedCollectionStats`);
     return stats;
-  }, [deferredCollections, deferredBaseMap, deferredStatusMaps]);
+  }, [deferredCollections, deferredBaseMap, deferredStatusMaps, primaryField]);
 }
