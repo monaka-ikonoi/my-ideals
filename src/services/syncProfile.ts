@@ -1,4 +1,5 @@
-import { buildRecordFields, getPrimaryField, isNumberField, type Profile } from '@/domain/profile';
+import { buildRecordFields, type Profile } from '@/domain/profile';
+import { createDefaultRecord } from '../utils/recordUtils';
 import { type Template } from '@/domain/template';
 import { debugLog } from '../utils/debug';
 
@@ -100,8 +101,10 @@ export function syncProfileWithTemplate(
     `Sync template ${template.id} from ${profile.template.revision} to ${template.revision}`
   );
 
-  const enableCount = isNumberField(getPrimaryField(buildRecordFields(profile)));
-  debugLog.sync.log(`${template.id}: enableCount: ${enableCount}`);
+  const fields = buildRecordFields(profile);
+  debugLog.sync.log(
+    `${template.id}: default record: ${JSON.stringify(createDefaultRecord(fields))}`
+  );
 
   if (template.revision < profile.template.revision) {
     console.warn(
@@ -118,7 +121,7 @@ export function syncProfileWithTemplate(
       collections[tc.id] = {};
 
       for (const item of tc.items) {
-        collections[tc.id][item.id] = existing[item.id] ?? (enableCount ? 0 : false);
+        collections[tc.id][item.id] = existing[item.id] ?? createDefaultRecord(fields);
       }
     }
   } else {
@@ -133,7 +136,7 @@ export function syncProfileWithTemplate(
 
       for (const item of tc.items) {
         if (!(item.id in collections[tc.id])) {
-          collections[tc.id][item.id] = enableCount ? 0 : false;
+          collections[tc.id][item.id] = createDefaultRecord(fields);
         }
       }
     }

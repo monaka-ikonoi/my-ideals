@@ -8,6 +8,7 @@ import { useTemplate } from '@/contexts/template';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { getPrimaryField, isNumberField } from '@/domain/profile';
+import { readField } from '@/utils/recordUtils';
 import { downloadFile, shareAPISupported, shareFile } from '@/utils/fileUtils';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { FullScreenModal } from '../ui/FullScreenModal';
@@ -57,10 +58,11 @@ export function ImageGenerateModal({
 }: ImageGenerateModalProps) {
   const { t, i18n } = useTranslation();
 
-  const { profileId, enableCount, statusMap } = useActiveProfile(
+  const { profileId, enableCount, primaryField, statusMap } = useActiveProfile(
     useShallow(state => ({
       profileId: state.profile.id,
       enableCount: isNumberField(getPrimaryField(state.fields)),
+      primaryField: getPrimaryField(state.fields),
       statusMap: state.profile.collections,
     }))
   );
@@ -161,11 +163,15 @@ export function ImageGenerateModal({
       const collectionStatus = statusMap?.[collection.id];
       const candidate =
         collection.items.find(item => {
-          const status = collectionStatus?.[item.id];
+          const status = readField(collectionStatus?.[item.id], primaryField);
           return normalizeStatusNumber(status) !== 0;
         }) ?? collection.items[0];
       if (candidate) {
-        return { collection, item: candidate, status: collectionStatus?.[candidate.id] };
+        return {
+          collection,
+          item: candidate,
+          status: readField(collectionStatus?.[candidate.id], primaryField),
+        };
       }
     }
     return null;
