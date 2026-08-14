@@ -1,5 +1,5 @@
 import { create, useStore } from 'zustand';
-import { loadActiveProfile } from '@/services/activeProfileLoader';
+import { loadActiveProfile } from '@/services/loadActiveProfile';
 import { type Template } from '@/domain/template';
 import { debugLog } from '@/utils/debug';
 import { type ProfileTemplateDiff } from '@/services/syncProfile';
