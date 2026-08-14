@@ -1,10 +1,17 @@
 import { useState, memo, useCallback } from 'react';
 import { type TemplateCollectionItem } from '@/domain/template';
+import {
+  getPrimaryField,
+  isNumberField,
+  type ItemRecord,
+  type RecordField,
+} from '@/domain/profile';
 import { useImageOptions } from '@/contexts/imageOptions';
 import { useTemplate } from '@/contexts/template';
 import { getActiveProfile } from '@/stores/profileSessionStore';
 import { debugLog } from '@/utils/debug';
 import { normalizeStatusBoolean } from '@/utils/utils';
+import { readField } from '@/utils/recordUtils';
 import { formatImageUrl } from '@/utils/templateUtils';
 import { ItemCounter } from './ItemCounter';
 import { CountBadge } from './CountBadge';
@@ -14,8 +21,8 @@ type ImageCheckCardProps = {
   item: TemplateCollectionItem;
   mode?: 'normal' | 'export' | 'edit';
   aspectRatio?: string;
-  enableCount: boolean;
-  status: boolean | number | undefined;
+  fields: RecordField[];
+  record: ItemRecord | undefined;
 };
 
 export const ImageCheckCard = memo(function ImageCheckCard({
@@ -23,24 +30,32 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   item,
   mode = 'normal',
   aspectRatio = '7/10',
-  enableCount,
-  status: rawStatus,
+  fields,
+  record,
 }: ImageCheckCardProps) {
   debugLog.render.log(`ImageCheckCard: ${collectionId} ${item.id}`);
 
   const imageOptions = useImageOptions();
   const { imageBaseUrl, revision } = useTemplate();
 
-  const status = rawStatus ?? (enableCount ? 0 : false);
+  const primaryField = getPrimaryField(fields);
+  const enableCount = isNumberField(primaryField);
+  const status = readField(record, primaryField);
 
   const handleSetCount = useCallback(
-    (val: number) => getActiveProfile().setCount(collectionId, item.id, val),
-    [collectionId, item.id]
+    (val: number) => getActiveProfile().setFieldValue(collectionId, item.id, primaryField.id, val),
+    [collectionId, item.id, primaryField.id]
   );
 
   const handleToggle = useCallback(() => {
-    if (!enableCount) getActiveProfile().toggleStatus(collectionId, item.id);
-  }, [enableCount, collectionId, item.id]);
+    if (enableCount) return;
+    getActiveProfile().setFieldValue(
+      collectionId,
+      item.id,
+      primaryField.id,
+      !normalizeStatusBoolean(status)
+    );
+  }, [enableCount, collectionId, item.id, primaryField.id, status]);
 
   const fallbackSrc = imageBaseUrl?.fallback;
   const targetSrc = item.image ?? formatImageUrl(imageBaseUrl, revision, collectionId, item.id);

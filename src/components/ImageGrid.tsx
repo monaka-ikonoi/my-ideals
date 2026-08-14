@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react';
 import { type TemplateCollectionItem } from '@/domain/template';
-import { getPrimaryField, isNumberField } from '@/domain/profile';
+import { type ItemRecord } from '@/domain/profile';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { debugLog } from '@/utils/debug';
 import { type ResolvedLayout } from '@/utils/layoutUtils';
@@ -9,7 +9,7 @@ import { ImageCheckCard } from './ImageCheckCard';
 type ImageGridItem = {
   collection: string;
   item: TemplateCollectionItem;
-  status: boolean | number | undefined;
+  record: ItemRecord | undefined;
 };
 
 type ImageGridProps = {
@@ -25,7 +25,7 @@ export const ImageGrid = memo(function ImageGrid({
 }: ImageGridProps) {
   debugLog.render.log(`ImageGrid: ${items.length} items`);
 
-  const enableCount = useActiveProfile(state => isNumberField(getPrimaryField(state.fields)));
+  const fields = useActiveProfile(state => state.fields);
 
   /* To make rotated item height = (column width) * (h/w), its width need to be height * (h/w).
   /* Column wideth is (100% - gap) / 2.
@@ -62,7 +62,7 @@ export const ImageGrid = memo(function ImageGrid({
             } as React.CSSProperties)
       }
     >
-      {items.map(({ collection, item, status }) => (
+      {items.map(({ collection, item, record }) => (
         <div
           key={`${collection}|${item.id}`}
           className={item.rotated ? 'col-span-2 justify-self-center' : undefined}
@@ -78,8 +78,8 @@ export const ImageGrid = memo(function ImageGrid({
             item={item}
             mode={mode}
             aspectRatio={layout.aspectRatio}
-            enableCount={enableCount}
-            status={status}
+            fields={fields}
+            record={record}
           />
         </div>
       ))}
