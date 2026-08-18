@@ -1,7 +1,7 @@
 export type RecordValue = boolean | number;
 export type ItemRecord = RecordValue | Record<string, RecordValue>;
 
-export const RECORD_FIELD_ID_PATTERN = /^[A-Za-z_][A-Za-z0-9_-]*$/;
+export const RECORD_FIELD_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
 export const RECORD_FIELD_ID_MAX_LENGTH = 16;
 export const RECORD_FIELD_NAME_MAX_LENGTH = 8;
 
@@ -23,9 +23,9 @@ export type RecordMode = (typeof RecordModes)[number];
 // name here is just a placeholder, it should never be shown
 const PresetFields: Record<Exclude<RecordMode, 'custom'>, RecordField[]> = {
   standard: [
-    { id: 'owned', name: 'owned', type: 'boolean', default: false, primary: true, root: true },
+    { id: '_value', name: '_', type: 'boolean', default: false, primary: true, root: true },
   ],
-  count: [{ id: 'count', name: 'count', type: 'number', default: 0, primary: true, root: true }],
+  count: [{ id: '_value', name: '_', type: 'number', default: 0, primary: true, root: true }],
 };
 
 type RecordModeSource = { mode: RecordMode; customFields?: RecordField[] };
