@@ -20,7 +20,7 @@ export function RecordFieldRow({ field, value, showLabel, mode, onChange }: Reco
           className={`w-2/5 shrink-0 truncate bg-gray-100 px-2 text-gray-500
           ${mode === 'edit' ? 'h-10 text-sm leading-10' : 'h-8 text-xs leading-8'}`}
         >
-          {field.id}
+          {field.name}
         </span>
       )}
 

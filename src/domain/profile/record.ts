@@ -1,8 +1,13 @@
 export type RecordValue = boolean | number;
 export type ItemRecord = RecordValue | Record<string, RecordValue>;
 
+export const RECORD_FIELD_ID_PATTERN = /^[A-Za-z_][A-Za-z0-9_-]*$/;
+export const RECORD_FIELD_ID_MAX_LENGTH = 16;
+export const RECORD_FIELD_NAME_MAX_LENGTH = 8;
+
 type RecordFieldBase = {
   id: string;
+  name: string;
   primary?: boolean;
   /** The record is this field's bare value rather than a `{ [id]: value }` entry. */
   root?: boolean;
@@ -15,9 +20,12 @@ export const RecordModes = ['standard', 'count', 'custom'] as const;
 
 export type RecordMode = (typeof RecordModes)[number];
 
+// name here is just a placeholder, it should never be shown
 const PresetFields: Record<Exclude<RecordMode, 'custom'>, RecordField[]> = {
-  standard: [{ id: 'owned', type: 'boolean', default: false, primary: true, root: true }],
-  count: [{ id: 'count', type: 'number', default: 0, primary: true, root: true }],
+  standard: [
+    { id: 'owned', name: 'owned', type: 'boolean', default: false, primary: true, root: true },
+  ],
+  count: [{ id: 'count', name: 'count', type: 'number', default: 0, primary: true, root: true }],
 };
 
 type RecordModeSource = { mode: RecordMode; customFields?: RecordField[] };
