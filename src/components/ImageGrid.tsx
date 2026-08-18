@@ -1,10 +1,12 @@
 import { memo, useMemo } from 'react';
+import { useShallow } from 'zustand/shallow';
 import { type TemplateCollectionItem } from '@/domain/template';
 import { type ItemRecord } from '@/domain/profile';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { debugLog } from '@/utils/debug';
 import { type ResolvedLayout } from '@/utils/layoutUtils';
-import { ImageCheckCard } from './ImageCheckCard';
+import { ItemCard } from './card/ItemCard';
+import { type ItemCardMode } from './card/types';
 
 type ImageGridItem = {
   collection: string;
@@ -15,7 +17,7 @@ type ImageGridItem = {
 type ImageGridProps = {
   items: ImageGridItem[];
   layout: ResolvedLayout;
-  mode?: 'normal' | 'export' | 'edit';
+  mode?: ItemCardMode;
 };
 
 export const ImageGrid = memo(function ImageGrid({
@@ -25,7 +27,12 @@ export const ImageGrid = memo(function ImageGrid({
 }: ImageGridProps) {
   debugLog.render.log(`ImageGrid: ${items.length} items`);
 
-  const fields = useActiveProfile(state => state.fields);
+  const { fields, recordMode } = useActiveProfile(
+    useShallow(state => ({
+      fields: state.fields,
+      recordMode: state.profile.mode,
+    }))
+  );
 
   /* To make rotated item height = (column width) * (h/w), its width need to be height * (h/w).
   /* Column wideth is (100% - gap) / 2.
@@ -73,12 +80,13 @@ export const ImageGrid = memo(function ImageGrid({
               : undefined
           }
         >
-          <ImageCheckCard
+          <ItemCard
             collectionId={collection}
             item={item}
             mode={mode}
             aspectRatio={layout.aspectRatio}
             fields={fields}
+            recordMode={recordMode}
             record={record}
           />
         </div>

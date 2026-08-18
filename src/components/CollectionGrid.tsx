@@ -10,10 +10,11 @@ import {
   type ResolvedLayout,
 } from '@/utils/layoutUtils';
 import { ImageGrid } from './ImageGrid';
+import { type ItemCardMode } from './card/types';
 
 type CollectionGridProps = {
   collection: TemplateCollection;
-  mode?: 'normal' | 'export' | 'edit';
+  mode?: ItemCardMode;
   columns?: [number, number, number];
 };
 
