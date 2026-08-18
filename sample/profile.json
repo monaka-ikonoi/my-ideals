@@ -5,7 +5,7 @@
   "name": "=ME 生写真",
   "template": {
     "id": "equal-me",
-    "link": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/public/sample/template.json",
+    "link": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/sample/template.json",
     "revision": 1
   },
   "collections": {
