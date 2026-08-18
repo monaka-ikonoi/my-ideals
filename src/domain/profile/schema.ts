@@ -85,10 +85,10 @@ export const ProfileSchema = z
   .superRefine((data, ctx) => {
     const fields = buildRecordFields(data);
 
-    if (data.mode === 'custom' && fields.length === 0) {
+    if (fields.length === 0) {
       ctx.issues.push({
         code: 'custom',
-        message: 'A custom profile must define at least one field',
+        message: 'At least one field must be defined',
         input: data.customFields,
         path: ['customFields'],
       });
@@ -104,6 +104,24 @@ export const ProfileSchema = z
       });
       return;
     }
+
+    const seenIds = new Set<string>();
+    const duplicates = fields.flatMap((field, index) => {
+      if (seenIds.has(field.id)) return [{ id: field.id, index }];
+      seenIds.add(field.id);
+      return [];
+    });
+
+    for (const { id, index } of duplicates) {
+      ctx.issues.push({
+        code: 'custom',
+        message: `Duplicate field id: ${id}`,
+        input: id,
+        path: ['customFields', index, 'id'],
+      });
+    }
+
+    if (duplicates.length > 0) return;
 
     const rootField = getRootField(fields);
     const fieldTypes = new Map(fields.map(field => [field.id, field.type]));
