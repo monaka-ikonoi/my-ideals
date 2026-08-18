@@ -12,7 +12,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { ProfileSchema, ProfileBundleSchema, type Profile } from '@/domain/profile';
 import { useProfileListStore } from '@/stores/profileListStore';
-import { getActiveProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
+import { useProfileSessionStore } from '@/stores/profileSessionStore';
 import { CommonBackdrop } from '../ui/CommonBackdrop';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/error';
@@ -72,9 +72,6 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
   const buildConflictState = async (profileId: string): Promise<ConflictState> => {
     if (!profiles.some(p => p.id === profileId)) return { hasConflict: false };
 
-    if (profileId === activeProfileId) {
-      return { hasConflict: true, existingLastModified: getActiveProfile().profile.lastModified };
-    }
     const stored = await getProfileStorage().getProfile(profileId);
     return {
       hasConflict: true,
