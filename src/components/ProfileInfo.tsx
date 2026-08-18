@@ -9,6 +9,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { InlineCode } from './ui/InlineCode';
 import { useActiveProfile } from '@/stores/profileSessionStore';
+import { useTemplate } from '@/contexts/template';
 import { useDialogStore } from '@/stores/dialogStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { toast } from 'sonner';
@@ -18,15 +19,14 @@ import { getErrorMessage } from '@/utils/error';
 export function ProfileInfo() {
   const { t } = useTranslation();
 
-  const { profileId, profileName, templateId, templateName, enableCount } = useActiveProfile(
+  const { profileId, profileName, enableCount } = useActiveProfile(
     useShallow(state => ({
       profileId: state.profile.id,
       profileName: state.profile.name,
-      templateId: state.template.id,
-      templateName: state.template.name,
       enableCount: profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT),
     }))
   );
+  const { id: templateId, name: templateName } = useTemplate();
   const profileTemplateInfo = useActiveProfile(state => state.profile.template);
 
   const [copied, setCopied] = useState(false);

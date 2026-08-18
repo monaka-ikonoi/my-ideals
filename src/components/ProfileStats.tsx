@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import type { TemplateCollection } from '@/domain/template';
 import { useActiveProfile } from '@/stores/profileSessionStore';
+import { useTemplate } from '@/contexts/template';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { useAggregatedCollectionStats } from '@/hooks/useStats';
 
@@ -12,7 +13,7 @@ type ProfileStatsProps = {
 export function ProfileStats({ visibleCollections, baseCollectionMap }: ProfileStatsProps) {
   const { t } = useTranslation();
 
-  const allCollections = useActiveProfile(state => state.template.collections);
+  const allCollections = useTemplate().collections;
   const globalStats = useAggregatedCollectionStats(allCollections);
   const currentStats = useAggregatedCollectionStats(visibleCollections, baseCollectionMap);
 

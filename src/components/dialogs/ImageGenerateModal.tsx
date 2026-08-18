@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import type { TemplateCollection } from '@/domain/template';
 import { ImageOptionsContext } from '@/contexts/imageOptions';
+import { useTemplate } from '@/contexts/template';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
@@ -54,27 +55,14 @@ export function ImageGenerateModal({
 }: ImageGenerateModalProps) {
   const { t, i18n } = useTranslation();
 
-  const {
-    templateName,
-    templateId,
-    profileId,
-    enableCount,
-    imageBaseUrl,
-    revision,
-    templateLayout,
-    statusMap,
-  } = useActiveProfile(
+  const { profileId, enableCount, statusMap } = useActiveProfile(
     useShallow(state => ({
-      templateName: state.template.name,
-      templateId: state.template.id,
       profileId: state.profile.id,
       enableCount: profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT),
-      imageBaseUrl: state.template.imageBaseUrl,
-      revision: state.template.revision,
-      templateLayout: state.template.layout,
       statusMap: state.profile.collections,
     }))
   );
+  const { name: templateName, id: templateId, layout: templateLayout } = useTemplate();
 
   const [step, setStep] = useState<Step>(() => (preSelectedId ? 'customize' : 'select'));
 
@@ -365,8 +353,6 @@ export function ImageGenerateModal({
                             mode="export"
                             aspectRatio={imageCardLayout.aspectRatio}
                             enableCount={enableCount}
-                            imageBaseUrl={imageBaseUrl}
-                            revision={revision}
                             status={previewItem.status}
                           />
                         </ImageOptionsContext>

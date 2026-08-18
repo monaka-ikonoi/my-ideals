@@ -1,10 +1,17 @@
-import { useProfileSessionStore } from '@/stores/profileSessionStore';
+import { useProfileSessionStore, useActiveProfile } from '@/stores/profileSessionStore';
 import { useProfileListStore } from '@/stores/profileListStore';
+import { TemplateContext } from '@/contexts/template';
 import { ProfileErrorPage } from './ProfileErrorPage';
 import { ProfilePage } from './ProfilePage';
 import { ProfileDialogs } from './ProfileDialogs';
 import { EmptyPage } from './EmptyPage';
 import { LoadingPage } from './ui/LoadingPage';
+
+// Only mounted past the gate below, where the store instance is guaranteed to exist.
+function TemplateScope({ children }: { children: React.ReactNode }) {
+  const template = useActiveProfile(state => state.template);
+  return <TemplateContext value={template}>{children}</TemplateContext>;
+}
 
 export function MainContent() {
   const activeProfileId = useProfileListStore(state => state.activeId);
@@ -23,9 +30,9 @@ export function MainContent() {
   }
 
   return (
-    <>
+    <TemplateScope>
       <ProfileDialogs />
       <ProfilePage />
-    </>
+    </TemplateScope>
   );
 }

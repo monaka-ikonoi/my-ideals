@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import type { TemplateCollection } from '@/domain/template';
 import { ImageOptionsContext } from '@/contexts/imageOptions';
+import { useTemplate } from '@/contexts/template';
 import { type ImageOptions } from '@/stores/settingsStore';
-import { getActiveProfile, useActiveProfile } from '@/stores/profileSessionStore';
+import { useActiveProfile } from '@/stores/profileSessionStore';
 import { APP_NAME, LONG_VERSION } from '@/utils/appInfo';
 import { resolveLayout } from '@/utils/layoutUtils';
 import { CollectionGrid } from './CollectionGrid';
@@ -31,7 +32,7 @@ function FlattenedCollectionGrid({ collections }: { collections: TemplateCollect
     [collections, statusMaps]
   );
 
-  const layout = resolveLayout(getActiveProfile().template.layout);
+  const layout = resolveLayout(useTemplate().layout);
 
   return <ImageGrid items={flattenedItems} layout={layout} mode="export" />;
 }

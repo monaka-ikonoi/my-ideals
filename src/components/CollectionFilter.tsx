@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MagnifyingGlassIcon, PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useActiveProfile } from '@/stores/profileSessionStore';
+import { useTemplate } from '@/contexts/template';
 import { CollectionStatusFilter } from './CollectionStatusFilter';
 import type { FilterItemStatus } from '@/hooks/useFilteredCollection';
 import { MemberSelector } from './MemberSelector';
@@ -185,7 +186,7 @@ export function CollectionFilter({
 }: CollectionFilterProps) {
   const { t } = useTranslation();
 
-  const members = useActiveProfile(state => state.template.members);
+  const members = useTemplate().members;
   const selectedMembers = useActiveProfile(state => state.profile.selectedMembers);
   const toggleMember = useActiveProfile(state => state.toggleMember);
 

@@ -1,7 +1,7 @@
 import { useState, memo, useCallback } from 'react';
 import { type TemplateCollectionItem } from '@/domain/template';
-import { type TemplateResourceBaseUrl } from '@/domain/template/imageBaseUrl';
 import { useImageOptions } from '@/contexts/imageOptions';
+import { useTemplate } from '@/contexts/template';
 import { getActiveProfile } from '@/stores/profileSessionStore';
 import { debugLog } from '@/utils/debug';
 import { normalizeStatusBoolean } from '@/utils/utils';
@@ -15,8 +15,6 @@ type ImageCheckCardProps = {
   mode?: 'normal' | 'export' | 'edit';
   aspectRatio?: string;
   enableCount: boolean;
-  imageBaseUrl?: TemplateResourceBaseUrl;
-  revision?: number;
   status: boolean | number | undefined;
 };
 
@@ -26,13 +24,12 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   mode = 'normal',
   aspectRatio = '7/10',
   enableCount,
-  imageBaseUrl,
-  revision,
   status: rawStatus,
 }: ImageCheckCardProps) {
   debugLog.render.log(`ImageCheckCard: ${collectionId} ${item.id}`);
 
   const imageOptions = useImageOptions();
+  const { imageBaseUrl, revision } = useTemplate();
 
   const status = rawStatus ?? (enableCount ? 0 : false);
 
@@ -46,7 +43,7 @@ export const ImageCheckCard = memo(function ImageCheckCard({
   }, [enableCount, collectionId, item.id]);
 
   const fallbackSrc = imageBaseUrl?.fallback;
-  const targetSrc = item.image ?? formatImageUrl(imageBaseUrl!, revision!, collectionId, item.id);
+  const targetSrc = item.image ?? formatImageUrl(imageBaseUrl, revision, collectionId, item.id);
 
   const [imageStatus, setImageStatus] = useState<'loading' | 'fallback' | 'loaded' | 'failed'>(
     'loading'

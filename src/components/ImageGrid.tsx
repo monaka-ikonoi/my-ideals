@@ -1,5 +1,4 @@
 import { memo, useMemo } from 'react';
-import { useShallow } from 'zustand/shallow';
 import { type TemplateCollectionItem } from '@/domain/template';
 import { ProfileFlags, profileHasFlag } from '@/domain/profile';
 import { useActiveProfile } from '@/stores/profileSessionStore';
@@ -26,12 +25,8 @@ export const ImageGrid = memo(function ImageGrid({
 }: ImageGridProps) {
   debugLog.render.log(`ImageGrid: ${items.length} items`);
 
-  const { enableCount, imageBaseUrl, revision } = useActiveProfile(
-    useShallow(state => ({
-      enableCount: profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT),
-      imageBaseUrl: state.template.imageBaseUrl,
-      revision: state.template.revision,
-    }))
+  const enableCount = useActiveProfile(state =>
+    profileHasFlag(state.profile, ProfileFlags.ENABLE_COUNT)
   );
 
   /* To make rotated item height = (column width) * (h/w), its width need to be height * (h/w).
@@ -86,8 +81,6 @@ export const ImageGrid = memo(function ImageGrid({
             mode={mode}
             aspectRatio={layout.aspectRatio}
             enableCount={enableCount}
-            imageBaseUrl={imageBaseUrl}
-            revision={revision}
             status={status}
           />
         </div>

@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react';
 import { type TemplateCollection } from '@/domain/template';
 import { useActiveProfile } from '@/stores/profileSessionStore';
+import { useTemplate } from '@/contexts/template';
 import { debugLog } from '@/utils/debug';
 import {
   computeGaps,
@@ -26,7 +27,7 @@ export const CollectionGrid = memo(function CollectionGrid({
   const statusMap = useActiveProfile(state => state.profile.collections[collection.id]);
 
   const collectionLayout = collection.layout;
-  const templateLayout = useActiveProfile(state => state.template.layout);
+  const templateLayout = useTemplate().layout;
   const computedLayout = useMemo<ResolvedLayout>(() => {
     const computedColumns = columns ? columns : resolveColumns(collectionLayout, templateLayout);
     return {

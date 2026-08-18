@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { Template } from '@/domain/template';
 import type { ProfileTemplateDiff, CollectionChange } from '@/services/syncProfile';
-import { useActiveProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
+import { useProfileSessionStore } from '@/stores/profileSessionStore';
+import { useTemplate } from '@/contexts/template';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 
@@ -122,7 +123,7 @@ function ProfileTemplateDiffContent({
 export function ProfileTemplateDiffDialog() {
   const { t } = useTranslation();
 
-  const template = useActiveProfile(state => state.template);
+  const template = useTemplate();
   const changes = useProfileSessionStore(state => state.changes);
   const confirmSyncChanges = useProfileSessionStore(state => state.confirmSyncChanges);
 

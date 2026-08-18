@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TemplateCollection } from '@/domain/template';
 import { DEFAULT_IMAGE_OPTIONS, ImageOptionsContext } from '@/contexts/imageOptions';
-import { useActiveProfile } from '@/stores/profileSessionStore';
+import { useTemplate } from '@/contexts/template';
 import { type ImageOptions } from '@/stores/settingsStore';
 import { useCollectionStats } from '@/hooks/useStats';
 import { FullScreenModal } from '../ui/FullScreenModal';
@@ -22,10 +22,8 @@ type CollectionEditModalProps = {
 export function CollectionEditModal({ collectionId, onClose }: CollectionEditModalProps) {
   const { t } = useTranslation();
 
-  const allMembers = useActiveProfile(state => state.template.members);
-  const collection = useActiveProfile(state =>
-    state.template.collections.find(c => c.id === collectionId)!
-  );
+  const allMembers = useTemplate().members;
+  const collection = useTemplate().collections.find(c => c.id === collectionId)!;
 
   const availableMembers = useMemo(() => {
     const members = new Set<string>();

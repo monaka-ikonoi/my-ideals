@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { getActiveProfile, useActiveProfile } from '@/stores/profileSessionStore';
+import { useTemplate } from '@/contexts/template';
 import { type TemplateCollection } from '@/domain/template';
 import { type ProfileCollection } from '@/domain/profile';
 import { debugLog } from '@/utils/debug';
@@ -112,7 +113,7 @@ export function useCollectionFilter() {
   const [filterStatus, setFilterStatus] = useState<FilterItemStatus>('all');
 
   debugLog.perf.time('useCollectionFilter');
-  const collections = useActiveProfile(state => state.template.collections);
+  const collections = useTemplate().collections;
 
   // Intentionally read via getState() instead of subscribing，the filter result
   // should stay stable while the user toggles items.
