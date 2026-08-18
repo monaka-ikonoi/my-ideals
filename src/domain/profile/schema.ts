@@ -1,7 +1,15 @@
 import { z } from 'zod';
 import { debugLog } from '@/utils/debug';
 import { ProfileFlags } from './flags';
-import { RecordModes, buildRecordFields, getRootField, type RecordMode } from './record';
+import {
+  RECORD_FIELD_ID_MAX_LENGTH,
+  RECORD_FIELD_ID_PATTERN,
+  RECORD_FIELD_NAME_MAX_LENGTH,
+  RecordModes,
+  buildRecordFields,
+  getRootField,
+  type RecordMode,
+} from './record';
 
 export const CURRENT_PROFILE_VERSION = 2;
 
@@ -15,19 +23,23 @@ const RecordValueSchema = z.union([z.boolean(), z.int()]);
 
 const ItemRecordSchema = z.union([RecordValueSchema, z.record(z.string(), RecordValueSchema)]);
 
+const RecordFieldCommon = {
+  id: z.string().regex(RECORD_FIELD_ID_PATTERN).max(RECORD_FIELD_ID_MAX_LENGTH),
+  name: z.string().min(1).max(RECORD_FIELD_NAME_MAX_LENGTH),
+  primary: z.boolean().optional(),
+};
+
 // `root` is intentionally absent: it describes a preset layout and is never user-authored.
 const RecordFieldSchema = z.discriminatedUnion('type', [
   z.object({
-    id: z.string().min(1),
+    ...RecordFieldCommon,
     type: z.literal('boolean'),
     default: z.boolean(),
-    primary: z.boolean().optional(),
   }),
   z.object({
-    id: z.string().min(1),
+    ...RecordFieldCommon,
     type: z.literal('number'),
     default: z.int(),
-    primary: z.boolean().optional(),
   }),
 ]);
 
