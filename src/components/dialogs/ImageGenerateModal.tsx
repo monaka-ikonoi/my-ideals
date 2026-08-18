@@ -14,8 +14,8 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { FullScreenModal } from '../ui/FullScreenModal';
 import { OffscreenCaptureArea, type CaptureResult } from '../ui/OffscreenCaptureArea';
 import { CollectionImageContent } from '../CollectionImageContent';
-import { ImageCheckCard } from '../ImageCheckCard';
-import { BADGE_POSITIONS, BADGE_SIZES } from '../CountBadgeProps';
+import { ItemCard } from '../card/ItemCard';
+import { BADGE_POSITIONS, BADGE_SIZES } from '../card/CountBadgeProps';
 import { StepIndicator } from '../ui/StepIndicator';
 import { OptionPicker } from '../ui/OptionPicker';
 import { getErrorMessage } from '@/utils/error';
@@ -58,10 +58,11 @@ export function ImageGenerateModal({
 }: ImageGenerateModalProps) {
   const { t, i18n } = useTranslation();
 
-  const { profileId, fields, enableCount, primaryField, statusMap } = useActiveProfile(
+  const { profileId, fields, recordMode, enableCount, primaryField, statusMap } = useActiveProfile(
     useShallow(state => ({
       profileId: state.profile.id,
       fields: state.fields,
+      recordMode: state.profile.mode,
       enableCount: isNumberField(getPrimaryField(state.fields)),
       primaryField: getPrimaryField(state.fields),
       statusMap: state.profile.collections,
@@ -356,12 +357,13 @@ export function ImageGenerateModal({
                     {previewItem && (
                       <div style={{ width: `${imageCardWidth}px` }}>
                         <ImageOptionsContext value={imageOptions}>
-                          <ImageCheckCard
+                          <ItemCard
                             collectionId={previewItem.collection.id}
                             item={previewItem.item}
                             mode="export"
                             aspectRatio={imageCardLayout.aspectRatio}
                             fields={fields}
+                            recordMode={recordMode}
                             record={previewItem.record}
                           />
                         </ImageOptionsContext>
