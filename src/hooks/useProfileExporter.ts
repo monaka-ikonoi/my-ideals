@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { type ProfileBundle } from '@/domain/profile/types';
-import { getSessionProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
+import { getActiveProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
 import { DEV_MODE } from '@/utils/appInfo';
 import { downloadFile } from '@/utils/fileUtils';
 import { getProfileStorage } from '@/storage/ProfileStorage';
@@ -19,7 +19,7 @@ export function useProfileExporter() {
   const exportProfile = () => {
     if (exporting) return;
 
-    const profile = getSessionProfile().profile;
+    const profile = getActiveProfile().profile;
     if (!profile) return;
 
     try {

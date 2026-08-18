@@ -7,7 +7,6 @@ import { ProfileDialogs } from './ProfileDialogs';
 import { EmptyPage } from './EmptyPage';
 import { LoadingPage } from './ui/LoadingPage';
 
-// Only mounted past the gate below, where the store instance is guaranteed to exist.
 function TemplateScope({ children }: { children: React.ReactNode }) {
   const template = useActiveProfile(state => state.template);
   return <TemplateContext value={template}>{children}</TemplateContext>;

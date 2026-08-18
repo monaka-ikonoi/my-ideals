@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import { useProfileListStore } from '@/stores/profileListStore';
-import { useProfileSessionStore, useSessionProfile } from '@/stores/profileSessionStore';
+import { useProfileSessionStore, useActiveProfile } from '@/stores/profileSessionStore';
 import { useDialogStore } from '@/stores/dialogStore';
 import { ArrowPathIcon, ArrowDownTrayIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { useProfileExporter } from '@/hooks/useProfileExporter';
@@ -50,7 +50,7 @@ export function ProfileErrorPage({ message }: { message: string }) {
 function ProfileRecoveryActions({ profileId }: { profileId: string }) {
   const { t } = useTranslation();
   const { exportProfile } = useProfileExporter();
-  const templateInfo = useSessionProfile(state => state.profile.template);
+  const templateInfo = useActiveProfile(state => state.profile.template);
 
   return (
     <>

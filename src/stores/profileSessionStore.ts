@@ -1,6 +1,5 @@
 import { create, useStore } from 'zustand';
 import { loadActiveProfile } from '@/services/loadActiveProfile';
-import { type Template } from '@/domain/template';
 import { debugLog } from '@/utils/debug';
 import { type ProfileTemplateDiff } from '@/services/syncProfile';
 import { createProfileStore, type ProfileState, type ProfileStore } from './profileStore';
@@ -91,29 +90,14 @@ export const useProfileSessionStore = create<ProfileSessionState>()((set, get) =
   },
 }));
 
-type ReadyProfileState = ProfileState & { template: Template };
-
-function requireReady(state: ProfileState | undefined): ReadyProfileState {
-  if (!state || state.template === null) throw new Error('No profile is loaded');
-  return state as ReadyProfileState;
-}
-
-export function useSessionProfile<T>(selector: (state: ProfileState) => T): T {
+export function useActiveProfile<T>(selector: (state: ProfileState) => T): T {
   const store = useProfileSessionStore(state => state.store);
-  if (!store) throw new Error('No profile is loaded');
+  if (!store) throw new Error('No profile loaded');
   return useStore(store, selector);
 }
 
-export function getSessionProfile(): ProfileState {
+export function getActiveProfile(): ProfileState {
   const store = useProfileSessionStore.getState().store;
-  if (!store) throw new Error('No profile is loaded');
+  if (!store) throw new Error('No profile loaded');
   return store.getState();
-}
-
-export function useActiveProfile<T>(selector: (state: ReadyProfileState) => T): T {
-  return useSessionProfile(state => selector(requireReady(state)));
-}
-
-export function getActiveProfile(): ReadyProfileState {
-  return requireReady(useProfileSessionStore.getState().store?.getState());
 }
