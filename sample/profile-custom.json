@@ -1,0 +1,34 @@
+{
+  "magic": "my-ideals-profile",
+  "version": 2,
+  "id": "development-custom001",
+  "name": "=ME 生写真（カスタム）",
+  "template": {
+    "id": "equal-me",
+    "link": "https://raw.githubusercontent.com/monaka-ikonoi/my-ideals/refs/heads/main/sample/template.json",
+    "revision": 1
+  },
+  "mode": "custom",
+  "customFields": [
+    { "id": "count", "name": "枚数", "type": "number", "default": 0, "primary": true },
+    { "id": "signed", "name": "サイン", "type": "boolean", "default": false }
+  ],
+  "collections": {
+    "2026-new-year": {
+      "nanaka-hiki": { "count": 2, "signed": true },
+      "nanaka-chuu": { "count": 1, "signed": false },
+      "nanaka-yori": { "count": 3, "signed": false },
+      "moeko-hiki": { "count": 0, "signed": false },
+      "moeko-chuu": { "count": -1, "signed": false },
+      "moeko-yori": { "count": 0, "signed": false }
+    },
+    "2025-special-live": {
+      "nanaka-hiki": { "count": 1, "signed": false },
+      "nanaka-chuu": { "count": 0, "signed": false },
+      "nanaka-yori": { "count": 1, "signed": true },
+      "moeko-hiki": { "count": 0, "signed": false },
+      "moeko-chuu": { "count": 2, "signed": false },
+      "moeko-yori": { "count": -1, "signed": false }
+    }
+  }
+}
