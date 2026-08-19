@@ -2,6 +2,7 @@ import { create, useStore } from 'zustand';
 import { loadActiveProfile } from '@/services/loadActiveProfile';
 import { debugLog } from '@/utils/debug';
 import { type ProfileTemplateDiff } from '@/services/syncProfile';
+import { type FieldCondition } from '@/services/filter';
 import { createProfileStore, type ProfileState, type ProfileStore } from './profileStore';
 
 export type ProfileLoadState =
@@ -16,11 +17,13 @@ type ProfileSessionState = {
   store: ProfileStore | null;
   changes: ProfileTemplateDiff | null;
   pendingSync: boolean;
+  filter: FieldCondition[];
 
   load: (profileId: string) => Promise<void>;
   clear: () => Promise<void>;
   flush: () => Promise<void>;
   confirmSyncChanges: (cleanup: boolean) => Promise<void>;
+  setFilterConditions: (conditions: FieldCondition[]) => void;
 };
 
 export const useProfileSessionStore = create<ProfileSessionState>()((set, get) => ({
@@ -28,6 +31,7 @@ export const useProfileSessionStore = create<ProfileSessionState>()((set, get) =
   store: null,
   changes: null,
   pendingSync: false,
+  filter: [],
 
   load: async (profileId: string) => {
     const previous = get().store;
@@ -42,6 +46,7 @@ export const useProfileSessionStore = create<ProfileSessionState>()((set, get) =
         store: createProfileStore({ profile: result.profile, template: null }),
         changes: null,
         pendingSync: false,
+        filter: [],
       });
       return;
     }
@@ -52,6 +57,7 @@ export const useProfileSessionStore = create<ProfileSessionState>()((set, get) =
         store: null,
         changes: null,
         pendingSync: false,
+        filter: [],
       });
       return;
     }
@@ -61,6 +67,7 @@ export const useProfileSessionStore = create<ProfileSessionState>()((set, get) =
       store: createProfileStore(result),
       changes: result.changes,
       pendingSync: result.pendingSync,
+      filter: [],
     });
     debugLog.store.log(`Loaded profile ${result.profile.name}, ${profileId}`);
   },
@@ -75,6 +82,7 @@ export const useProfileSessionStore = create<ProfileSessionState>()((set, get) =
       store: null,
       changes: null,
       pendingSync: false,
+      filter: [],
     });
   },
 
@@ -88,6 +96,8 @@ export const useProfileSessionStore = create<ProfileSessionState>()((set, get) =
 
     set({ changes: null, pendingSync: false });
   },
+
+  setFilterConditions: (conditions: FieldCondition[]) => set({ filter: conditions }),
 }));
 
 export function useActiveProfile<T>(selector: (state: ProfileState) => T): T {
