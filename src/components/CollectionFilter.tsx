@@ -4,7 +4,6 @@ import { MagnifyingGlassIcon, PhotoIcon, XMarkIcon } from '@heroicons/react/24/o
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useTemplate } from '@/contexts/template';
 import { CollectionStatusFilter } from './CollectionStatusFilter';
-import type { FilterItemStatus } from '@/hooks/useFilteredCollection';
 import { MemberSelector } from './MemberSelector';
 import type { TemplateCollection } from '@/domain/template';
 import { useDialogStore } from '@/stores/dialogStore';
@@ -170,8 +169,6 @@ type CollectionFilterProps = {
   hideCompleted: boolean;
   setHideCompleted: (enabled: boolean) => void;
   hiddenCount: number;
-  filterStatus: FilterItemStatus;
-  setFilterStatus: (status: FilterItemStatus) => void;
   imageCollections: TemplateCollection[];
 };
 
@@ -179,8 +176,6 @@ export function CollectionFilter({
   searchProps,
   hideCompleted,
   setHideCompleted,
-  filterStatus,
-  setFilterStatus,
   hiddenCount,
   imageCollections,
 }: CollectionFilterProps) {
@@ -232,7 +227,7 @@ export function CollectionFilter({
             </label>
 
             <div className="flex min-w-0 flex-[1_1_max-content] flex-wrap items-center gap-2">
-              <CollectionStatusFilter value={filterStatus} setValue={setFilterStatus} />
+              <CollectionStatusFilter />
               <div className="ml-auto shrink-0">
                 <button
                   type="button"
