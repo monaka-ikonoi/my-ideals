@@ -1,43 +1,51 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { FilterItemStatus } from '@/hooks/useFilteredCollection';
+import { type FieldCondition } from '@/services/filter';
 import { getPrimaryField, isNumberField } from '@/domain/profile';
-import { useActiveProfile } from '@/stores/profileSessionStore';
+import { useActiveProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
 
-type StatusFilterProps = {
-  value: FilterItemStatus;
-  setValue: (value: FilterItemStatus) => void;
-};
+const FilterStatuses = ['all', 'owned', 'unowned', 'wanted'] as const;
+type FilterStatus = (typeof FilterStatuses)[number];
 
-const options = [
-  { value: 'all', labelKey: 'collection.filter.status.all' },
-  { value: 'owned', labelKey: 'collection.filter.status.owned' },
-  { value: 'unowned', labelKey: 'collection.filter.status.unowned' },
-  { value: 'wanted', labelKey: 'collection.filter.status.wanted' },
-] as const;
-
-export function CollectionStatusFilter({ value, setValue }: StatusFilterProps) {
+export function CollectionStatusFilter() {
   const { t } = useTranslation();
 
-  const hasWanted = useActiveProfile(state => isNumberField(getPrimaryField(state.fields)));
+  const [selected, setSelected] = useState<FilterStatus>('all');
+
+  const primaryField = useActiveProfile(state => getPrimaryField(state.fields));
+  const setFilterConditions = useProfileSessionStore(state => state.setFilterConditions);
+
+  const hasWanted = isNumberField(primaryField);
+
+  // Booleans are converted to numbers and then filtered
+  const predefinedOptions: Record<FilterStatus, FieldCondition[]> = {
+    all: [],
+    owned: [{ fieldId: primaryField.id, type: 'number', op: 'gt', value: 0 }],
+    unowned: [{ fieldId: primaryField.id, type: 'number', op: 'eq', value: 0 }],
+    wanted: [{ fieldId: primaryField.id, type: 'number', op: 'lt', value: 0 }],
+  };
+
+  const select = (status: FilterStatus) => {
+    setSelected(status);
+    setFilterConditions(predefinedOptions[status]);
+  };
 
   return (
     <div className="inline-flex shrink-0 rounded-lg bg-gray-100 p-1 text-sm">
-      {options
-        .filter(option => (hasWanted ? true : option.value !== 'wanted'))
-        .map(option => (
-          <button
-            key={option.value}
-            onClick={() => setValue(option.value)}
-            className={`rounded-md px-2 py-1 font-medium whitespace-nowrap transition-colors sm:px-3
-            ${
-              value === option.value
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            {t(option.labelKey)}
-          </button>
-        ))}
+      {FilterStatuses.filter(status => hasWanted || status !== 'wanted').map(status => (
+        <button
+          key={status}
+          onClick={() => select(status)}
+          className={`rounded-md px-2 py-1 font-medium whitespace-nowrap transition-colors sm:px-3
+          ${
+            selected === status
+              ? 'bg-white text-gray-900 shadow-sm'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          {t(`collection.filter.status.${status}`)}
+        </button>
+      ))}
     </div>
   );
 }
