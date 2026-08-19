@@ -6,6 +6,7 @@ import {
   RECORD_FIELD_ID_MAX_LENGTH,
   RECORD_FIELD_ID_PATTERN,
   RECORD_FIELD_NAME_MAX_LENGTH,
+  RECORD_FIELDS_MAX,
   type RecordField,
   type RecordValue,
 } from '@/domain/profile';
@@ -253,18 +254,22 @@ export function RecordFieldsModal({ onClose }: RecordFieldsModalProps) {
     });
 
   const addDraft = () =>
-    setDrafts(prev => [
-      ...prev,
-      {
-        key: nanoid(),
-        isNew: true,
-        id: '',
-        name: '',
-        type: 'boolean',
-        default: false,
-        primary: false,
-      },
-    ]);
+    setDrafts(prev =>
+      prev.length >= RECORD_FIELDS_MAX
+        ? prev
+        : [
+            ...prev,
+            {
+              key: nanoid(),
+              isNew: true,
+              id: '',
+              name: '',
+              type: 'boolean',
+              default: false,
+              primary: false,
+            },
+          ]
+    );
 
   const handleSave = () => {
     getActiveProfile().setMode('custom', drafts.map(toRecordField));
@@ -292,16 +297,18 @@ export function RecordFieldsModal({ onClose }: RecordFieldsModalProps) {
             ))}
           </div>
 
-          <button
-            type="button"
-            onClick={addDraft}
-            className="mt-3 flex w-full items-center justify-center gap-1 rounded-lg border
-              border-dashed border-gray-300 py-3 text-sm text-gray-500 transition
-              hover:border-gray-400 hover:bg-gray-50 hover:text-gray-700"
-          >
-            <PlusIcon className="h-4 w-4" />
-            {t('dialog.record-fields.add')}
-          </button>
+          {drafts.length < RECORD_FIELDS_MAX && (
+            <button
+              type="button"
+              onClick={addDraft}
+              className="mt-3 flex w-full items-center justify-center gap-1 rounded-lg border
+                border-dashed border-gray-300 py-3 text-sm text-gray-500 transition
+                hover:border-gray-400 hover:bg-gray-50 hover:text-gray-700"
+            >
+              <PlusIcon className="h-4 w-4" />
+              {t('dialog.record-fields.add')}
+            </button>
+          )}
         </div>
 
         <div className="flex shrink-0 justify-end gap-2 border-t border-gray-100 px-4 py-3 sm:px-6">
