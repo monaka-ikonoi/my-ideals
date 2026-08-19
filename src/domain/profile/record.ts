@@ -4,6 +4,7 @@ export type ItemRecord = RecordValue | Record<string, RecordValue>;
 export const RECORD_FIELD_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
 export const RECORD_FIELD_ID_MAX_LENGTH = 16;
 export const RECORD_FIELD_NAME_MAX_LENGTH = 8;
+export const RECORD_FIELDS_MAX = 16;
 
 type RecordFieldBase = {
   id: string;
