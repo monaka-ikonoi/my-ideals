@@ -46,7 +46,9 @@
       "label": "模式",
       "standard": "标准模式",
       "count": "复数模式",
-      "switch": "切换模式"
+      "custom": "自定义模式",
+      "switch": "切换模式",
+      "edit-fields": "编辑字段"
     },
     "duplicate": "创建副本",
     "reorder": "重新排序"
@@ -158,6 +160,23 @@
     "collection-edit": {
       "title": "编辑 \"{{name}}\"",
       "stats": "总计：{{owned}} 张"
+    },
+    "record-fields": {
+      "title": "编辑字段",
+      "add": "添加字段",
+      "remove": "删除字段",
+      "move-up": "上移",
+      "move-down": "下移",
+      "name-label": "名称",
+      "id-label": "ID",
+      "type-label": "类型",
+      "type-boolean": "复选框",
+      "type-number": "计数器",
+      "default-label": "默认值",
+      "primary-label": "主要",
+      "error-name": "请输入 1～8 个字符",
+      "error-id": "以字母开头，仅可使用字母、数字、- 和 _",
+      "error-id-duplicate": "该 ID 已被使用"
     },
     "profile-duplicate": {
       "title": "创建档案副本",

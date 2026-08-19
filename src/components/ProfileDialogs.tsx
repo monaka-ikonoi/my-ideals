@@ -3,6 +3,7 @@ import { ProfileTemplateDiffDialog } from './dialogs/ProfileTemplateDiffDialog';
 import { ProfileRenameDialog } from './dialogs/ProfileRenameDialog';
 import { ProfileDuplicateDialog } from './dialogs/ProfileDuplicateDialog';
 import { ProfileSwitchModeDialog } from './dialogs/ProfileSwitchModeDialog';
+import { RecordFieldsModal } from './dialogs/RecordFieldsModal';
 import { CollectionEditModal } from './dialogs/CollectionEditModal';
 import { ImageGenerateModal } from './dialogs/ImageGenerateModal';
 
@@ -13,7 +14,6 @@ export function ProfileDialogs() {
   return (
     <>
       <ProfileTemplateDiffDialog />
-
       {activeDialog.type === 'rename-profile' && (
         <ProfileRenameDialog
           profileId={activeDialog.profileId}
@@ -34,6 +34,7 @@ export function ProfileDialogs() {
       {activeDialog.type === 'edit-collection' && (
         <CollectionEditModal collectionId={activeDialog.collectionId} onClose={closeDialog} />
       )}
+      {activeDialog.type === 'edit-record-fields' && <RecordFieldsModal onClose={closeDialog} />}
       {activeDialog.type === 'generate-image' && (
         <ImageGenerateModal
           collections={activeDialog.collections}
