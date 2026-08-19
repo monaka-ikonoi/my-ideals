@@ -15,6 +15,7 @@ type DialogState =
       currentUrl: string;
     }
   | { type: 'switch-profile-mode'; profileId: string; enableCount: boolean }
+  | { type: 'edit-record-fields' }
   | { type: 'collection-image-preview'; image: Blob; fileName: string }
   | { type: 'about' }
   | { type: 'install-app-ios' }
@@ -36,6 +37,7 @@ type DialogStore = {
   openDuplicateProfile: () => void;
   openEditProfileTemplateUrl: (profileId: string, templateId: string, currentUrl: string) => void;
   openSwitchProfileMode: (profileId: string, enableCount: boolean) => void;
+  openEditRecordFields: () => void;
   openAbout: () => void;
   openInstallAppIos: () => void;
 
@@ -65,6 +67,7 @@ export const useDialogStore = create<DialogStore>(set => ({
     }),
   openSwitchProfileMode: (profileId: string, enableCount: boolean) =>
     set({ activeDialog: { type: 'switch-profile-mode', profileId, enableCount } }),
+  openEditRecordFields: () => set({ activeDialog: { type: 'edit-record-fields' } }),
   openAbout: () => set({ activeDialog: { type: 'about' } }),
   openInstallAppIos: () => set({ activeDialog: { type: 'install-app-ios' } }),
 
