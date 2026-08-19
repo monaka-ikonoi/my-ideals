@@ -1,13 +1,16 @@
 import { useMemo, useState } from 'react';
-import { getActiveProfile, useActiveProfile } from '@/stores/profileSessionStore';
+import {
+  getActiveProfile,
+  useActiveProfile,
+  useProfileSessionStore,
+} from '@/stores/profileSessionStore';
 import { useTemplate } from '@/contexts/template';
 import { type TemplateCollection } from '@/domain/template';
 import { type ProfileCollection, type RecordField, getPrimaryField } from '@/domain/profile';
 import { debugLog } from '@/utils/debug';
 import { readField } from '@/utils/recordUtils';
-import { normalizeStatusBoolean, normalizeStatusNumber } from '@/utils/utils';
-
-export type FilterItemStatus = 'all' | 'owned' | 'unowned' | 'wanted';
+import { normalizeStatusBoolean } from '@/utils/utils';
+import { buildConditionsPredicate, type RecordPredicate } from '@/services/filter';
 
 type FilteredCollectionsResult = {
   filteredCollections: TemplateCollection[];
@@ -80,30 +83,16 @@ function useFilteredCollections(
 function useVisibleCollections(
   cachedStatus: ProfileCollection,
   filteredCollections: TemplateCollection[],
-  primaryField: RecordField,
-  itemStatus: FilterItemStatus
+  predicate: RecordPredicate | null
 ) {
   return useMemo(() => {
-    if (itemStatus === 'all') return filteredCollections;
+    if (!predicate) return filteredCollections;
 
-    debugLog.perf.log(`Apply visible filter, status: ${itemStatus}`);
     debugLog.perf.time(`Apply visible filter`);
     const result = filteredCollections.reduce<TemplateCollection[]>((acc, collection) => {
-      const items = collection.items.filter(item => {
-        const count = normalizeStatusNumber(
-          readField(cachedStatus[collection.id]?.[item.id], primaryField)
-        );
-        switch (itemStatus) {
-          case 'owned':
-            return count > 0;
-          case 'wanted':
-            return count < 0;
-          case 'unowned':
-            return count === 0;
-          default:
-            return true;
-        }
-      });
+      const items = collection.items.filter(item =>
+        predicate(cachedStatus[collection.id]?.[item.id])
+      );
 
       if (items.length > 0) {
         // Reuse the original reference when every item passed the filter.
@@ -114,12 +103,11 @@ function useVisibleCollections(
 
     debugLog.perf.timeEnd(`Apply visible filter`);
     return result;
-  }, [filteredCollections, cachedStatus, itemStatus, primaryField]);
+  }, [filteredCollections, cachedStatus, predicate]);
 }
 
 export function useCollectionFilter() {
   const [hideCompleted, setHideCompleted] = useState(false);
-  const [filterStatus, setFilterStatus] = useState<FilterItemStatus>('all');
 
   debugLog.perf.time('useCollectionFilter');
   const collections = useTemplate().collections;
@@ -127,7 +115,13 @@ export function useCollectionFilter() {
   // Intentionally read via getState() instead of subscribing，the filter result
   // should stay stable while the user toggles items.
   const cachedStatus = getActiveProfile().profile.collections;
-  const primaryField = useActiveProfile(state => getPrimaryField(state.fields));
+
+  const fields = useActiveProfile(state => state.fields);
+  const primaryField = useMemo(() => getPrimaryField(fields), [fields]);
+
+  const filter = useProfileSessionStore(state => state.filter);
+
+  const predicate = useMemo(() => buildConditionsPredicate(fields, filter), [fields, filter]);
 
   const { filteredCollections, hiddenCount } = useFilteredCollections(
     collections,
@@ -136,12 +130,7 @@ export function useCollectionFilter() {
     hideCompleted
   );
 
-  const visibleCollections = useVisibleCollections(
-    cachedStatus,
-    filteredCollections,
-    primaryField,
-    filterStatus
-  );
+  const visibleCollections = useVisibleCollections(cachedStatus, filteredCollections, predicate);
 
   const collectionMap = useMemo(() => {
     const map: Record<string, TemplateCollection> = {};
@@ -156,8 +145,6 @@ export function useCollectionFilter() {
     filterProps: {
       hideCompleted,
       setHideCompleted,
-      filterStatus,
-      setFilterStatus,
     },
     filteredCollections,
     visibleCollections,
