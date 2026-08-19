@@ -46,7 +46,9 @@
       "label": "モード",
       "count": "複数モード",
       "standard": "通常モード",
-      "switch": "モードを切り替え"
+      "custom": "カスタムモード",
+      "switch": "モードを切り替え",
+      "edit-fields": "項目を編集"
     },
     "duplicate": "コピーを作成",
     "reorder": "並び替え"
@@ -158,6 +160,23 @@
     "collection-edit": {
       "title": "「{{name}}」を編集",
       "stats": "合計：{{owned}} 枚"
+    },
+    "record-fields": {
+      "title": "フィールドを編集",
+      "add": "フィールドを追加",
+      "remove": "フィールドを削除",
+      "move-up": "上へ",
+      "move-down": "下へ",
+      "name-label": "名前",
+      "id-label": "ID",
+      "type-label": "種別",
+      "type-boolean": "チェック",
+      "type-number": "カウンター",
+      "default-label": "デフォルト値",
+      "primary-label": "主要",
+      "error-name": "1〜8文字で入力してください",
+      "error-id": "英字で始め、英数字、-、_ のみ使用できます",
+      "error-id-duplicate": "この ID はすでに使用されています"
     },
     "profile-duplicate": {
       "title": "プロフィールのコピーを作成",

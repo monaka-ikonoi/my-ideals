@@ -46,7 +46,9 @@
       "label": "Mode",
       "standard": "Standard Mode",
       "count": "Quantity mode",
-      "switch": "Switch Mode"
+      "custom": "Custom Mode",
+      "switch": "Switch Mode",
+      "edit-fields": "Edit Fields"
     },
     "duplicate": "Create Copy",
     "reorder": "Reorder"
@@ -158,6 +160,23 @@
     "collection-edit": {
       "title": "Edit \"{{name}}\"",
       "stats": "Total: {{owned}}"
+    },
+    "record-fields": {
+      "title": "Edit Fields",
+      "add": "Add Field",
+      "remove": "Remove Field",
+      "move-up": "Move Up",
+      "move-down": "Move Down",
+      "name-label": "Name",
+      "id-label": "ID",
+      "type-label": "Type",
+      "type-boolean": "Checkbox",
+      "type-number": "Counter",
+      "default-label": "Default",
+      "primary-label": "Primary",
+      "error-name": "Enter 1-8 characters",
+      "error-id": "Start with a letter; use letters, digits, - and _",
+      "error-id-duplicate": "This ID is already used"
     },
     "profile-duplicate": {
       "title": "Create Profile Copy",

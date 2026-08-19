@@ -5,25 +5,32 @@ import {
   LinkIcon,
   ClipboardDocumentCheckIcon,
   ArrowsRightLeftIcon,
+  AdjustmentsHorizontalIcon,
   DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
 import { InlineCode } from './ui/InlineCode';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useTemplate } from '@/contexts/template';
 import { useDialogStore } from '@/stores/dialogStore';
-import { getPrimaryField, isNumberField } from '@/domain/profile';
+import { type RecordMode } from '@/domain/profile';
 import { toast } from 'sonner';
 import { useShallow } from 'zustand/shallow';
 import { getErrorMessage } from '@/utils/error';
 
+const ModeLabelKeys = {
+  standard: 'profile.mode.standard',
+  count: 'profile.mode.count',
+  custom: 'profile.mode.custom',
+} as const satisfies Record<RecordMode, string>;
+
 export function ProfileInfo() {
   const { t } = useTranslation();
 
-  const { profileId, profileName, enableCount } = useActiveProfile(
+  const { profileId, profileName, mode } = useActiveProfile(
     useShallow(state => ({
       profileId: state.profile.id,
       profileName: state.profile.name,
-      enableCount: isNumberField(getPrimaryField(state.fields)),
+      mode: state.profile.mode,
     }))
   );
   const { id: templateId, name: templateName } = useTemplate();
@@ -113,16 +120,27 @@ export function ProfileInfo() {
         {/* Mode */}
         <div className="flex items-center gap-1">
           <div className="flex-1 sm:flex-initial">
-            {t('profile.mode.label')}:{' '}
-            {enableCount ? t('profile.mode.count') : t('profile.mode.standard')}
+            {t('profile.mode.label')}: {t(ModeLabelKeys[mode])}
           </div>
-          <button
-            onClick={() => useDialogStore.getState().openSwitchProfileMode(profileId, !enableCount)}
-            className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-            title={t('profile.mode.switch')}
-          >
-            <ArrowsRightLeftIcon className="h-4 w-4" />
-          </button>
+          {mode === 'custom' ? (
+            <button
+              onClick={() => useDialogStore.getState().openEditRecordFields()}
+              className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              title={t('profile.mode.edit-fields')}
+            >
+              <AdjustmentsHorizontalIcon className="h-4 w-4" />
+            </button>
+          ) : (
+            <button
+              onClick={() =>
+                useDialogStore.getState().openSwitchProfileMode(profileId, mode !== 'count')
+              }
+              className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              title={t('profile.mode.switch')}
+            >
+              <ArrowsRightLeftIcon className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
     </div>
