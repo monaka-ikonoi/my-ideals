@@ -89,10 +89,13 @@
     "profile-create": {
       "title": "新規プロファイル作成",
       "profile-name": "プロファイル名",
-      "enable-count": {
-        "label": "複数記録モード",
-        "description": "有無だけでなく、所持数を記録します"
+      "mode-label": "記録モード",
+      "mode-desc": {
+        "standard": "所持の有無だけを記録します",
+        "count": "有無だけでなく、所持数を記録します",
+        "custom": "記録する項目を自分で定義します"
       },
+      "next": "次へ",
       "predefined-selector-placeholder": "または用意されたテンプレートから選択…"
     },
     "profile-import": {
