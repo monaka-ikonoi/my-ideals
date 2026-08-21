@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { MagnifyingGlassIcon, PhotoIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useTemplate } from '@/contexts/template';
-import { CollectionStatusFilter } from './CollectionStatusFilter';
+import { CollectionStatusFilter, CustomFilterButton } from './CollectionStatusFilter';
 import { MemberSelector } from './MemberSelector';
 import type { TemplateCollection } from '@/domain/template';
 import { useDialogStore } from '@/stores/dialogStore';
@@ -182,6 +182,7 @@ export function CollectionFilter({
   const { t } = useTranslation();
 
   const members = useTemplate().members;
+  const mode = useActiveProfile(state => state.profile.mode);
   const selectedMembers = useActiveProfile(state => state.profile.selectedMembers);
   const toggleMember = useActiveProfile(state => state.toggleMember);
 
@@ -227,7 +228,7 @@ export function CollectionFilter({
             </label>
 
             <div className="flex min-w-0 flex-[1_1_max-content] flex-wrap items-center gap-2">
-              <CollectionStatusFilter />
+              {mode === 'custom' ? <CustomFilterButton /> : <CollectionStatusFilter />}
               <div className="ml-auto shrink-0">
                 <button
                   type="button"
