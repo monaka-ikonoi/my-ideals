@@ -96,7 +96,13 @@ export const ItemCard = memo(function ItemCard({
       </ItemImage>
 
       {mode !== 'export' && !captionField && (
-        <RecordFieldList fields={fields} record={record} mode={mode} onChange={handleChange} />
+        <RecordFieldList
+          fields={fields}
+          record={record}
+          showLabel={recordMode === 'custom'}
+          mode={mode}
+          onChange={handleChange}
+        />
       )}
     </div>
   );
