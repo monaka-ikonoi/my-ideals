@@ -65,6 +65,7 @@
     "hide-completed": "コンプリートセットを非表示",
     "generate-image": "画像を作成",
     "filter": {
+      "edit": "絞り込み",
       "status": {
         "all": "すべて",
         "owned": "所持済",
@@ -177,6 +178,13 @@
       "error-name": "1〜8文字で入力してください",
       "error-id": "英字で始め、英数字、-、_ のみ使用できます",
       "error-id-duplicate": "この ID はすでに使用されています"
+    },
+    "collection-filter": {
+      "title": "絞り込む",
+      "add": "条件を追加",
+      "remove": "条件を削除",
+      "clear": "すべて解除",
+      "apply": "適用"
     },
     "profile-duplicate": {
       "title": "プロフィールのコピーを作成",
