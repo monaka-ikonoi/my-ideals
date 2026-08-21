@@ -65,6 +65,7 @@
     "hide-completed": "Hide completed collections",
     "generate-image": "Generate Image",
     "filter": {
+      "edit": "Filter",
       "status": {
         "all": "All",
         "owned": "Owned",
@@ -177,6 +178,13 @@
       "error-name": "Enter 1-8 characters",
       "error-id": "Start with a letter; use letters, digits, - and _",
       "error-id-duplicate": "This ID is already used"
+    },
+    "collection-filter": {
+      "title": "Filter Items",
+      "add": "Add Condition",
+      "remove": "Remove Condition",
+      "clear": "Clear All",
+      "apply": "Apply"
     },
     "profile-duplicate": {
       "title": "Create Profile Copy",

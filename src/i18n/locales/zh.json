@@ -65,6 +65,7 @@
     "hide-completed": "隐藏已完成的合集",
     "generate-image": "生成图片",
     "filter": {
+      "edit": "筛选",
       "status": {
         "all": "全部",
         "owned": "已持有",
@@ -177,6 +178,13 @@
       "error-name": "请输入 1～8 个字符",
       "error-id": "以字母开头，仅可使用字母、数字、- 和 _",
       "error-id-duplicate": "该 ID 已被使用"
+    },
+    "collection-filter": {
+      "title": "筛选",
+      "add": "添加条件",
+      "remove": "删除条件",
+      "clear": "清除全部",
+      "apply": "应用"
     },
     "profile-duplicate": {
       "title": "创建档案副本",

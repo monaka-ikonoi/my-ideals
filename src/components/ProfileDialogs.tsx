@@ -4,6 +4,7 @@ import { ProfileRenameDialog } from './dialogs/ProfileRenameDialog';
 import { ProfileDuplicateDialog } from './dialogs/ProfileDuplicateDialog';
 import { ProfileSwitchModeDialog } from './dialogs/ProfileSwitchModeDialog';
 import { RecordFieldsModal } from './dialogs/RecordFieldsModal';
+import { CollectionFilterDialog } from './dialogs/CollectionFilterDialog';
 import { CollectionEditModal } from './dialogs/CollectionEditModal';
 import { ImageGenerateModal } from './dialogs/ImageGenerateModal';
 
@@ -35,6 +36,9 @@ export function ProfileDialogs() {
         <CollectionEditModal collectionId={activeDialog.collectionId} onClose={closeDialog} />
       )}
       {activeDialog.type === 'edit-record-fields' && <RecordFieldsModal onClose={closeDialog} />}
+      {activeDialog.type === 'edit-collection-filter' && (
+        <CollectionFilterDialog onClose={closeDialog} />
+      )}
       {activeDialog.type === 'generate-image' && (
         <ImageGenerateModal
           collections={activeDialog.collections}
