@@ -89,10 +89,13 @@
     "profile-create": {
       "title": "New Profile",
       "profile-name": "Profile Name",
-      "enable-count": {
-        "label": "Quantity Mode",
-        "description": "Track owned quantity, not just the status"
+      "mode-label": "Tracking Mode",
+      "mode-desc": {
+        "standard": "Only record whether you own each item",
+        "count": "Track owned quantity, not just the status",
+        "custom": "Define your own fields to record for each item"
       },
+      "next": "Next",
       "predefined-selector-placeholder": "Or select a predefined template..."
     },
     "profile-import": {
