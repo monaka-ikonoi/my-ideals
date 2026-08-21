@@ -227,9 +227,7 @@ export function ProfileCreateDialog({ onClose }: ProfileCreateDialogProps) {
             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
               hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {mode === 'custom' && step === 'common'
-              ? t('dialog.profile-create.next')
-              : t('common.create')}
+            {mode === 'custom' && step === 'common' ? t('common.next') : t('common.create')}
           </button>
         </div>
       </div>
