@@ -237,11 +237,12 @@ export function CollectionFilter({
                 <button
                   type="button"
                   onClick={() => useDialogStore.getState().openGenerateImage(imageCollections)}
-                  className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600
+                  className="inline-flex items-center gap-1 rounded-lg bg-gray-100 px-3 py-2 text-sm
+                    font-medium text-gray-500 transition-colors hover:text-gray-700
                     disabled:cursor-not-allowed disabled:opacity-50"
-                  title={t('collection.generate-image')}
                 >
                   <PhotoIcon className="h-4 w-4" />
+                  {t('collection.generate-image')}
                 </button>
               </div>
             </div>
