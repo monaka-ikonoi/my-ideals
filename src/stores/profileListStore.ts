@@ -6,6 +6,7 @@ import {
   CURRENT_PROFILE_VERSION,
   type Profile,
   type ProfileTemplateInfo,
+  type RecordField,
   type RecordMode,
 } from '@/domain/profile';
 import { getProfileStorage } from '@/storage/ProfileStorage';
@@ -26,7 +27,8 @@ type ProfileListStore = {
   createProfile: (
     name: string,
     templateInfo: ProfileTemplateInfo,
-    mode?: RecordMode
+    mode: RecordMode,
+    customFields?: RecordField[]
   ) => Promise<string>;
   importProfile: (profile: Profile, overwrite: boolean) => Promise<string>;
   deleteProfile: (id: string) => Promise<void>;
@@ -77,7 +79,7 @@ export const useProfileListStore = create<ProfileListStore>()(
           });
         },
 
-        createProfile: async (name, templateInfo, mode = 'standard') => {
+        createProfile: async (name, templateInfo, mode, customFields) => {
           const id = nanoid();
           const newProfile: Profile = {
             magic: 'my-ideals-profile',
@@ -86,6 +88,7 @@ export const useProfileListStore = create<ProfileListStore>()(
             name,
             template: templateInfo,
             mode,
+            ...(mode === 'custom' && { customFields }),
             selectedMembers: [],
             collections: {},
             lastModified: Date.now(),
