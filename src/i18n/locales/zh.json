@@ -26,6 +26,7 @@
     "select-all": "全选",
     "deselect-all": "取消全选",
     "back": "返回",
+    "next": "下一步",
     "unknown": "未知"
   },
   "profile": {
@@ -95,7 +96,6 @@
         "count": "记录持有数量，而非仅标记有无",
         "custom": "自行定义每个条目要记录的字段"
       },
-      "next": "下一步",
       "predefined-selector-placeholder": "或从现成模板中选择…"
     },
     "profile-import": {
@@ -202,7 +202,6 @@
       "selected-count": "已选中 {{collections}} 套，{{items}} / {{maxItems}} 个项目",
       "generating-hint": "生成中… 请稍候",
       "generate": "生成",
-      "next": "下一步",
       "options": {
         "badge-position-label": "位置",
         "badge-size-label": "大小",
