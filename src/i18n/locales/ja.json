@@ -24,6 +24,7 @@
     "download": "ダウンロード",
     "ok": "決定",
     "back": "戻る",
+    "next": "次へ",
     "select-all": "すべて選択",
     "deselect-all": "すべて解除",
     "unknown": "不明"
@@ -95,7 +96,6 @@
         "count": "有無だけでなく、所持数を記録します",
         "custom": "記録する項目を自分で定義します"
       },
-      "next": "次へ",
       "predefined-selector-placeholder": "または用意されたテンプレートから選択…"
     },
     "profile-import": {
@@ -202,7 +202,6 @@
       "selected-count": "{{collections}} セット、{{items}} / {{maxItems}} アイテム選択中",
       "generating-hint": "作成中… しばらくお待ちください",
       "generate": "作成",
-      "next": "次へ",
       "options": {
         "badge-position-label": "位置",
         "badge-size-label": "サイズ",
