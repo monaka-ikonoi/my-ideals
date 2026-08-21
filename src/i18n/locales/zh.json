@@ -89,10 +89,13 @@
     "profile-create": {
       "title": "新建档案",
       "profile-name": "档案名称",
-      "enable-count": {
-        "label": "复数记录模式",
-        "description": "记录持有数量，而非仅标记有无"
+      "mode-label": "记录模式",
+      "mode-desc": {
+        "standard": "仅记录是否持有",
+        "count": "记录持有数量，而非仅标记有无",
+        "custom": "自行定义每个条目要记录的字段"
       },
+      "next": "下一步",
       "predefined-selector-placeholder": "或从现成模板中选择…"
     },
     "profile-import": {
