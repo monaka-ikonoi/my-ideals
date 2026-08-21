@@ -55,11 +55,18 @@ export function RecordFieldRow({ field, value, showLabel, mode, onChange }: Reco
 type RecordFieldListProps = {
   fields: RecordField[];
   record: ItemRecord | undefined;
+  showLabel: boolean;
   mode: ItemCardMode;
   onChange: (fieldId: string, value: RecordValue) => void;
 };
 
-export function RecordFieldList({ fields, record, mode, onChange }: RecordFieldListProps) {
+export function RecordFieldList({
+  fields,
+  record,
+  showLabel,
+  mode,
+  onChange,
+}: RecordFieldListProps) {
   return (
     <div className="flex flex-col gap-px">
       {fields.map(field => (
@@ -67,7 +74,7 @@ export function RecordFieldList({ fields, record, mode, onChange }: RecordFieldL
           key={field.id}
           field={field}
           value={readField(record, field)}
-          showLabel={fields.length > 1}
+          showLabel={showLabel}
           mode={mode}
           onChange={value => onChange(field.id, value)}
         />
