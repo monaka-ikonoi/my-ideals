@@ -12,11 +12,11 @@ import { RecordFieldsEditor } from './RecordFieldsEditor';
 import { DropdownSelect } from '../ui/DropdownSelect';
 import { FullScreenModal } from '../ui/FullScreenModal';
 
-type RecordFieldsModalProps = {
+type ProfileModeModalProps = {
   onClose: () => void;
 };
 
-export function RecordFieldsModal({ onClose }: RecordFieldsModalProps) {
+export function ProfileModeModal({ onClose }: ProfileModeModalProps) {
   const { t } = useTranslation();
 
   const { currentMode, fields } = useActiveProfile(
@@ -34,7 +34,7 @@ export function RecordFieldsModal({ onClose }: RecordFieldsModalProps) {
     onClose();
   };
   return (
-    <FullScreenModal isOpen title={t('dialog.record-fields.title')} onClose={onClose}>
+    <FullScreenModal isOpen title={t('dialog.profile-mode.title')} onClose={onClose}>
       <div className="flex h-full flex-col overflow-hidden">
         <div className="flex-1 overflow-y-auto p-4 sm:px-6">
           <div className="mb-4 space-y-1">
@@ -47,14 +47,14 @@ export function RecordFieldsModal({ onClose }: RecordFieldsModalProps) {
                 value: mode,
                 label:
                   t(`profile.mode.${mode}`) +
-                  (mode === currentMode ? ` (${t('dialog.record-fields.current-tag')})` : ''),
+                  (mode === currentMode ? ` (${t('dialog.profile-mode.current-tag')})` : ''),
               }))}
               value={mode}
               onChange={setMode}
             />
             {currentMode === 'count' && mode === 'standard' && (
               <p className="text-xs text-red-600">
-                {t('dialog.record-fields.count-to-standard-warn')}
+                {t('dialog.profile-mode.count-to-standard-warn')}
               </p>
             )}
           </div>
