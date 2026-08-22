@@ -1,5 +1,6 @@
 import {
   buildRecordFields,
+  getRootField,
   isNumberField,
   type Profile,
   type RecordField,
@@ -14,7 +15,12 @@ export function applyRecordMode(profile: Profile, mode: RecordMode, customFields
 
   const fieldMap = toFields.map(field => ({
     field,
-    source: fromFields.find(from => from.id === field.id),
+    // `_value` is used as the internal ID for non-custom modes, since ID cannot be starting
+    // with underscore in custom mode, move the values to the primary field when switching
+    // to custom mode.
+    source:
+      fromFields.find(from => from.id === field.id) ??
+      (field.primary ? getRootField(fromFields) : undefined),
   }));
 
   for (const collection of Object.values(profile.collections)) {
