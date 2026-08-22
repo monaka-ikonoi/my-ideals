@@ -14,7 +14,7 @@ type DialogState =
       templateId: string;
       currentUrl: string;
     }
-  | { type: 'edit-record-fields' }
+  | { type: 'edit-profile-mode' }
   | { type: 'edit-collection-filter' }
   | { type: 'collection-image-preview'; image: Blob; fileName: string }
   | { type: 'about' }
@@ -36,7 +36,7 @@ type DialogStore = {
   openRenameProfile: (profileId: string, profileName: string) => void;
   openDuplicateProfile: () => void;
   openEditProfileTemplateUrl: (profileId: string, templateId: string, currentUrl: string) => void;
-  openEditRecordFields: () => void;
+  openEditProfileMode: () => void;
   openEditCollectionFilter: () => void;
   openAbout: () => void;
   openInstallAppIos: () => void;
@@ -65,7 +65,7 @@ export const useDialogStore = create<DialogStore>(set => ({
         currentUrl,
       },
     }),
-  openEditRecordFields: () => set({ activeDialog: { type: 'edit-record-fields' } }),
+  openEditProfileMode: () => set({ activeDialog: { type: 'edit-profile-mode' } }),
   openEditCollectionFilter: () => set({ activeDialog: { type: 'edit-collection-filter' } }),
   openAbout: () => set({ activeDialog: { type: 'about' } }),
   openInstallAppIos: () => set({ activeDialog: { type: 'install-app-ios' } }),

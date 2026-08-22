@@ -122,9 +122,9 @@ export function ProfileInfo() {
             {t('profile.mode.label')}: {t(ModeLabelKeys[mode])}
           </div>
           <button
-            onClick={() => useDialogStore.getState().openEditRecordFields()}
+            onClick={() => useDialogStore.getState().openEditProfileMode()}
             className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-            title={t('dialog.record-fields.title')}
+            title={t('dialog.profile-mode.title')}
           >
             <AdjustmentsHorizontalIcon className="h-4 w-4" />
           </button>
