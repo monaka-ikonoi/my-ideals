@@ -15,10 +15,10 @@ type RecordFieldRowProps = {
 export function RecordFieldRow({ field, value, showLabel, mode, onChange }: RecordFieldRowProps) {
   return (
     <div className="flex items-stretch">
-      {showLabel && (
+      {showLabel && mode !== 'edit' && (
         <span
-          className={`w-2/5 shrink-0 overflow-hidden bg-gray-100 px-2 text-clip whitespace-nowrap
-          text-gray-500 ${mode === 'edit' ? 'h-10 text-sm leading-10' : 'h-8 text-xs leading-8'}`}
+          className="h-8 w-2/5 shrink-0 overflow-hidden bg-gray-100 px-2 text-xs leading-8 text-clip
+            whitespace-nowrap text-gray-500"
         >
           {field.name}
         </span>
@@ -69,16 +69,19 @@ export function RecordFieldList({
 }: RecordFieldListProps) {
   return (
     <div className="flex flex-col gap-px">
-      {fields.map(field => (
-        <RecordFieldRow
-          key={field.id}
-          field={field}
-          value={readField(record, field)}
-          showLabel={showLabel}
-          mode={mode}
-          onChange={value => onChange(field.id, value)}
-        />
-      ))}
+      {fields.map(
+        field =>
+          (mode !== 'edit' || field.primary) && (
+            <RecordFieldRow
+              key={field.id}
+              field={field}
+              value={readField(record, field)}
+              showLabel={showLabel}
+              mode={mode}
+              onChange={value => onChange(field.id, value)}
+            />
+          )
+      )}
     </div>
   );
 }
