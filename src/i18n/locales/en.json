@@ -47,9 +47,7 @@
       "label": "Mode",
       "standard": "Standard Mode",
       "count": "Quantity mode",
-      "custom": "Custom Mode",
-      "switch": "Switch Mode",
-      "edit-fields": "Edit Fields"
+      "custom": "Custom Mode"
     },
     "duplicate": "Create Copy",
     "reorder": "Reorder"
@@ -154,19 +152,15 @@
       "image-alt": "Export image preview: {{name}}",
       "hint": "Long-press or right-click the image below to save it"
     },
-    "profile-switch-mode": {
-      "title": "Switch Tracking Mode",
-      "confirm": "Switch",
-      "to-count": "Switch to multi-count mode. Checked items will be recorded as quantity 1.",
-      "to-standard": "Switch to standard mode. Items with quantity 1 or more will be shown as checked.",
-      "to-standard-warn": "Items with quantity 2 or more will all be reduced to 1. Count data will be lost. This cannot be undone."
-    },
     "collection-edit": {
       "title": "Edit \"{{name}}\"",
       "stats": "Total: {{owned}}"
     },
     "record-fields": {
-      "title": "Edit Fields",
+      "title": "Edit Mode",
+      "current-tag": "Current",
+      "count-to-standard-warn": "Items with quantity 2 or more will all be reduced to 1. Count data will be lost. This cannot be undone.",
+      "inherited-hint": "This field takes over the records of the current mode, so its type cannot be changed and it cannot be removed.",
       "add": "Add Field",
       "remove": "Remove Field",
       "move-up": "Move Up",
