@@ -27,6 +27,7 @@ type RecordFieldCardProps = {
   isFirst: boolean;
   isLast: boolean;
   canRemove: boolean;
+  canMakePrimary: boolean;
   onChange: (patch: Partial<DraftField>) => void;
   onMakePrimary: () => void;
   onMove: (offset: number) => void;
@@ -39,6 +40,7 @@ function RecordFieldCard({
   isFirst,
   isLast,
   canRemove,
+  canMakePrimary,
   onChange,
   onMakePrimary,
   onMove,
@@ -87,8 +89,9 @@ function RecordFieldCard({
             <input
               type="radio"
               checked={draft.primary}
+              disabled={!canMakePrimary}
               onChange={onMakePrimary}
-              className="h-4 w-4 accent-blue-600"
+              className="h-4 w-4 accent-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </div>
         </div>
@@ -102,7 +105,7 @@ function RecordFieldCard({
               label: t(`dialog.record-fields.type-${type}`),
             }))}
             value={draft.type}
-            disabled={!draft.isNew}
+            disabled={!draft.isNew || draft.inherited}
             onChange={type => onChange({ type, default: type === 'number' ? 0 : false })}
           />
         </div>
@@ -170,6 +173,10 @@ function RecordFieldCard({
           </div>
         </div>
       </div>
+
+      {draft.inherited && (
+        <p className="mt-2 text-xs text-gray-500">{t('dialog.record-fields.inherited-hint')}</p>
+      )}
     </div>
   );
 }
@@ -181,6 +188,8 @@ type RecordFieldsEditorProps = {
 
 export function RecordFieldsEditor({ drafts, onChange }: RecordFieldsEditorProps) {
   const { t } = useTranslation();
+
+  const hasInherited = drafts.some(draft => draft.inherited);
 
   const idCounts = new Map<string, number>();
   for (const draft of drafts) idCounts.set(draft.id, (idCounts.get(draft.id) ?? 0) + 1);
@@ -222,7 +231,8 @@ export function RecordFieldsEditor({ drafts, onChange }: RecordFieldsEditorProps
             duplicateId={(idCounts.get(draft.id) ?? 0) > 1}
             isFirst={index === 0}
             isLast={index === drafts.length - 1}
-            canRemove={drafts.length > 1}
+            canRemove={drafts.length > 1 && !draft.inherited}
+            canMakePrimary={!hasInherited}
             onChange={patch => patchDraft(draft.key, patch)}
             onMakePrimary={() => makePrimary(draft.key)}
             onMove={offset => moveDraft(draft.key, offset)}

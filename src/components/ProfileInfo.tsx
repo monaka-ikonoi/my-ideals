@@ -4,7 +4,6 @@ import {
   PencilIcon,
   LinkIcon,
   ClipboardDocumentCheckIcon,
-  ArrowsRightLeftIcon,
   AdjustmentsHorizontalIcon,
   DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
@@ -122,25 +121,13 @@ export function ProfileInfo() {
           <div className="flex-1 sm:flex-initial">
             {t('profile.mode.label')}: {t(ModeLabelKeys[mode])}
           </div>
-          {mode === 'custom' ? (
-            <button
-              onClick={() => useDialogStore.getState().openEditRecordFields()}
-              className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-              title={t('profile.mode.edit-fields')}
-            >
-              <AdjustmentsHorizontalIcon className="h-4 w-4" />
-            </button>
-          ) : (
-            <button
-              onClick={() =>
-                useDialogStore.getState().openSwitchProfileMode(profileId, mode !== 'count')
-              }
-              className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-              title={t('profile.mode.switch')}
-            >
-              <ArrowsRightLeftIcon className="h-4 w-4" />
-            </button>
-          )}
+          <button
+            onClick={() => useDialogStore.getState().openEditRecordFields()}
+            className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            title={t('dialog.record-fields.title')}
+          >
+            <AdjustmentsHorizontalIcon className="h-4 w-4" />
+          </button>
         </div>
       </div>
     </div>
