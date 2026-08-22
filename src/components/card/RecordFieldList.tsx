@@ -17,8 +17,8 @@ export function RecordFieldRow({ field, value, showLabel, mode, onChange }: Reco
     <div className="flex items-stretch">
       {showLabel && (
         <span
-          className={`w-2/5 shrink-0 truncate bg-gray-100 px-2 text-gray-500
-          ${mode === 'edit' ? 'h-10 text-sm leading-10' : 'h-8 text-xs leading-8'}`}
+          className={`w-2/5 shrink-0 overflow-hidden bg-gray-100 px-2 text-clip whitespace-nowrap
+          text-gray-500 ${mode === 'edit' ? 'h-10 text-sm leading-10' : 'h-8 text-xs leading-8'}`}
         >
           {field.name}
         </span>
