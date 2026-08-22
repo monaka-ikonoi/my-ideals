@@ -156,10 +156,12 @@
       "title": "「{{name}}」を編集",
       "stats": "合計：{{owned}} 枚"
     },
-    "record-fields": {
+    "profile-mode": {
       "title": "モードを編集",
       "current-tag": "現在",
-      "count-to-standard-warn": "所持数が2以上のアイテムはすべて1として扱われ、数量データが失われます。この操作は元に戻せません。",
+      "count-to-standard-warn": "所持数が2以上のアイテムはすべて1として扱われ、数量データが失われます。この操作は元に戻せません。"
+    },
+    "record-fields": {
       "inherited-hint": "このフィールドは現在のモードの記録を引き継ぐため、種別の変更と削除はできません。",
       "add": "フィールドを追加",
       "remove": "フィールドを削除",

@@ -2,7 +2,7 @@ import { useDialogStore } from '@/stores/dialogStore';
 import { ProfileTemplateDiffDialog } from './dialogs/ProfileTemplateDiffDialog';
 import { ProfileRenameDialog } from './dialogs/ProfileRenameDialog';
 import { ProfileDuplicateDialog } from './dialogs/ProfileDuplicateDialog';
-import { RecordFieldsModal } from './dialogs/RecordFieldsModal';
+import { ProfileModeModal } from './dialogs/ProfileModeModal';
 import { CollectionFilterDialog } from './dialogs/CollectionFilterDialog';
 import { CollectionEditModal } from './dialogs/CollectionEditModal';
 import { ImageGenerateModal } from './dialogs/ImageGenerateModal';
@@ -27,7 +27,7 @@ export function ProfileDialogs() {
       {activeDialog.type === 'edit-collection' && (
         <CollectionEditModal collectionId={activeDialog.collectionId} onClose={closeDialog} />
       )}
-      {activeDialog.type === 'edit-record-fields' && <RecordFieldsModal onClose={closeDialog} />}
+      {activeDialog.type === 'edit-profile-mode' && <ProfileModeModal onClose={closeDialog} />}
       {activeDialog.type === 'edit-collection-filter' && (
         <CollectionFilterDialog onClose={closeDialog} />
       )}
