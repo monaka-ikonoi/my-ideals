@@ -2,7 +2,6 @@ import { useDialogStore } from '@/stores/dialogStore';
 import { ProfileTemplateDiffDialog } from './dialogs/ProfileTemplateDiffDialog';
 import { ProfileRenameDialog } from './dialogs/ProfileRenameDialog';
 import { ProfileDuplicateDialog } from './dialogs/ProfileDuplicateDialog';
-import { ProfileSwitchModeDialog } from './dialogs/ProfileSwitchModeDialog';
 import { RecordFieldsModal } from './dialogs/RecordFieldsModal';
 import { CollectionFilterDialog } from './dialogs/CollectionFilterDialog';
 import { CollectionEditModal } from './dialogs/CollectionEditModal';
@@ -24,13 +23,6 @@ export function ProfileDialogs() {
       )}
       {activeDialog.type === 'duplicate-profile' && (
         <ProfileDuplicateDialog onClose={closeDialog} />
-      )}
-      {activeDialog.type === 'switch-profile-mode' && (
-        <ProfileSwitchModeDialog
-          profileId={activeDialog.profileId}
-          enableCount={activeDialog.enableCount}
-          onClose={closeDialog}
-        />
       )}
       {activeDialog.type === 'edit-collection' && (
         <CollectionEditModal collectionId={activeDialog.collectionId} onClose={closeDialog} />
