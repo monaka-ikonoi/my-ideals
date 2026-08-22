@@ -156,10 +156,12 @@
       "title": "编辑 \"{{name}}\"",
       "stats": "总计：{{owned}} 张"
     },
-    "record-fields": {
+    "profile-mode": {
       "title": "编辑模式",
       "current-tag": "当前",
-      "count-to-standard-warn": "持有 2 个以上的物品将全部变为 1，数量数据将丢失。此操作无法撤销。",
+      "count-to-standard-warn": "持有 2 个以上的物品将全部变为 1，数量数据将丢失。此操作无法撤销。"
+    },
+    "record-fields": {
       "inherited-hint": "此字段将继承当前模式已记录的数据，因此不可更改类型，也不可删除。",
       "add": "添加字段",
       "remove": "删除字段",
