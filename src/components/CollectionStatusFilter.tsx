@@ -30,7 +30,8 @@ export function CollectionStatusFilter({ value, setValue }: StatusFilterProps) {
           <button
             key={option.value}
             onClick={() => setValue(option.value)}
-            className={`rounded-md px-3 py-1 font-medium whitespace-nowrap transition-colors ${
+            className={`rounded-md px-2 py-1 font-medium whitespace-nowrap transition-colors sm:px-3
+            ${
               value === option.value
                 ? 'bg-white text-gray-900 shadow-sm'
                 : 'text-gray-500 hover:text-gray-700'
