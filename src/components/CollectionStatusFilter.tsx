@@ -23,14 +23,14 @@ export function CollectionStatusFilter({ value, setValue }: StatusFilterProps) {
   );
 
   return (
-    <div className="inline-flex rounded-lg bg-gray-100 p-1 text-sm">
+    <div className="inline-flex shrink-0 rounded-lg bg-gray-100 p-1 text-sm">
       {options
         .filter(option => (hasWanted ? true : option.value !== 'wanted'))
         .map(option => (
           <button
             key={option.value}
             onClick={() => setValue(option.value)}
-            className={`rounded-md px-3 py-1 font-medium transition-colors ${
+            className={`rounded-md px-3 py-1 font-medium whitespace-nowrap transition-colors ${
               value === option.value
                 ? 'bg-white text-gray-900 shadow-sm'
                 : 'text-gray-500 hover:text-gray-700'

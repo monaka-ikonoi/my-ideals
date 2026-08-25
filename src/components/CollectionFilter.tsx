@@ -231,15 +231,15 @@ export function CollectionFilter({
               </span>
             </label>
 
-            <div className="flex min-w-0 flex-[1_1_max-content] items-center gap-2">
+            <div className="flex min-w-0 flex-[1_1_max-content] flex-wrap items-center gap-2">
               <CollectionStatusFilter value={filterStatus} setValue={setFilterStatus} />
               <div className="ml-auto shrink-0">
                 <button
                   type="button"
                   onClick={() => useDialogStore.getState().openGenerateImage(imageCollections)}
                   className="inline-flex items-center gap-1 rounded-lg bg-gray-100 px-3 py-2 text-sm
-                    font-medium text-gray-500 transition-colors hover:text-gray-700
-                    disabled:cursor-not-allowed disabled:opacity-50"
+                    font-medium whitespace-nowrap text-gray-500 transition-colors
+                    hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <PhotoIcon className="h-4 w-4" />
                   {t('collection.generate-image')}
