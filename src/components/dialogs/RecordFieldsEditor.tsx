@@ -105,7 +105,7 @@ function RecordFieldCard({
               label: t(`dialog.record-fields.type-${type}`),
             }))}
             value={draft.type}
-            disabled={!draft.isNew || draft.inherited}
+            disabled={!draft.isNew || !!draft.inherit}
             onChange={type => onChange({ type, default: type === 'number' ? 0 : false })}
           />
         </div>
@@ -174,7 +174,7 @@ function RecordFieldCard({
         </div>
       </div>
 
-      {draft.inherited && (
+      {draft.inherit && (
         <p className="mt-2 text-xs text-gray-500">{t('dialog.record-fields.inherited-hint')}</p>
       )}
     </div>
@@ -189,7 +189,7 @@ type RecordFieldsEditorProps = {
 export function RecordFieldsEditor({ drafts, onChange }: RecordFieldsEditorProps) {
   const { t } = useTranslation();
 
-  const hasInherited = drafts.some(draft => draft.inherited);
+  const hasInherit = drafts.some(draft => draft.inherit);
 
   const idCounts = new Map<string, number>();
   for (const draft of drafts) idCounts.set(draft.id, (idCounts.get(draft.id) ?? 0) + 1);
@@ -231,8 +231,8 @@ export function RecordFieldsEditor({ drafts, onChange }: RecordFieldsEditorProps
             duplicateId={(idCounts.get(draft.id) ?? 0) > 1}
             isFirst={index === 0}
             isLast={index === drafts.length - 1}
-            canRemove={drafts.length > 1 && !draft.inherited}
-            canMakePrimary={!hasInherited}
+            canRemove={drafts.length > 1 && !draft.inherit}
+            canMakePrimary={!hasInherit}
             onChange={patch => patchDraft(draft.key, patch)}
             onMakePrimary={() => makePrimary(draft.key)}
             onMove={offset => moveDraft(draft.key, offset)}
