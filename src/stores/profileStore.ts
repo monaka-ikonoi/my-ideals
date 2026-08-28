@@ -13,7 +13,7 @@ import { getProfileStorage } from '@/storage/ProfileStorage';
 import { debugLog } from '@/utils/debug';
 import { writeField } from '@/utils/recordUtils';
 import { syncProfileWithTemplate } from '@/services/syncProfile';
-import { applyRecordMode } from '@/services/recordMode';
+import { applyRecordMode, type RecordFieldWithOption } from '@/services/recordMode';
 
 export type LoadedProfile = {
   profile: Profile;
@@ -33,7 +33,7 @@ export type ProfileState = LoadedProfile & {
   toggleMember: (member: string) => void;
   updateName: (name: string) => void;
   updateTemplateInfo: (url: string, templateId?: string) => void;
-  setMode: (mode: RecordMode, customFields?: RecordField[]) => void;
+  setMode: (mode: RecordMode, customFields?: RecordFieldWithOption[]) => void;
 };
 
 export type ProfileStore = StoreApi<ProfileState>;
@@ -134,7 +134,7 @@ export function createProfileStore(loaded: LoadedProfile): ProfileStore {
           debouncedSave();
         },
 
-        setMode: (mode: RecordMode, customFields?: RecordField[]) => {
+        setMode: (mode: RecordMode, customFields?: RecordFieldWithOption[]) => {
           set(state => {
             if (state.profile.mode === mode && mode !== 'custom') return;
 

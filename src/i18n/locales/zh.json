@@ -159,7 +159,11 @@
     "profile-mode": {
       "title": "编辑模式",
       "current-tag": "当前",
-      "count-to-standard-warn": "持有 2 个以上的物品将全部变为 1，数量数据将丢失。此操作无法撤销。"
+      "count-to-standard-warn": "持有 2 个以上的物品将全部变为 1，数量数据将丢失。此操作无法撤销。",
+      "split-count": {
+        "label": "将求收数量拆分为独立字段",
+        "description": "负数数量表示求收。勾选后将它们以正数形式移到单独的字段。"
+      }
     },
     "record-fields": {
       "inherited-hint": "此字段将继承当前模式已记录的数据，因此不可更改类型，也不可删除。",
