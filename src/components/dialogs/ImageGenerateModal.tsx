@@ -18,6 +18,7 @@ import { BADGE_POSITIONS, BADGE_SIZES } from '../CountBadgeProps';
 import { StepIndicator } from '../ui/StepIndicator';
 import { getErrorMessage } from '@/utils/error';
 import { computeItemWidth, resolveLayout } from '@/utils/layoutUtils';
+import { normalizeStatusNumber } from '@/utils/utils';
 
 type Step = 'select' | 'customize' | 'preview';
 
@@ -160,7 +161,7 @@ export function ImageGenerateModal({
       const candidate =
         collection.items.find(item => {
           const status = collectionStatus?.[item.id];
-          return typeof status === 'number' && status !== 0;
+          return normalizeStatusNumber(status) !== 0;
         }) ?? collection.items[0];
       if (candidate) {
         return { collection, item: candidate, status: collectionStatus?.[candidate.id] };
