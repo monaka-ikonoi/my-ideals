@@ -159,7 +159,11 @@
     "profile-mode": {
       "title": "Edit Mode",
       "current-tag": "Current",
-      "count-to-standard-warn": "Items with quantity 2 or more will all be reduced to 1. Count data will be lost. This cannot be undone."
+      "count-to-standard-warn": "Items with quantity 2 or more will all be reduced to 1. Count data will be lost. This cannot be undone.",
+      "split-count": {
+        "label": "Split wanted quantities into their own field",
+        "description": "Negative counts mark wanted items. Move them to a separate field as positive numbers instead."
+      }
     },
     "record-fields": {
       "inherited-hint": "This field takes over the records of the current mode, so its type cannot be changed and it cannot be removed.",
