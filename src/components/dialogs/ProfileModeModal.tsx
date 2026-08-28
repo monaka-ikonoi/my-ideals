@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/shallow';
 import { RECORD_FIELDS_MAX, RecordModes, type RecordMode } from '@/domain/profile';
-import { getActiveProfile, useActiveProfile } from '@/stores/profileSessionStore';
+import {
+  getActiveProfile,
+  useActiveProfile,
+  useProfileSessionStore,
+} from '@/stores/profileSessionStore';
 import {
   buildRecordFieldDrafts,
   parseRecordFieldDrafts,
@@ -33,8 +37,10 @@ export function ProfileModeModal({ onClose }: ProfileModeModalProps) {
       mode,
       mode === 'custom' ? parseRecordFieldDrafts(drafts) : undefined
     );
+    useProfileSessionStore.getState().setFilterConditions([]);
     onClose();
   };
+
   return (
     <FullScreenModal isOpen title={t('dialog.profile-mode.title')} onClose={onClose}>
       <div className="flex h-full flex-col overflow-hidden">
