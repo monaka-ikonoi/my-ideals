@@ -207,6 +207,7 @@
         "badge-add": "Add badge",
         "badge-position-label": "Position",
         "badge-size-label": "Size",
+        "badge-color-label": "Color",
         "not-dim-untoggled-label": "Do not dim unowned items",
         "flatten-collections-label": "Do not group by collection",
         "position": {
