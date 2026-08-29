@@ -1,5 +1,16 @@
 @import 'tailwindcss';
 
+/* Badge colors are interpolated from BADGE_COLORS, so the class scanner cannot find them. */
+@source inline(
+  'bg-{red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-{100/80,500}'
+);
+@source inline(
+  'border-{red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-200/60'
+);
+@source inline(
+  'text-{red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose}-600'
+);
+
 html {
   scrollbar-gutter: stable; 
 }
