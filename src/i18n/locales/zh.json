@@ -207,6 +207,7 @@
         "badge-add": "添加徽章",
         "badge-position-label": "位置",
         "badge-size-label": "大小",
+        "badge-color-label": "颜色",
         "not-dim-untoggled-label": "不弱化显示未持有项",
         "flatten-collections-label": "不按合集分组显示",
         "position": {

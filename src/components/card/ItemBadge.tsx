@@ -1,6 +1,12 @@
 import { HeartIcon } from '@heroicons/react/24/solid';
 import type { RecordField, RecordValue } from '@/domain/profile';
-import { type BadgeProps, type BadgePosition, type BadgeSize } from './CountBadgeProps';
+import {
+  DEFAULT_BADGE_COLOR,
+  type BadgeProps,
+  type BadgeColor,
+  type BadgePosition,
+  type BadgeSize,
+} from './CountBadgeProps';
 
 // Bottom bar is ~24px tall in export mode.
 const BADGE_POSITION_CLASS: Record<BadgePosition, string> = {
@@ -11,6 +17,13 @@ const BADGE_POSITION_CLASS: Record<BadgePosition, string> = {
   'bottom-middle': 'bottom-7 left-1/2 -translate-x-1/2',
   'bottom-right': 'bottom-7 right-1.5',
 };
+
+// Interpolated names are safelisted in src/index.css.
+function badgeColorClass(color: BadgeColor = DEFAULT_BADGE_COLOR): string {
+  return color === 'white'
+    ? 'border-gray-200/60 bg-white/80 text-gray-800'
+    : `border-${color}-200/60 bg-${color}-100/80 text-${color}-600`;
+}
 
 type SizeSpec = {
   h: number;
@@ -64,9 +77,7 @@ export function ItemBadge({ field, value, config, rotated }: ItemBadgeProps) {
     <div
       className={`absolute z-10 flex transform-gpu items-center justify-center overflow-hidden
         border font-bold tabular-nums backface-hidden ${BADGE_POSITION_CLASS[config.position]} ${
-          count === null || count > 0
-            ? 'text-gray-80 border-gray-200/60 bg-white/80'
-            : 'border-pink-200/60 bg-pink-100/80 text-pink-600'
+          count === null || count > 0 ? badgeColorClass(config.color) : badgeColorClass('pink')
         }`}
       style={sizeStyle.container}
     >

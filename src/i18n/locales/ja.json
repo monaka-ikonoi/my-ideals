@@ -207,6 +207,7 @@
         "badge-add": "バッジを追加",
         "badge-position-label": "位置",
         "badge-size-label": "サイズ",
+        "badge-color-label": "色",
         "not-dim-untoggled-label": "未所持アイテムを薄く表示しない",
         "flatten-collections-label": "セットごとに表示しない",
         "position": {
