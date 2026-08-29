@@ -2,15 +2,18 @@ import { useTranslation } from 'react-i18next';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import type { RecordField } from '@/domain/profile';
 import {
+  BADGE_COLORS,
   BADGE_POSITIONS,
   BADGE_SIZES,
   DEFAULT_BADGE_POSITION,
   DEFAULT_BADGE_SIZE,
+  DEFAULT_BADGE_COLOR,
   type BadgeMap,
   type BadgeProps,
 } from '../card/CountBadgeProps';
 import { DropdownSelect } from '../ui/DropdownSelect';
 import { OptionPicker } from '../ui/OptionPicker';
+import { SwatchPicker } from '../ui/SwatchPicker';
 
 const labelClass = 'mb-2 text-sm font-medium text-gray-700';
 
@@ -50,6 +53,7 @@ export function BadgeOptionsEditor({
       [field.id]: {
         position: existing?.position ?? DEFAULT_BADGE_POSITION,
         size: existing?.size ?? DEFAULT_BADGE_SIZE,
+        color: existing?.color ?? DEFAULT_BADGE_COLOR,
       },
     });
   };
@@ -69,6 +73,7 @@ export function BadgeOptionsEditor({
       <div className="space-y-2">
         {active.map(field => {
           const badge = badges[field.id];
+          const activeColor = badge.color ?? DEFAULT_BADGE_COLOR;
 
           return (
             <div
@@ -130,6 +135,24 @@ export function BadgeOptionsEditor({
                   }))}
                   value={badge.size}
                   onChange={size => patch(field.id, { size })}
+                />
+              </div>
+
+              <div>
+                <p className={labelClass}>{t('dialog.image-generate.options.badge-color-label')}</p>
+                <SwatchPicker
+                  options={BADGE_COLORS.map(color => ({
+                    value: color,
+                    content: (
+                      <span
+                        className={`size-full rounded-md
+                        ${color === 'white' ? 'bg-white' : `bg-${color}-500`}`}
+                      />
+                    ),
+                  }))}
+                  value={activeColor}
+                  disabled={disabled}
+                  onChange={color => patch(field.id, { color })}
                 />
               </div>
             </div>
