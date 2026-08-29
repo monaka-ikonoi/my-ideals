@@ -1,6 +1,6 @@
 import { HeartIcon } from '@heroicons/react/24/solid';
-import { useImageOptions } from '@/contexts/imageOptions';
-import { type BadgePosition, type BadgeSize } from './CountBadgeProps';
+import type { RecordField, RecordValue } from '@/domain/profile';
+import { type BadgeProps, type BadgePosition, type BadgeSize } from './CountBadgeProps';
 
 // Bottom bar is ~24px tall in export mode.
 const BADGE_POSITION_CLASS: Record<BadgePosition, string> = {
@@ -37,6 +37,7 @@ function buildSizeStyle(
     container: {
       height: cqw(spec.h),
       minWidth: cqw(spec.h),
+      maxWidth: cqw(80),
       paddingInline: cqw(spec.px),
       fontSize: cqw(spec.text),
       borderRadius: cqw(spec.rounded),
@@ -46,32 +47,36 @@ function buildSizeStyle(
   };
 }
 
-type CountBadgeProps = {
-  count: number;
+type ItemBadgeProps = {
+  field: RecordField;
+  value: RecordValue;
+  config: BadgeProps;
   rotated?: boolean;
 };
 
-export function CountBadge({ count, rotated }: CountBadgeProps) {
-  const { badge: badgeProps } = useImageOptions();
-
+export function ItemBadge({ field, value, config, rotated }: ItemBadgeProps) {
   // Rotated cards has their width doubled. The scaling factor ensures same badge size
-  const sizeStyle = buildSizeStyle(BADGE_SIZE[badgeProps.size], rotated ? 0.5 : 1);
+  const sizeStyle = buildSizeStyle(BADGE_SIZE[config.size], rotated ? 0.5 : 1);
+  // A boolean field renders its name instead, and only ever when true.
+  const count = typeof value === 'number' ? value : null;
+
   return (
     <div
       className={`absolute z-10 flex transform-gpu items-center justify-center overflow-hidden
-        border font-bold tabular-nums backface-hidden ${BADGE_POSITION_CLASS[badgeProps.position]}
-        ${
-          count > 0
+        border font-bold tabular-nums backface-hidden ${BADGE_POSITION_CLASS[config.position]} ${
+          count === null || count > 0
             ? 'text-gray-80 border-gray-200/60 bg-white/80'
             : 'border-pink-200/60 bg-pink-100/80 text-pink-600'
         }`}
       style={sizeStyle.container}
     >
-      {count > 0 ? (
+      {count === null ? (
+        <span className="truncate">{field.name.slice(0, 1)}</span>
+      ) : count > 0 ? (
         count
       ) : (
         <>
-          <HeartIcon style={sizeStyle.icon} />
+          <HeartIcon className="shrink-0" style={sizeStyle.icon} />
           {count !== -1 && <span className="leading-none">{Math.abs(count)}</span>}
         </>
       )}

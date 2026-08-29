@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import type { TemplateCollection } from '@/domain/template';
-import { ImageOptionsContext } from '@/contexts/imageOptions';
+import { ImageOptionsContext, type ImageRenderOptions } from '@/contexts/imageOptions';
 import { useTemplate } from '@/contexts/template';
-import { type ImageOptions } from '@/stores/settingsStore';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { APP_NAME, LONG_VERSION } from '@/utils/appInfo';
 import { resolveLayout } from '@/utils/layoutUtils';
@@ -15,7 +14,7 @@ type CollectionImageContentProps = {
   profileId: string;
   collections: TemplateCollection[];
   captureTime: string;
-  imageOptions: Required<ImageOptions>;
+  imageOptions: ImageRenderOptions;
 };
 
 function FlattenedCollectionGrid({ collections }: { collections: TemplateCollection[] }) {

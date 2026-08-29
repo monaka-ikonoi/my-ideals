@@ -14,7 +14,7 @@ import { debugLog } from '@/utils/debug';
 import { normalizeStatusBoolean } from '@/utils/utils';
 import { readField } from '@/utils/recordUtils';
 import { formatImageUrl } from '@/utils/templateUtils';
-import { CountBadge } from './CountBadge';
+import { ItemBadge } from './ItemBadge';
 import { ItemCaption } from './ItemCaption';
 import { ItemImage } from './ItemImage';
 import { RecordFieldList } from './RecordFieldList';
@@ -61,10 +61,7 @@ export const ItemCard = memo(function ItemCard({
 
   const isToggled = typeof primaryValue === 'boolean' ? primaryValue : primaryValue !== 0;
   const dimmed = mode === 'export' && !imageOptions.dimUntoggled ? false : !isToggled;
-  const badgeCount =
-    (mode === 'export' || mode === 'edit') && typeof primaryValue === 'number' && primaryValue !== 0
-      ? primaryValue
-      : undefined;
+  const showBadges = mode === 'export' || mode === 'edit';
 
   return (
     <div
@@ -80,7 +77,24 @@ export const ItemCard = memo(function ItemCard({
         dimmed={dimmed}
         eager={mode === 'export'}
       >
-        {badgeCount !== undefined && <CountBadge count={badgeCount} rotated={item.rotated} />}
+        {showBadges &&
+          fields.map(field => {
+            const badge = imageOptions.badges[field.id];
+            if (!badge) return null;
+
+            const value = readField(record, field);
+            if (value === field.default) return null;
+
+            return (
+              <ItemBadge
+                key={field.id}
+                field={field}
+                value={value}
+                config={badge}
+                rotated={item.rotated}
+              />
+            );
+          })}
 
         <ItemCaption name={item.name} mode={mode}>
           {captionField && (
