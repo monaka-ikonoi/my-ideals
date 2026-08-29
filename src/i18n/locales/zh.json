@@ -203,6 +203,8 @@
       "generating-hint": "生成中… 请稍候",
       "generate": "生成",
       "options": {
+        "badge-label": "徽章",
+        "badge-add": "添加徽章",
         "badge-position-label": "位置",
         "badge-size-label": "大小",
         "not-dim-untoggled-label": "不弱化显示未持有项",
