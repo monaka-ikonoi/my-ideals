@@ -97,7 +97,12 @@ export function DropdownSelect<T extends string | number>({
                       : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                {isSelected ? <CheckIcon className="h-4 w-4 shrink-0" /> : <span className="w-4" />}
+                {icon &&
+                  (isSelected ? (
+                    <CheckIcon className="h-4 w-4 shrink-0" />
+                  ) : (
+                    <span className="w-4" />
+                  ))}
                 <span className="overflow-hidden text-ellipsis whitespace-pre">{opt.label}</span>
               </button>
             );
