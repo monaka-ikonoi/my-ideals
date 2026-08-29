@@ -24,7 +24,7 @@ export const CollectionPanel = memo(function CollectionPanel({
 
   const stats = useCollectionStats(collection, baseCollection);
 
-  const enableCount = useActiveProfile(state => isNumberField(getPrimaryField(state.fields)));
+  const primaryIsNumber = useActiveProfile(state => isNumberField(getPrimaryField(state.fields)));
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -45,7 +45,7 @@ export const CollectionPanel = memo(function CollectionPanel({
                   totalComp: stats.comps.total,
                 })}
               </span>
-              {enableCount && (
+              {primaryIsNumber && (
                 <span>
                   {t('stats.owned', {
                     items: stats.items.owned,
@@ -57,7 +57,7 @@ export const CollectionPanel = memo(function CollectionPanel({
           </div>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            {enableCount && (
+            {primaryIsNumber && (
               <button
                 type="button"
                 onClick={() => useDialogStore.getState().openEditCollection(collection.id)}
