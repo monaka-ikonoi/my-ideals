@@ -17,7 +17,7 @@ export function ProfileStats({ visibleCollections, baseCollectionMap }: ProfileS
   const globalStats = useAggregatedCollectionStats(allCollections);
   const currentStats = useAggregatedCollectionStats(visibleCollections, baseCollectionMap);
 
-  const enableCount = useActiveProfile(state => isNumberField(getPrimaryField(state.fields)));
+  const primaryIsNumber = useActiveProfile(state => isNumberField(getPrimaryField(state.fields)));
 
   const renderStatRow = (label: string, stats: typeof currentStats, isTotal?: boolean) => (
     <div
@@ -36,7 +36,7 @@ export function ProfileStats({ visibleCollections, baseCollectionMap }: ProfileS
             totalComp: stats.comps.total,
           })}
         </span>
-        {enableCount && (
+        {primaryIsNumber && (
           <span>
             {t('stats.owned', {
               items: stats.items.owned,
