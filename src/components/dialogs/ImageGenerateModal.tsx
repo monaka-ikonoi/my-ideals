@@ -16,6 +16,7 @@ import { CollectionImageContent } from '../CollectionImageContent';
 import { ImageCheckCard } from '../ImageCheckCard';
 import { BADGE_POSITIONS, BADGE_SIZES } from '../CountBadgeProps';
 import { StepIndicator } from '../ui/StepIndicator';
+import { OptionPicker } from '../ui/OptionPicker';
 import { getErrorMessage } from '@/utils/error';
 import { computeItemWidth, resolveLayout } from '@/utils/layoutUtils';
 import { normalizeStatusNumber } from '@/utils/utils';
@@ -371,29 +372,17 @@ export function ImageGenerateModal({
                           <p className="mb-2 text-sm font-medium text-gray-700">
                             {t('dialog.image-generate.options.badge-position-label')}
                           </p>
-                          <div className="grid grid-cols-3 gap-2">
-                            {BADGE_POSITIONS.map(position => {
-                              const selected = imageOptions.badge.position === position;
-                              return (
-                                <button
-                                  key={position}
-                                  type="button"
-                                  onClick={() =>
-                                    setImageOptions({ badge: { ...imageOptions.badge, position } })
-                                  }
-                                  disabled={generating}
-                                  className={`w-full rounded-lg border px-3 py-2 text-sm font-medium
-                                  transition disabled:cursor-not-allowed disabled:opacity-50 ${
-                                    selected
-                                      ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                      : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
-                                  }`}
-                                >
-                                  {t(`dialog.image-generate.options.position.${position}`)}
-                                </button>
-                              );
-                            })}
-                          </div>
+                          <OptionPicker
+                            columns={3}
+                            options={BADGE_POSITIONS.map(position => ({
+                              value: position,
+                              label: t(`dialog.image-generate.options.position.${position}`),
+                            }))}
+                            value={imageOptions.badge.position}
+                            onChange={position =>
+                              setImageOptions({ badge: { ...imageOptions.badge, position } })
+                            }
+                          />
                         </div>
 
                         {/* Size picker */}
@@ -401,29 +390,17 @@ export function ImageGenerateModal({
                           <p className="mb-2 text-sm font-medium text-gray-700">
                             {t('dialog.image-generate.options.badge-size-label')}
                           </p>
-                          <div className="grid grid-cols-4 gap-2">
-                            {BADGE_SIZES.map(size => {
-                              const selected = imageOptions.badge.size === size;
-                              return (
-                                <button
-                                  key={size}
-                                  type="button"
-                                  onClick={() =>
-                                    setImageOptions({ badge: { ...imageOptions.badge, size } })
-                                  }
-                                  disabled={generating}
-                                  className={`w-full rounded-lg border px-3 py-2 text-sm font-medium
-                                  transition disabled:cursor-not-allowed disabled:opacity-50 ${
-                                    selected
-                                      ? 'border-blue-600 bg-blue-50 text-blue-700'
-                                      : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
-                                  }`}
-                                >
-                                  {t(`dialog.image-generate.options.size.${size}`)}
-                                </button>
-                              );
-                            })}
-                          </div>
+                          <OptionPicker
+                            columns={4}
+                            options={BADGE_SIZES.map(size => ({
+                              value: size,
+                              label: t(`dialog.image-generate.options.size.${size}`),
+                            }))}
+                            value={imageOptions.badge.size}
+                            onChange={size =>
+                              setImageOptions({ badge: { ...imageOptions.badge, size } })
+                            }
+                          />
                         </div>
                       </>
                     )}
