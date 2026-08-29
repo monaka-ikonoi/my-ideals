@@ -203,6 +203,8 @@
       "generating-hint": "作成中… しばらくお待ちください",
       "generate": "作成",
       "options": {
+        "badge-label": "バッジ",
+        "badge-add": "バッジを追加",
         "badge-position-label": "位置",
         "badge-size-label": "サイズ",
         "not-dim-untoggled-label": "未所持アイテムを薄く表示しない",

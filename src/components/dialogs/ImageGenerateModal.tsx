@@ -7,7 +7,7 @@ import { ImageOptionsContext } from '@/contexts/imageOptions';
 import { useTemplate } from '@/contexts/template';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useSettingsStore } from '@/stores/settingsStore';
-import { getPrimaryField, isNumberField } from '@/domain/profile';
+import { getPrimaryField } from '@/domain/profile';
 import { readField } from '@/utils/recordUtils';
 import { downloadFile, shareAPISupported, shareFile } from '@/utils/fileUtils';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
@@ -15,14 +15,16 @@ import { FullScreenModal } from '../ui/FullScreenModal';
 import { OffscreenCaptureArea, type CaptureResult } from '../ui/OffscreenCaptureArea';
 import { CollectionImageContent } from '../CollectionImageContent';
 import { ItemCard } from '../card/ItemCard';
-import { BADGE_POSITIONS, BADGE_SIZES } from '../card/CountBadgeProps';
+import { type BadgeMap } from '../card/CountBadgeProps';
+import { BadgeOptionsEditor } from './BadgeOptionsEditor';
 import { StepIndicator } from '../ui/StepIndicator';
-import { OptionPicker } from '../ui/OptionPicker';
 import { getErrorMessage } from '@/utils/error';
 import { computeItemWidth, resolveLayout } from '@/utils/layoutUtils';
 import { normalizeStatusNumber } from '@/utils/utils';
 
 type Step = 'select' | 'customize' | 'preview';
+
+const NO_BADGES: BadgeMap = {};
 
 type ImageGenerateModalProps = {
   collections: TemplateCollection[];
@@ -58,12 +60,11 @@ export function ImageGenerateModal({
 }: ImageGenerateModalProps) {
   const { t, i18n } = useTranslation();
 
-  const { profileId, fields, recordMode, enableCount, primaryField, statusMap } = useActiveProfile(
+  const { profileId, fields, recordMode, primaryField, statusMap } = useActiveProfile(
     useShallow(state => ({
       profileId: state.profile.id,
       fields: state.fields,
       recordMode: state.profile.mode,
-      enableCount: isNumberField(getPrimaryField(state.fields)),
       primaryField: getPrimaryField(state.fields),
       statusMap: state.profile.collections,
     }))
@@ -82,6 +83,19 @@ export function ImageGenerateModal({
 
   const imageOptions = useSettingsStore(state => state.imageOptions);
   const setImageOptions = useSettingsStore(state => state.setImageOptions);
+
+  // Standard mode shows ownership through the caption checkbox, so it has no badge to configure.
+  const showBadges = recordMode !== 'standard';
+  const multipleBadges = recordMode === 'custom';
+
+  // TODO: Persist badge options in settings store.
+  const [customBadges, setCustomBadges] = useState<BadgeMap>({
+    [getPrimaryField(fields).id]: imageOptions.badge,
+  });
+
+  const badges = showBadges ? customBadges : NO_BADGES;
+
+  const previewOptions = useMemo(() => ({ ...imageOptions, badges }), [imageOptions, badges]);
 
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -356,7 +370,7 @@ export function ImageGenerateModal({
                   <div className="mx-auto flex justify-center md:mx-0 md:shrink-0 md:justify-start">
                     {previewItem && (
                       <div style={{ width: `${imageCardWidth}px` }}>
-                        <ImageOptionsContext value={imageOptions}>
+                        <ImageOptionsContext value={previewOptions}>
                           <ItemCard
                             collectionId={previewItem.collection.id}
                             item={previewItem.item}
@@ -373,45 +387,20 @@ export function ImageGenerateModal({
 
                   {/* Controls */}
                   <div className="mx-auto w-full min-w-xs space-y-6 md:mx-0">
-                    {/* Badge options only apply when counts are enabled */}
-                    {enableCount && (
-                      <>
-                        {/* Position picker */}
-                        <div>
-                          <p className="mb-2 text-sm font-medium text-gray-700">
-                            {t('dialog.image-generate.options.badge-position-label')}
-                          </p>
-                          <OptionPicker
-                            columns={3}
-                            options={BADGE_POSITIONS.map(position => ({
-                              value: position,
-                              label: t(`dialog.image-generate.options.position.${position}`),
-                            }))}
-                            value={imageOptions.badge.position}
-                            onChange={position =>
-                              setImageOptions({ badge: { ...imageOptions.badge, position } })
-                            }
-                          />
-                        </div>
-
-                        {/* Size picker */}
-                        <div>
-                          <p className="mb-2 text-sm font-medium text-gray-700">
-                            {t('dialog.image-generate.options.badge-size-label')}
-                          </p>
-                          <OptionPicker
-                            columns={4}
-                            options={BADGE_SIZES.map(size => ({
-                              value: size,
-                              label: t(`dialog.image-generate.options.size.${size}`),
-                            }))}
-                            value={imageOptions.badge.size}
-                            onChange={size =>
-                              setImageOptions({ badge: { ...imageOptions.badge, size } })
-                            }
-                          />
-                        </div>
-                      </>
+                    {/* Standard mode has no badgeable field at all */}
+                    {showBadges && (
+                      <div>
+                        <p className="mb-2 text-sm font-medium text-gray-700">
+                          {t('dialog.image-generate.options.badge-label')}
+                        </p>
+                        <BadgeOptionsEditor
+                          fields={fields}
+                          badges={badges}
+                          multiple={multipleBadges}
+                          disabled={generating}
+                          onChange={setCustomBadges}
+                        />
+                      </div>
                     )}
 
                     {/* Do not dim untoggled items checkbox */}
@@ -556,7 +545,7 @@ export function ImageGenerateModal({
           profileId={profileId}
           collections={selectedCollections}
           captureTime={captureTime}
-          imageOptions={imageOptions}
+          imageOptions={previewOptions}
         />
       </OffscreenCaptureArea>
     </>

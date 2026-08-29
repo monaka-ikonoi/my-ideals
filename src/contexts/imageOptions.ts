@@ -1,10 +1,17 @@
 import { createContext, use } from 'react';
 import { buildDefaultImageOptions, type ImageOptions } from '@/stores/settingsStore';
+import type { BadgeMap } from '@/components/card/CountBadgeProps';
 
-export const DEFAULT_IMAGE_OPTIONS: Required<ImageOptions> = buildDefaultImageOptions();
+/** Badges depend on the profile's fields, so they are resolved per render rather than persisted. */
+export type ImageRenderOptions = Required<ImageOptions> & { badges: BadgeMap };
 
-export const ImageOptionsContext = createContext<Required<ImageOptions>>(DEFAULT_IMAGE_OPTIONS);
+export const DEFAULT_IMAGE_OPTIONS: ImageRenderOptions = {
+  ...buildDefaultImageOptions(),
+  badges: {},
+};
 
-export function useImageOptions(): Required<ImageOptions> {
+export const ImageOptionsContext = createContext<ImageRenderOptions>(DEFAULT_IMAGE_OPTIONS);
+
+export function useImageOptions(): ImageRenderOptions {
   return use(ImageOptionsContext);
 }

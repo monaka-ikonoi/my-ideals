@@ -203,6 +203,8 @@
       "generating-hint": "Generating… Please wait",
       "generate": "Generate",
       "options": {
+        "badge-label": "Badges",
+        "badge-add": "Add badge",
         "badge-position-label": "Position",
         "badge-size-label": "Size",
         "not-dim-untoggled-label": "Do not dim unowned items",
