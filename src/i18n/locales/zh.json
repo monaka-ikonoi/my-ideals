@@ -208,6 +208,8 @@
         "badge-position-label": "位置",
         "badge-size-label": "大小",
         "badge-color-label": "颜色",
+        "badge-variant-label": "显示内容",
+        "badge-icon-label": "图标",
         "not-dim-untoggled-label": "不弱化显示未持有项",
         "flatten-collections-label": "不按合集分组显示",
         "position": {
@@ -223,6 +225,13 @@
           "medium": "中",
           "large": "大",
           "xlarge": "超大"
+        },
+        "variant": {
+          "number": "数字",
+          "text": "文字",
+          "icon": "图标",
+          "textNumber": "文字 + 数字",
+          "iconNumber": "图标 + 数字"
         }
       }
     }
