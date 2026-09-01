@@ -1,5 +1,11 @@
+import { Fragment, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import type { RecordField } from '@/domain/profile';
 import {
   BADGE_COLORS,
@@ -40,20 +46,24 @@ export function BadgeOptionsEditor({
   onChange,
 }: BadgeOptionsEditorProps) {
   const { t } = useTranslation();
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const active = fields.filter(field => badges[field.id]);
 
   const patch = (fieldId: string, changes: Partial<BadgeProps>) =>
     onChange({ ...badges, [fieldId]: { ...badges[fieldId], ...changes } });
 
-  const remove = (fieldId: string) =>
+  const remove = (fieldId: string) => {
+    setExpandedId(current => (current === fieldId ? null : current));
     onChange(Object.fromEntries(Object.entries(badges).filter(([id]) => id !== fieldId)));
+  };
 
   const add = () => {
     const field = fields.find(candidate => !badges[candidate.id]);
     if (!field) return;
 
     const [existing] = Object.values(badges);
+    setExpandedId(field.id);
     onChange({
       ...badges,
       [field.id]: {
@@ -70,6 +80,7 @@ export function BadgeOptionsEditor({
     const moved = badges[fromId];
     if (!moved) return;
 
+    setExpandedId(toId);
     onChange({
       ...Object.fromEntries(Object.entries(badges).filter(([id]) => id !== fromId)),
       [toId]: moved,
@@ -84,6 +95,22 @@ export function BadgeOptionsEditor({
           const activeColor = badge.color ?? DEFAULT_BADGE_COLOR;
           const activeVariant = resolveBadgeVariant(badge.variant, field);
           const activeIcon = badge.icon ?? DEFAULT_BADGE_ICON;
+          const ActiveIcon = BADGE_ICONS[activeIcon];
+          const expanded = !multiple || expandedId === field.id;
+
+          const summary: React.ReactNode[] = [
+            t(`dialog.image-generate.options.position.${badge.position}`),
+            t(`dialog.image-generate.options.size.${badge.size}`),
+            <span
+              key="color"
+              className={`size-3.5 shrink-0 rounded-sm border border-gray-300
+              ${activeColor === 'white' ? 'bg-white' : `bg-${activeColor}-500`}`}
+            />,
+            t(`dialog.image-generate.options.variant.${activeVariant}`),
+            ...(BADGE_VARIANT_PARTS[activeVariant].icon
+              ? [<ActiveIcon key="icon" className="size-3.5 shrink-0" />]
+              : []),
+          ];
 
           return (
             <div
@@ -91,119 +118,160 @@ export function BadgeOptionsEditor({
               className={multiple ? 'space-y-4 rounded-xl border border-gray-200 p-3' : 'space-y-6'}
             >
               {multiple && (
-                <div className="flex items-center gap-x-3">
-                  <DropdownSelect
-                    className="w-32"
-                    options={fields.map(option => ({
-                      value: option.id,
-                      label: option.name,
-                      disabled: !!badges[option.id] && option.id !== field.id,
-                    }))}
-                    value={field.id}
-                    disabled={disabled}
-                    onChange={toId => changeField(field.id, toId)}
-                  />
+                <div className="flex items-center gap-x-2">
+                  <button
+                    type="button"
+                    onClick={() => setExpandedId(expanded ? null : field.id)}
+                    className="flex min-w-0 flex-1 items-center gap-x-2 overflow-hidden text-left"
+                  >
+                    {expanded ? (
+                      <ChevronDownIcon className="h-4 w-4 shrink-0 text-gray-400" />
+                    ) : (
+                      <ChevronRightIcon className="h-4 w-4 shrink-0 text-gray-400" />
+                    )}
+                    <span className="shrink-0 text-sm font-medium text-gray-700">{field.name}</span>
+
+                    {!expanded && (
+                      <span
+                        className="flex min-w-0 items-center gap-1.5 overflow-hidden text-xs
+                          leading-5 whitespace-nowrap text-gray-500"
+                      >
+                        {summary.map((part, index) => (
+                          <Fragment key={index}>
+                            {index > 0 && <span className="text-gray-300">/</span>}
+                            {part}
+                          </Fragment>
+                        ))}
+                      </span>
+                    )}
+                  </button>
 
                   <button
                     type="button"
                     onClick={() => remove(field.id)}
                     disabled={disabled}
                     title={t('common.delete')}
-                    className="ml-auto rounded p-1 text-gray-400 hover:bg-gray-100
-                      hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-30
-                      disabled:hover:bg-transparent"
+                    className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-red-600
+                      disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
                   >
                     <TrashIcon className="h-4 w-4" />
                   </button>
                 </div>
               )}
 
-              <div>
-                <p className={labelClass}>
-                  {t('dialog.image-generate.options.badge-position-label')}
-                </p>
-                <OptionPicker
-                  columns={3}
-                  options={BADGE_POSITIONS.map(position => ({
-                    value: position,
-                    label: t(`dialog.image-generate.options.position.${position}`),
-                    disabled,
-                  }))}
-                  value={badge.position}
-                  onChange={position => patch(field.id, { position })}
-                />
-              </div>
-
-              <div>
-                <p className={labelClass}>{t('dialog.image-generate.options.badge-size-label')}</p>
-                <OptionPicker
-                  columns={4}
-                  options={BADGE_SIZES.map(size => ({
-                    value: size,
-                    label: t(`dialog.image-generate.options.size.${size}`),
-                    disabled,
-                  }))}
-                  value={badge.size}
-                  onChange={size => patch(field.id, { size })}
-                />
-              </div>
-
-              <div>
-                <p className={labelClass}>{t('dialog.image-generate.options.badge-color-label')}</p>
-                <SwatchPicker
-                  options={BADGE_COLORS.map(color => ({
-                    value: color,
-                    content: (
-                      <span
-                        className={`size-full rounded-md
-                        ${color === 'white' ? 'bg-white' : `bg-${color}-500`}`}
-                      />
-                    ),
-                  }))}
-                  value={activeColor}
-                  disabled={disabled}
-                  onChange={color => patch(field.id, { color })}
-                />
-              </div>
-
-              {multiple && (
+              {expanded && (
                 <>
+                  {multiple && (
+                    <div>
+                      <p className={labelClass}>
+                        {t('dialog.image-generate.options.badge-field-label')}
+                      </p>
+                      <DropdownSelect
+                        options={fields.map(option => ({
+                          value: option.id,
+                          label: option.name,
+                          disabled: !!badges[option.id] && option.id !== field.id,
+                        }))}
+                        value={field.id}
+                        disabled={disabled}
+                        onChange={toId => changeField(field.id, toId)}
+                      />
+                    </div>
+                  )}
+
                   <div>
                     <p className={labelClass}>
-                      {t('dialog.image-generate.options.badge-variant-label')}
+                      {t('dialog.image-generate.options.badge-position-label')}
                     </p>
                     <OptionPicker
                       columns={3}
-                      options={BADGE_VARIANTS.filter(
-                        variant => field.type === 'number' || !BADGE_VARIANT_PARTS[variant].number
-                      ).map(variant => ({
-                        value: variant,
-                        label: t(`dialog.image-generate.options.variant.${variant}`),
+                      options={BADGE_POSITIONS.map(position => ({
+                        value: position,
+                        label: t(`dialog.image-generate.options.position.${position}`),
                         disabled,
                       }))}
-                      value={activeVariant}
-                      onChange={variant => patch(field.id, { variant })}
+                      value={badge.position}
+                      onChange={position => patch(field.id, { position })}
                     />
                   </div>
 
-                  {BADGE_VARIANT_PARTS[activeVariant].icon && (
-                    <div>
-                      <p className={labelClass}>
-                        {t('dialog.image-generate.options.badge-icon-label')}
-                      </p>
-                      <SwatchPicker
-                        options={BADGE_ICON_IDS.map(icon => {
-                          const Icon = BADGE_ICONS[icon];
-                          return {
-                            value: icon,
-                            content: <Icon className="h-4 w-4" />,
-                          };
-                        })}
-                        value={activeIcon}
-                        disabled={disabled}
-                        onChange={icon => patch(field.id, { icon })}
-                      />
-                    </div>
+                  <div>
+                    <p className={labelClass}>
+                      {t('dialog.image-generate.options.badge-size-label')}
+                    </p>
+                    <OptionPicker
+                      columns={4}
+                      options={BADGE_SIZES.map(size => ({
+                        value: size,
+                        label: t(`dialog.image-generate.options.size.${size}`),
+                        disabled,
+                      }))}
+                      value={badge.size}
+                      onChange={size => patch(field.id, { size })}
+                    />
+                  </div>
+
+                  <div>
+                    <p className={labelClass}>
+                      {t('dialog.image-generate.options.badge-color-label')}
+                    </p>
+                    <SwatchPicker
+                      options={BADGE_COLORS.map(color => ({
+                        value: color,
+                        content: (
+                          <span
+                            className={`size-full rounded-md
+                            ${color === 'white' ? 'bg-white' : `bg-${color}-500`}`}
+                          />
+                        ),
+                      }))}
+                      value={activeColor}
+                      disabled={disabled}
+                      onChange={color => patch(field.id, { color })}
+                    />
+                  </div>
+
+                  {multiple && (
+                    <>
+                      <div>
+                        <p className={labelClass}>
+                          {t('dialog.image-generate.options.badge-variant-label')}
+                        </p>
+                        <OptionPicker
+                          columns={3}
+                          options={BADGE_VARIANTS.filter(
+                            variant =>
+                              field.type === 'number' || !BADGE_VARIANT_PARTS[variant].number
+                          ).map(variant => ({
+                            value: variant,
+                            label: t(`dialog.image-generate.options.variant.${variant}`),
+                            disabled,
+                          }))}
+                          value={activeVariant}
+                          onChange={variant => patch(field.id, { variant })}
+                        />
+                      </div>
+
+                      {BADGE_VARIANT_PARTS[activeVariant].icon && (
+                        <div>
+                          <p className={labelClass}>
+                            {t('dialog.image-generate.options.badge-icon-label')}
+                          </p>
+                          <SwatchPicker
+                            options={BADGE_ICON_IDS.map(icon => {
+                              const Icon = BADGE_ICONS[icon];
+                              return {
+                                value: icon,
+                                content: <Icon className="h-4 w-4" />,
+                              };
+                            })}
+                            value={activeIcon}
+                            disabled={disabled}
+                            onChange={icon => patch(field.id, { icon })}
+                          />
+                        </div>
+                      )}
+                    </>
                   )}
                 </>
               )}

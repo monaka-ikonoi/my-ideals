@@ -205,6 +205,7 @@
       "options": {
         "badge-label": "Badges",
         "badge-add": "Add badge",
+        "badge-field-label": "Field",
         "badge-position-label": "Position",
         "badge-size-label": "Size",
         "badge-color-label": "Color",
