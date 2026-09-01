@@ -205,6 +205,7 @@
       "options": {
         "badge-label": "徽章",
         "badge-add": "添加徽章",
+        "badge-field-label": "字段",
         "badge-position-label": "位置",
         "badge-size-label": "大小",
         "badge-color-label": "颜色",
