@@ -3,10 +3,12 @@ import { immer } from 'zustand/middleware/immer';
 import { debounce } from 'lodash-es';
 import {
   buildRecordFields,
+  buildRecordFieldViews,
   type Profile,
   type RecordField,
   type RecordMode,
   type RecordValue,
+  type RecordFieldView,
 } from '@/domain/profile';
 import { type Template } from '@/domain/template';
 import { getProfileStorage } from '@/storage/ProfileStorage';
@@ -22,6 +24,7 @@ export type LoadedProfile = {
 
 export type ProfileState = LoadedProfile & {
   fields: RecordField[];
+  fieldViews: RecordFieldView[];
   flush: () => Promise<void>;
   syncWithTemplate: (cleanup: boolean) => Promise<void>;
   setFieldValue: (
@@ -55,6 +58,7 @@ export function createProfileStore(loaded: LoadedProfile): ProfileStore {
         profile: loaded.profile,
         template: loaded.template,
         fields: buildRecordFields(loaded.profile),
+        fieldViews: buildRecordFieldViews(loaded.profile),
 
         flush: async () => {
           await Promise.resolve(debouncedSave.flush());
@@ -141,6 +145,7 @@ export function createProfileStore(loaded: LoadedProfile): ProfileStore {
             debugLog.perf.time(`Apply record mode ${mode}`);
             applyRecordMode(state.profile, mode, customFields);
             state.fields = buildRecordFields(state.profile);
+            state.fieldViews = buildRecordFieldViews(state.profile);
             touch(state.profile);
             debugLog.perf.timeEnd(`Apply record mode ${mode}`);
             debugLog.store.log(`Profile ${state.profile.id} record mode set to ${mode}`);
