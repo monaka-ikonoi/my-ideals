@@ -3,11 +3,17 @@ import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import type { RecordField } from '@/domain/profile';
 import {
   BADGE_COLORS,
+  BADGE_VARIANTS,
+  BADGE_VARIANT_PARTS,
+  BADGE_ICONS,
+  BADGE_ICON_IDS,
   BADGE_POSITIONS,
   BADGE_SIZES,
   DEFAULT_BADGE_POSITION,
   DEFAULT_BADGE_SIZE,
   DEFAULT_BADGE_COLOR,
+  DEFAULT_BADGE_ICON,
+  resolveBadgeVariant,
   type BadgeMap,
   type BadgeProps,
 } from '../card/CountBadgeProps';
@@ -54,6 +60,8 @@ export function BadgeOptionsEditor({
         position: existing?.position ?? DEFAULT_BADGE_POSITION,
         size: existing?.size ?? DEFAULT_BADGE_SIZE,
         color: existing?.color ?? DEFAULT_BADGE_COLOR,
+        variant: existing?.variant,
+        icon: existing?.icon ?? DEFAULT_BADGE_ICON,
       },
     });
   };
@@ -74,6 +82,8 @@ export function BadgeOptionsEditor({
         {active.map(field => {
           const badge = badges[field.id];
           const activeColor = badge.color ?? DEFAULT_BADGE_COLOR;
+          const activeVariant = resolveBadgeVariant(badge.variant, field);
+          const activeIcon = badge.icon ?? DEFAULT_BADGE_ICON;
 
           return (
             <div
@@ -155,6 +165,48 @@ export function BadgeOptionsEditor({
                   onChange={color => patch(field.id, { color })}
                 />
               </div>
+
+              {multiple && (
+                <>
+                  <div>
+                    <p className={labelClass}>
+                      {t('dialog.image-generate.options.badge-variant-label')}
+                    </p>
+                    <OptionPicker
+                      columns={3}
+                      options={BADGE_VARIANTS.filter(
+                        variant => field.type === 'number' || !BADGE_VARIANT_PARTS[variant].number
+                      ).map(variant => ({
+                        value: variant,
+                        label: t(`dialog.image-generate.options.variant.${variant}`),
+                        disabled,
+                      }))}
+                      value={activeVariant}
+                      onChange={variant => patch(field.id, { variant })}
+                    />
+                  </div>
+
+                  {BADGE_VARIANT_PARTS[activeVariant].icon && (
+                    <div>
+                      <p className={labelClass}>
+                        {t('dialog.image-generate.options.badge-icon-label')}
+                      </p>
+                      <SwatchPicker
+                        options={BADGE_ICON_IDS.map(icon => {
+                          const Icon = BADGE_ICONS[icon];
+                          return {
+                            value: icon,
+                            content: <Icon className="h-4 w-4" />,
+                          };
+                        })}
+                        value={activeIcon}
+                        disabled={disabled}
+                        onChange={icon => patch(field.id, { icon })}
+                      />
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           );
         })}

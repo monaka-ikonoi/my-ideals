@@ -208,6 +208,8 @@
         "badge-position-label": "位置",
         "badge-size-label": "サイズ",
         "badge-color-label": "色",
+        "badge-variant-label": "表示内容",
+        "badge-icon-label": "アイコン",
         "not-dim-untoggled-label": "未所持アイテムを薄く表示しない",
         "flatten-collections-label": "セットごとに表示しない",
         "position": {
@@ -223,6 +225,13 @@
           "medium": "中",
           "large": "大",
           "xlarge": "特大"
+        },
+        "variant": {
+          "number": "数値",
+          "text": "文字",
+          "icon": "アイコン",
+          "textNumber": "文字 + 数値",
+          "iconNumber": "アイコン + 数値"
         }
       }
     }
