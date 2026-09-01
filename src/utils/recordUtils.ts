@@ -3,6 +3,7 @@ import {
   type ItemRecord,
   type RecordField,
   type RecordValue,
+  type RecordFieldView,
 } from '@/domain/profile';
 
 export const createDefaultRecord = (fields: RecordField[]): ItemRecord => {
@@ -23,3 +24,11 @@ export const writeField = (
   value: RecordValue
 ): ItemRecord =>
   field.root ? value : { ...(typeof record === 'object' ? record : {}), [field.id]: value };
+
+export const readRecordFieldView = (
+  record: ItemRecord | undefined,
+  fieldView: RecordFieldView
+): RecordValue => {
+  const value = readField(record, fieldView.source);
+  return fieldView.transform ? fieldView.transform(value) : value;
+};
