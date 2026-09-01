@@ -208,6 +208,8 @@
         "badge-position-label": "Position",
         "badge-size-label": "Size",
         "badge-color-label": "Color",
+        "badge-variant-label": "Content",
+        "badge-icon-label": "Icon",
         "not-dim-untoggled-label": "Do not dim unowned items",
         "flatten-collections-label": "Do not group by collection",
         "position": {
@@ -223,6 +225,13 @@
           "medium": "Medium",
           "large": "Large",
           "xlarge": "Extra large"
+        },
+        "variant": {
+          "number": "Number",
+          "text": "Text",
+          "icon": "Icon",
+          "textNumber": "Text + Number",
+          "iconNumber": "Icon + Number"
         }
       }
     }
