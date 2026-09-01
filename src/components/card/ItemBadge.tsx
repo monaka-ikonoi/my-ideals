@@ -1,7 +1,12 @@
 import { HeartIcon } from '@heroicons/react/24/solid';
 import type { RecordField, RecordValue } from '@/domain/profile';
+import { normalizeStatusNumber } from '@/utils/utils';
 import {
+  BADGE_VARIANT_PARTS,
+  BADGE_ICONS,
   DEFAULT_BADGE_COLOR,
+  DEFAULT_BADGE_ICON,
+  resolveBadgeVariant,
   type BadgeProps,
   type BadgeColor,
   type BadgePosition,
@@ -70,8 +75,11 @@ type ItemBadgeProps = {
 export function ItemBadge({ field, value, config, rotated }: ItemBadgeProps) {
   // Rotated cards has their width doubled. The scaling factor ensures same badge size
   const sizeStyle = buildSizeStyle(BADGE_SIZE[config.size], rotated ? 0.5 : 1);
-  // A boolean field renders its name instead, and only ever when true.
+  // A boolean field has no number to show, and only ever renders when true.
   const count = typeof value === 'number' ? value : null;
+
+  const parts = BADGE_VARIANT_PARTS[resolveBadgeVariant(config.variant, field)];
+  const Icon = BADGE_ICONS[config.icon ?? DEFAULT_BADGE_ICON];
 
   return (
     <div
@@ -81,14 +89,16 @@ export function ItemBadge({ field, value, config, rotated }: ItemBadgeProps) {
         }`}
       style={sizeStyle.container}
     >
-      {count === null ? (
-        <span className="truncate">{field.name.slice(0, 1)}</span>
-      ) : count > 0 ? (
-        count
-      ) : (
+      {count !== null && count <= 0 ? (
         <>
           <HeartIcon className="shrink-0" style={sizeStyle.icon} />
           {count !== -1 && <span className="leading-none">{Math.abs(count)}</span>}
+        </>
+      ) : (
+        <>
+          {parts.icon && <Icon className="shrink-0" style={sizeStyle.icon} />}
+          {parts.text && <span className="truncate">{field.name.slice(0, 1)}</span>}
+          {parts.number && <span className="leading-none">{normalizeStatusNumber(value)}</span>}
         </>
       )}
     </div>
