@@ -29,7 +29,7 @@ const PresetFields: Record<Exclude<RecordMode, 'custom'>, RecordField[]> = {
   count: [{ id: '_value', name: '_', type: 'number', default: 0, primary: true, root: true }],
 };
 
-type RecordModeSource = { mode: RecordMode; customFields?: RecordField[] };
+export type RecordModeSource = { mode: RecordMode; customFields?: RecordField[] };
 
 export const buildRecordFields = (source: RecordModeSource): RecordField[] =>
   source.mode === 'custom' ? (source.customFields ?? []) : PresetFields[source.mode];
