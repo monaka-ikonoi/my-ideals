@@ -363,7 +363,7 @@ export function ImageGenerateModal({
                   </div>
 
                   {/* Controls */}
-                  <div className="mx-auto min-w-xs space-y-6 md:mx-0 md:w-full">
+                  <div className="mx-auto w-full min-w-xs space-y-6 md:mx-0">
                     {/* Badge options only apply when counts are enabled */}
                     {enableCount && (
                       <>
