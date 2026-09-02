@@ -10,6 +10,7 @@ import {
   type RecordMode,
 } from '@/domain/profile';
 import { getProfileStorage } from '@/storage/ProfileStorage';
+import { useSettingsStore } from './settingsStore';
 
 export type ProfileListEntry = {
   id: string;
@@ -129,6 +130,7 @@ export const useProfileListStore = create<ProfileListStore>()(
 
         deleteProfile: async id => {
           await getProfileStorage().deleteProfile(id);
+          useSettingsStore.getState().clearProfileOptions(id);
 
           set(state => {
             const index = state.profiles.findIndex(p => p.id === id);
