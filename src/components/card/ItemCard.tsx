@@ -6,13 +6,14 @@ import {
   type RecordField,
   type RecordMode,
   type RecordValue,
+  type RecordFieldView,
 } from '@/domain/profile';
 import { useImageOptions } from '@/contexts/imageOptions';
 import { useTemplate } from '@/contexts/template';
 import { getActiveProfile } from '@/stores/profileSessionStore';
 import { debugLog } from '@/utils/debug';
 import { normalizeStatusBoolean } from '@/utils/utils';
-import { readField } from '@/utils/recordUtils';
+import { readField, readRecordFieldView } from '@/utils/recordUtils';
 import { formatImageUrl } from '@/utils/templateUtils';
 import { ItemBadge } from './ItemBadge';
 import { ItemCaption } from './ItemCaption';
@@ -26,6 +27,7 @@ type ItemCardProps = {
   mode?: ItemCardMode;
   aspectRatio?: string;
   fields: RecordField[];
+  fieldViews: RecordFieldView[];
   recordMode: RecordMode;
   record: ItemRecord | undefined;
 };
@@ -36,6 +38,7 @@ export const ItemCard = memo(function ItemCard({
   mode = 'normal',
   aspectRatio = '7/10',
   fields,
+  fieldViews,
   recordMode,
   record,
 }: ItemCardProps) {
@@ -78,17 +81,17 @@ export const ItemCard = memo(function ItemCard({
         eager={mode === 'export'}
       >
         {showBadges &&
-          fields.map(field => {
-            const badge = imageOptions.badges[field.id];
+          fieldViews.map(fieldView => {
+            const badge = imageOptions.badges[fieldView.id];
             if (!badge) return null;
 
-            const value = readField(record, field);
-            if (value === field.default) return null;
+            const value = readRecordFieldView(record, fieldView);
+            if (value === readRecordFieldView(undefined, fieldView)) return null;
 
             return (
               <ItemBadge
-                key={field.id}
-                field={field}
+                key={fieldView.id}
+                fieldView={fieldView}
                 value={value}
                 config={badge}
                 rotated={item.rotated}

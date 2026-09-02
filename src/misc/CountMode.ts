@@ -1,5 +1,6 @@
 import { type RecordField, type RecordFieldView } from '@/domain/profile';
 import { normalizeStatusNumber } from '@/utils/utils';
+import { type BadgeMap, type BadgeProps } from '@/components/card/CountBadgeProps';
 
 export const COUNT_MODE_OWNED_ID = '_owned';
 export const COUNT_MODE_WANTED_ID = '_wanted';
@@ -20,3 +21,14 @@ export const countModeFieldViews = (field: RecordField): RecordFieldView[] => [
     transform: v => Math.max(-normalizeStatusNumber(v), 0),
   },
 ];
+
+const WANTED_BADGE_PROPS: Partial<BadgeProps> = {
+  color: 'pink',
+  variant: 'iconNumber',
+  icon: 'heart',
+};
+
+export const countModeBadgeProps = (props: BadgeProps): BadgeMap => ({
+  [COUNT_MODE_OWNED_ID]: props,
+  [COUNT_MODE_WANTED_ID]: { ...props, ...WANTED_BADGE_PROPS },
+});

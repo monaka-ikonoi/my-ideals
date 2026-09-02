@@ -27,9 +27,10 @@ export const ImageGrid = memo(function ImageGrid({
 }: ImageGridProps) {
   debugLog.render.log(`ImageGrid: ${items.length} items`);
 
-  const { fields, recordMode } = useActiveProfile(
+  const { fields, fieldViews, recordMode } = useActiveProfile(
     useShallow(state => ({
       fields: state.fields,
+      fieldViews: state.fieldViews,
       recordMode: state.profile.mode,
     }))
   );
@@ -86,6 +87,7 @@ export const ImageGrid = memo(function ImageGrid({
             mode={mode}
             aspectRatio={layout.aspectRatio}
             fields={fields}
+            fieldViews={fieldViews}
             recordMode={recordMode}
             record={record}
           />

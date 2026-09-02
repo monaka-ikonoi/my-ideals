@@ -1,6 +1,5 @@
-import { HeartIcon } from '@heroicons/react/24/solid';
-import type { RecordField, RecordValue } from '@/domain/profile';
-import { normalizeStatusNumber } from '@/utils/utils';
+import type { RecordValue, RecordFieldView } from '@/domain/profile';
+import { useTranslation } from 'react-i18next';
 import {
   BADGE_VARIANT_PARTS,
   BADGE_ICONS,
@@ -12,6 +11,8 @@ import {
   type BadgePosition,
   type BadgeSize,
 } from './CountBadgeProps';
+import { resolveFieldViewName } from '@/utils/recordUtils';
+import { normalizeStatusNumber } from '@/utils/utils';
 
 // Bottom bar is ~24px tall in export mode.
 const BADGE_POSITION_CLASS: Record<BadgePosition, string> = {
@@ -66,41 +67,33 @@ function buildSizeStyle(
 }
 
 type ItemBadgeProps = {
-  field: RecordField;
+  fieldView: RecordFieldView;
   value: RecordValue;
   config: BadgeProps;
   rotated?: boolean;
 };
 
-export function ItemBadge({ field, value, config, rotated }: ItemBadgeProps) {
+export function ItemBadge({ fieldView, value, config, rotated }: ItemBadgeProps) {
+  const { t } = useTranslation();
+
   // Rotated cards has their width doubled. The scaling factor ensures same badge size
   const sizeStyle = buildSizeStyle(BADGE_SIZE[config.size], rotated ? 0.5 : 1);
-  // A boolean field has no number to show, and only ever renders when true.
-  const count = typeof value === 'number' ? value : null;
 
-  const parts = BADGE_VARIANT_PARTS[resolveBadgeVariant(config.variant, field)];
+  const parts = BADGE_VARIANT_PARTS[resolveBadgeVariant(config.variant, fieldView)];
   const Icon = BADGE_ICONS[config.icon ?? DEFAULT_BADGE_ICON];
 
   return (
     <div
       className={`absolute z-10 flex transform-gpu items-center justify-center overflow-hidden
-        border font-bold tabular-nums backface-hidden ${BADGE_POSITION_CLASS[config.position]} ${
-          count === null || count > 0 ? badgeColorClass(config.color) : badgeColorClass('pink')
-        }`}
+        border font-bold tabular-nums backface-hidden ${BADGE_POSITION_CLASS[config.position]}
+        ${badgeColorClass(config.color)}`}
       style={sizeStyle.container}
     >
-      {count !== null && count <= 0 ? (
-        <>
-          <HeartIcon className="shrink-0" style={sizeStyle.icon} />
-          {count !== -1 && <span className="leading-none">{Math.abs(count)}</span>}
-        </>
-      ) : (
-        <>
-          {parts.icon && <Icon className="shrink-0" style={sizeStyle.icon} />}
-          {parts.text && <span className="truncate">{field.name.slice(0, 1)}</span>}
-          {parts.number && <span className="leading-none">{normalizeStatusNumber(value)}</span>}
-        </>
+      {parts.icon && <Icon className="shrink-0" style={sizeStyle.icon} />}
+      {parts.text && (
+        <span className="truncate">{resolveFieldViewName(t, fieldView).slice(0, 1)}</span>
       )}
+      {parts.number && <span className="leading-none">{normalizeStatusNumber(value)}</span>}
     </div>
   );
 }
