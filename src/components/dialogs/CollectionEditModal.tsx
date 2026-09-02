@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { TemplateCollection } from '@/domain/template';
-import { getPrimaryField } from '@/domain/profile';
+import { getPrimaryFieldView } from '@/domain/profile';
 import { DEFAULT_IMAGE_OPTIONS, ImageOptionsContext } from '@/contexts/imageOptions';
 import { useTemplate } from '@/contexts/template';
 import { useActiveProfile } from '@/stores/profileSessionStore';
@@ -9,7 +9,8 @@ import { useCollectionStats } from '@/hooks/useStats';
 import { FullScreenModal } from '../ui/FullScreenModal';
 import { MemberSelector } from '../MemberSelector';
 import { CollectionGrid } from '../CollectionGrid';
-import { type BadgeProps } from '../card/CountBadgeProps';
+import { type BadgeMap, type BadgeProps } from '../card/CountBadgeProps';
+import { countModeBadgeProps } from '@/misc/CountMode';
 
 const EDIT_BADGE: BadgeProps = { size: 'xlarge', position: 'bottom-middle' };
 
@@ -40,15 +41,18 @@ export function CollectionEditModal({ collectionId, onClose }: CollectionEditMod
 
   const [selectedMember, setSelectedMember] = useState<string | undefined>(availableMembers[0]?.id);
 
-  const fields = useActiveProfile(state => state.fields);
+  const fieldViews = useActiveProfile(state => state.fieldViews);
   const recordMode = useActiveProfile(state => state.profile.mode);
-  const editImageOptions = useMemo(
-    () => ({
-      ...DEFAULT_IMAGE_OPTIONS,
-      badges: recordMode === 'standard' ? {} : { [getPrimaryField(fields).id]: EDIT_BADGE },
-    }),
-    [fields, recordMode]
-  );
+  const editImageOptions = useMemo(() => {
+    const badges: BadgeMap =
+      recordMode === 'standard'
+        ? {}
+        : recordMode === 'count'
+          ? countModeBadgeProps(EDIT_BADGE)
+          : { [getPrimaryFieldView(fieldViews).id]: EDIT_BADGE };
+
+    return { ...DEFAULT_IMAGE_OPTIONS, badges };
+  }, [fieldViews, recordMode]);
 
   const virtualCollection = useMemo((): TemplateCollection => {
     if (availableMembers.length === 0 || !selectedMember) return collection;
