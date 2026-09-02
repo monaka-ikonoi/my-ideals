@@ -58,6 +58,12 @@
     "clear-cache": "清除缓存",
     "storage-usage": "已使用: {{size}} / {{quota}}"
   },
+  "misc": {
+    "count-mode": {
+      "owned-label": "持有",
+      "wanted-label": "求收"
+    }
+  },
   "collection": {
     "search-placeholder": "搜索合集...",
     "no-result": "未找到合集",

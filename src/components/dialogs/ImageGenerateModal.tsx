@@ -7,8 +7,8 @@ import { ImageOptionsContext } from '@/contexts/imageOptions';
 import { useTemplate } from '@/contexts/template';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useSettingsStore } from '@/stores/settingsStore';
-import { getPrimaryField } from '@/domain/profile';
-import { readField } from '@/utils/recordUtils';
+import { getPrimaryFieldView } from '@/domain/profile';
+import { readRecordFieldView } from '@/utils/recordUtils';
 import { downloadFile, shareAPISupported, shareFile } from '@/utils/fileUtils';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { FullScreenModal } from '../ui/FullScreenModal';
@@ -21,6 +21,7 @@ import { StepIndicator } from '../ui/StepIndicator';
 import { getErrorMessage } from '@/utils/error';
 import { computeItemWidth, resolveLayout } from '@/utils/layoutUtils';
 import { normalizeStatusNumber } from '@/utils/utils';
+import { countModeBadgeProps } from '@/misc/CountMode';
 
 type Step = 'select' | 'customize' | 'preview';
 
@@ -60,15 +61,17 @@ export function ImageGenerateModal({
 }: ImageGenerateModalProps) {
   const { t, i18n } = useTranslation();
 
-  const { profileId, fields, recordMode, primaryField, statusMap } = useActiveProfile(
-    useShallow(state => ({
-      profileId: state.profile.id,
-      fields: state.fields,
-      recordMode: state.profile.mode,
-      primaryField: getPrimaryField(state.fields),
-      statusMap: state.profile.collections,
-    }))
-  );
+  const { profileId, fields, fieldViews, recordMode, primaryFieldView, statusMap } =
+    useActiveProfile(
+      useShallow(state => ({
+        profileId: state.profile.id,
+        fields: state.fields,
+        fieldViews: state.fieldViews,
+        recordMode: state.profile.mode,
+        primaryFieldView: getPrimaryFieldView(state.fieldViews),
+        statusMap: state.profile.collections,
+      }))
+    );
   const { name: templateName, id: templateId, layout: templateLayout } = useTemplate();
 
   const [step, setStep] = useState<Step>(() => (preSelectedId ? 'customize' : 'select'));
@@ -86,12 +89,13 @@ export function ImageGenerateModal({
 
   // Standard mode shows ownership through the caption checkbox, so it has no badge to configure.
   const showBadges = recordMode !== 'standard';
-  const multipleBadges = recordMode === 'custom';
 
   // TODO: Persist badge options in settings store.
-  const [customBadges, setCustomBadges] = useState<BadgeMap>({
-    [getPrimaryField(fields).id]: imageOptions.badge,
-  });
+  const [customBadges, setCustomBadges] = useState<BadgeMap>(() =>
+    recordMode === 'count'
+      ? countModeBadgeProps(imageOptions.badge)
+      : { [primaryFieldView.id]: imageOptions.badge }
+  );
 
   const badges = showBadges ? customBadges : NO_BADGES;
 
@@ -179,7 +183,7 @@ export function ImageGenerateModal({
       const collectionStatus = statusMap?.[collection.id];
       const candidate =
         collection.items.find(item => {
-          const status = readField(collectionStatus?.[item.id], primaryField);
+          const status = readRecordFieldView(collectionStatus?.[item.id], primaryFieldView);
           return normalizeStatusNumber(status) !== 0;
         }) ?? collection.items[0];
       if (candidate) {
@@ -377,6 +381,7 @@ export function ImageGenerateModal({
                             mode="export"
                             aspectRatio={imageCardLayout.aspectRatio}
                             fields={fields}
+                            fieldViews={fieldViews}
                             recordMode={recordMode}
                             record={previewItem.record}
                           />
@@ -394,9 +399,9 @@ export function ImageGenerateModal({
                           {t('dialog.image-generate.options.badge-label')}
                         </p>
                         <BadgeOptionsEditor
-                          fields={fields}
+                          fieldViews={fieldViews}
                           badges={badges}
-                          multiple={multipleBadges}
+                          multiple={fieldViews.length > 1}
                           disabled={generating}
                           onChange={setCustomBadges}
                         />
