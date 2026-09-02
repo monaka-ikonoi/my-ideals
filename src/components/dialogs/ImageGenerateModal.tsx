@@ -15,7 +15,7 @@ import { FullScreenModal } from '../ui/FullScreenModal';
 import { OffscreenCaptureArea, type CaptureResult } from '../ui/OffscreenCaptureArea';
 import { CollectionImageContent } from '../CollectionImageContent';
 import { ItemCard } from '../card/ItemCard';
-import { type BadgeMap } from '../card/CountBadgeProps';
+import { type BadgeMap } from '../card/BadgeProps';
 import { BadgeOptionsEditor } from './BadgeOptionsEditor';
 import { StepIndicator } from '../ui/StepIndicator';
 import { getErrorMessage } from '@/utils/error';
