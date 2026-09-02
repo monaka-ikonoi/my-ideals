@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import {
   getRootField,
   type ItemRecord,
@@ -5,6 +6,7 @@ import {
   type RecordValue,
   type RecordFieldView,
 } from '@/domain/profile';
+import { COUNT_MODE_OWNED_ID, COUNT_MODE_WANTED_ID } from '@/misc/CountMode';
 
 export const createDefaultRecord = (fields: RecordField[]): ItemRecord => {
   const rootField = getRootField(fields);
@@ -31,4 +33,10 @@ export const readRecordFieldView = (
 ): RecordValue => {
   const value = readField(record, fieldView.source);
   return fieldView.transform ? fieldView.transform(value) : value;
+};
+
+export const resolveFieldViewName = (t: TFunction, fieldView: RecordFieldView): string => {
+  if (fieldView.id === COUNT_MODE_OWNED_ID) return t('misc.count-mode.owned-label');
+  if (fieldView.id === COUNT_MODE_WANTED_ID) return t('misc.count-mode.wanted-label');
+  return fieldView.name;
 };

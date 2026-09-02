@@ -6,7 +6,7 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import type { RecordField } from '@/domain/profile';
+import type { RecordFieldView } from '@/domain/profile';
 import {
   BADGE_COLORS,
   BADGE_VARIANTS,
@@ -26,11 +26,12 @@ import {
 import { DropdownSelect } from '../ui/DropdownSelect';
 import { OptionPicker } from '../ui/OptionPicker';
 import { SwatchPicker } from '../ui/SwatchPicker';
+import { resolveFieldViewName } from '@/utils/recordUtils';
 
 const labelClass = 'mb-2 text-sm font-medium text-gray-700';
 
 type BadgeOptionsEditorProps = {
-  fields: RecordField[];
+  fieldViews: RecordFieldView[];
   badges: BadgeMap;
   /** Preset modes have a single fixed badge and keep the plain pickers. */
   multiple: boolean;
@@ -39,7 +40,7 @@ type BadgeOptionsEditorProps = {
 };
 
 export function BadgeOptionsEditor({
-  fields,
+  fieldViews,
   badges,
   multiple,
   disabled,
@@ -48,25 +49,25 @@ export function BadgeOptionsEditor({
   const { t } = useTranslation();
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const active = fields.filter(field => badges[field.id]);
+  const active = fieldViews.filter(fieldView => badges[fieldView.id]);
 
-  const patch = (fieldId: string, changes: Partial<BadgeProps>) =>
-    onChange({ ...badges, [fieldId]: { ...badges[fieldId], ...changes } });
+  const patch = (fieldViewId: string, changes: Partial<BadgeProps>) =>
+    onChange({ ...badges, [fieldViewId]: { ...badges[fieldViewId], ...changes } });
 
-  const remove = (fieldId: string) => {
-    setExpandedId(current => (current === fieldId ? null : current));
-    onChange(Object.fromEntries(Object.entries(badges).filter(([id]) => id !== fieldId)));
+  const remove = (fieldViewId: string) => {
+    setExpandedId(current => (current === fieldViewId ? null : current));
+    onChange(Object.fromEntries(Object.entries(badges).filter(([id]) => id !== fieldViewId)));
   };
 
   const add = () => {
-    const field = fields.find(candidate => !badges[candidate.id]);
-    if (!field) return;
+    const fieldView = fieldViews.find(candidate => !badges[candidate.id]);
+    if (!fieldView) return;
 
     const [existing] = Object.values(badges);
-    setExpandedId(field.id);
+    setExpandedId(fieldView.id);
     onChange({
       ...badges,
-      [field.id]: {
+      [fieldView.id]: {
         position: existing?.position ?? DEFAULT_BADGE_POSITION,
         size: existing?.size ?? DEFAULT_BADGE_SIZE,
         color: existing?.color ?? DEFAULT_BADGE_COLOR,
@@ -90,13 +91,13 @@ export function BadgeOptionsEditor({
   return (
     <>
       <div className="space-y-2">
-        {active.map(field => {
-          const badge = badges[field.id];
+        {active.map(fieldView => {
+          const badge = badges[fieldView.id];
           const activeColor = badge.color ?? DEFAULT_BADGE_COLOR;
-          const activeVariant = resolveBadgeVariant(badge.variant, field);
+          const activeVariant = resolveBadgeVariant(badge.variant, fieldView);
           const activeIcon = badge.icon ?? DEFAULT_BADGE_ICON;
           const ActiveIcon = BADGE_ICONS[activeIcon];
-          const expanded = !multiple || expandedId === field.id;
+          const expanded = !multiple || expandedId === fieldView.id;
 
           const summary: React.ReactNode[] = [
             t(`dialog.image-generate.options.position.${badge.position}`),
@@ -114,14 +115,14 @@ export function BadgeOptionsEditor({
 
           return (
             <div
-              key={field.id}
+              key={fieldView.id}
               className={multiple ? 'space-y-4 rounded-xl border border-gray-200 p-3' : 'space-y-6'}
             >
               {multiple && (
                 <div className="flex items-center gap-x-2">
                   <button
                     type="button"
-                    onClick={() => setExpandedId(expanded ? null : field.id)}
+                    onClick={() => setExpandedId(expanded ? null : fieldView.id)}
                     className="flex min-w-0 flex-1 items-center gap-x-2 overflow-hidden text-left"
                   >
                     {expanded ? (
@@ -129,7 +130,9 @@ export function BadgeOptionsEditor({
                     ) : (
                       <ChevronRightIcon className="h-4 w-4 shrink-0 text-gray-400" />
                     )}
-                    <span className="shrink-0 text-sm font-medium text-gray-700">{field.name}</span>
+                    <span className="shrink-0 text-sm font-medium text-gray-700">
+                      {resolveFieldViewName(t, fieldView)}
+                    </span>
 
                     {!expanded && (
                       <span
@@ -148,7 +151,7 @@ export function BadgeOptionsEditor({
 
                   <button
                     type="button"
-                    onClick={() => remove(field.id)}
+                    onClick={() => remove(fieldView.id)}
                     disabled={disabled}
                     title={t('common.delete')}
                     className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-red-600
@@ -167,14 +170,14 @@ export function BadgeOptionsEditor({
                         {t('dialog.image-generate.options.badge-field-label')}
                       </p>
                       <DropdownSelect
-                        options={fields.map(option => ({
+                        options={fieldViews.map(option => ({
                           value: option.id,
-                          label: option.name,
-                          disabled: !!badges[option.id] && option.id !== field.id,
+                          label: resolveFieldViewName(t, option),
+                          disabled: !!badges[option.id] && option.id !== fieldView.id,
                         }))}
-                        value={field.id}
+                        value={fieldView.id}
                         disabled={disabled}
-                        onChange={toId => changeField(field.id, toId)}
+                        onChange={toId => changeField(fieldView.id, toId)}
                       />
                     </div>
                   )}
@@ -191,7 +194,7 @@ export function BadgeOptionsEditor({
                         disabled,
                       }))}
                       value={badge.position}
-                      onChange={position => patch(field.id, { position })}
+                      onChange={position => patch(fieldView.id, { position })}
                     />
                   </div>
 
@@ -207,7 +210,7 @@ export function BadgeOptionsEditor({
                         disabled,
                       }))}
                       value={badge.size}
-                      onChange={size => patch(field.id, { size })}
+                      onChange={size => patch(fieldView.id, { size })}
                     />
                   </div>
 
@@ -227,7 +230,7 @@ export function BadgeOptionsEditor({
                       }))}
                       value={activeColor}
                       disabled={disabled}
-                      onChange={color => patch(field.id, { color })}
+                      onChange={color => patch(fieldView.id, { color })}
                     />
                   </div>
 
@@ -241,14 +244,15 @@ export function BadgeOptionsEditor({
                           columns={3}
                           options={BADGE_VARIANTS.filter(
                             variant =>
-                              field.type === 'number' || !BADGE_VARIANT_PARTS[variant].number
+                              fieldView.source.type === 'number' ||
+                              !BADGE_VARIANT_PARTS[variant].number
                           ).map(variant => ({
                             value: variant,
                             label: t(`dialog.image-generate.options.variant.${variant}`),
                             disabled,
                           }))}
                           value={activeVariant}
-                          onChange={variant => patch(field.id, { variant })}
+                          onChange={variant => patch(fieldView.id, { variant })}
                         />
                       </div>
 
@@ -267,7 +271,7 @@ export function BadgeOptionsEditor({
                             })}
                             value={activeIcon}
                             disabled={disabled}
-                            onChange={icon => patch(field.id, { icon })}
+                            onChange={icon => patch(fieldView.id, { icon })}
                           />
                         </div>
                       )}
@@ -280,7 +284,7 @@ export function BadgeOptionsEditor({
         })}
       </div>
 
-      {multiple && active.length < fields.length && (
+      {multiple && active.length < fieldViews.length && (
         <button
           type="button"
           onClick={add}

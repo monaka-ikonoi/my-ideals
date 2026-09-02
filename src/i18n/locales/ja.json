@@ -58,6 +58,12 @@
     "clear-cache": "キャッシュを削除",
     "storage-usage": "使用量: {{size}} / {{quota}}"
   },
+  "misc": {
+    "count-mode": {
+      "owned-label": "所持",
+      "wanted-label": "求め"
+    }
+  },
   "collection": {
     "search-placeholder": "セットを検索...",
     "no-result": "セットが見つかりません",
