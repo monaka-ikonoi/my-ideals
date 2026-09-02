@@ -6,7 +6,7 @@ import type { TemplateCollection } from '@/domain/template';
 import { ImageOptionsContext } from '@/contexts/imageOptions';
 import { useTemplate } from '@/contexts/template';
 import { useActiveProfile } from '@/stores/profileSessionStore';
-import { useSettingsStore } from '@/stores/settingsStore';
+import { useSettingsStore, type ProfileOptions } from '@/stores/settingsStore';
 import { getPrimaryFieldView } from '@/domain/profile';
 import { readRecordFieldView } from '@/utils/recordUtils';
 import { downloadFile, shareAPISupported, shareFile } from '@/utils/fileUtils';
@@ -15,7 +15,7 @@ import { FullScreenModal } from '../ui/FullScreenModal';
 import { OffscreenCaptureArea, type CaptureResult } from '../ui/OffscreenCaptureArea';
 import { CollectionImageContent } from '../CollectionImageContent';
 import { ItemCard } from '../card/ItemCard';
-import { type BadgeMap } from '../card/BadgeProps';
+import { type BadgeMap, BADGE_PROPS } from '../card/BadgeProps';
 import { BadgeOptionsEditor } from './BadgeOptionsEditor';
 import { StepIndicator } from '../ui/StepIndicator';
 import { getErrorMessage } from '@/utils/error';
@@ -86,16 +86,22 @@ export function ImageGenerateModal({
 
   const imageOptions = useSettingsStore(state => state.imageOptions);
   const setImageOptions = useSettingsStore(state => state.setImageOptions);
+  const setProfileOptions = useSettingsStore(state => state.setProfileOptions);
+  const savedOptions: ProfileOptions | undefined = useSettingsStore(
+    state => state.profileOptions[profileId]
+  );
 
   // Standard mode shows ownership through the caption checkbox, so it has no badge to configure.
   const showBadges = recordMode !== 'standard';
 
-  // TODO: Persist badge options in settings store.
-  const [customBadges, setCustomBadges] = useState<BadgeMap>(() =>
-    recordMode === 'count'
-      ? countModeBadgeProps(imageOptions.badge)
-      : { [primaryFieldView.id]: imageOptions.badge }
-  );
+  const savedBadges = savedOptions?.badges;
+  const customBadges = useMemo(() => {
+    if (savedBadges) return savedBadges;
+
+    return recordMode === 'count'
+      ? countModeBadgeProps(BADGE_PROPS.defaults)
+      : { [primaryFieldView.id]: BADGE_PROPS.defaults };
+  }, [savedBadges, recordMode, primaryFieldView]);
 
   const badges = showBadges ? customBadges : NO_BADGES;
 
@@ -403,7 +409,7 @@ export function ImageGenerateModal({
                           badges={badges}
                           multiple={fieldViews.length > 1}
                           disabled={generating}
-                          onChange={setCustomBadges}
+                          onChange={next => setProfileOptions(profileId, { badges: next })}
                         />
                       </div>
                     )}
