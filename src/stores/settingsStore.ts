@@ -2,19 +2,22 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import i18n from '@/i18n';
 import type { StorageBackend } from '@/storage/runtime';
-import type { BadgeProps } from '@/components/card/BadgeProps';
+import type { BadgeMap } from '@/components/card/BadgeProps';
 
 export type ImageOptions = {
-  badge?: BadgeProps; // v2
   dimUntoggled?: boolean; // v3
   flatten?: boolean; // v4
 };
 
 export const buildDefaultImageOptions = (): Required<ImageOptions> => ({
-  badge: { position: 'top-right', size: 'medium' },
   dimUntoggled: true,
   flatten: false,
 });
+
+/** Image options that depend on a profile's fields, so they cannot be shared across profiles. */
+export type ProfileOptions = {
+  badges?: BadgeMap;
+};
 
 type SettingsStore = {
   // State
@@ -24,6 +27,7 @@ type SettingsStore = {
   imageOptions: Required<ImageOptions>; // v2
   itpWarningDismissed: boolean; // v5
   installBannerDismissed: boolean; // v5
+  profileOptions: Record<string, ProfileOptions>; // v6
 
   // Actions
   setLanguage: (code: string) => void;
@@ -31,6 +35,8 @@ type SettingsStore = {
   setImageOptions: (options: ImageOptions) => void; // v2 / v3 / v4
   dismissItpWarning: () => void; // v5
   dismissInstallBanner: () => void; // v5
+  setProfileOptions: (profileId: string, options: ProfileOptions) => void; // v6
+  clearProfileOptions: (profileId: string) => void; // v6
 };
 
 export const useSettingsStore = create<SettingsStore>()(
@@ -61,10 +67,28 @@ export const useSettingsStore = create<SettingsStore>()(
       dismissItpWarning: () => set({ itpWarningDismissed: true }),
       installBannerDismissed: false,
       dismissInstallBanner: () => set({ installBannerDismissed: true }),
+
+      // v6
+      profileOptions: {},
+      setProfileOptions: (profileId: string, options: ProfileOptions) => {
+        set(state => ({
+          profileOptions: {
+            ...state.profileOptions,
+            [profileId]: { ...state.profileOptions[profileId], ...options },
+          },
+        }));
+      },
+      clearProfileOptions: (profileId: string) => {
+        set(state => ({
+          profileOptions: Object.fromEntries(
+            Object.entries(state.profileOptions).filter(([id]) => id !== profileId)
+          ),
+        }));
+      },
     }),
     {
       name: 'my-ideals:settings',
-      version: 5,
+      version: 6,
       migrate: (persisted, version) => {
         const state = persisted as Partial<SettingsStore>;
         if (version === 0) {
@@ -88,6 +112,13 @@ export const useSettingsStore = create<SettingsStore>()(
         if (version < 5) {
           state.itpWarningDismissed = false;
           state.installBannerDismissed = false;
+        }
+        if (version < 6) {
+          state.profileOptions = {};
+          state.imageOptions = {
+            dimUntoggled: state.imageOptions?.dimUntoggled ?? true,
+            flatten: state.imageOptions?.flatten ?? false,
+          };
         }
         return state;
       },
