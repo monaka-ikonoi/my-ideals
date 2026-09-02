@@ -9,7 +9,7 @@ import { useCollectionStats } from '@/hooks/useStats';
 import { FullScreenModal } from '../ui/FullScreenModal';
 import { MemberSelector } from '../MemberSelector';
 import { CollectionGrid } from '../CollectionGrid';
-import { type BadgeMap, type BadgeProps } from '../card/CountBadgeProps';
+import { type BadgeMap, type BadgeProps } from '../card/BadgeProps';
 import { countModeBadgeProps } from '@/misc/CountMode';
 
 const EDIT_BADGE: BadgeProps = { size: 'xlarge', position: 'bottom-middle' };
