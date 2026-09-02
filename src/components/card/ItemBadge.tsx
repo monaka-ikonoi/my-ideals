@@ -1,16 +1,13 @@
 import type { RecordValue, RecordFieldView } from '@/domain/profile';
 import { useTranslation } from 'react-i18next';
 import {
-  BADGE_VARIANT_PARTS,
-  BADGE_ICONS,
-  DEFAULT_BADGE_COLOR,
-  DEFAULT_BADGE_ICON,
+  BADGE_PROPS,
   resolveBadgeVariant,
   type BadgeProps,
   type BadgeColor,
   type BadgePosition,
   type BadgeSize,
-} from './CountBadgeProps';
+} from './BadgeProps';
 import { resolveFieldViewName } from '@/utils/recordUtils';
 import { normalizeStatusNumber } from '@/utils/utils';
 
@@ -25,7 +22,7 @@ const BADGE_POSITION_CLASS: Record<BadgePosition, string> = {
 };
 
 // Interpolated names are safelisted in src/index.css.
-function badgeColorClass(color: BadgeColor = DEFAULT_BADGE_COLOR): string {
+function badgeColorClass(color: BadgeColor = BADGE_PROPS.defaults.color): string {
   return color === 'white'
     ? 'border-gray-200/60 bg-white/80 text-gray-800'
     : `border-${color}-200/60 bg-${color}-100/80 text-${color}-600`;
@@ -79,8 +76,8 @@ export function ItemBadge({ fieldView, value, config, rotated }: ItemBadgeProps)
   // Rotated cards has their width doubled. The scaling factor ensures same badge size
   const sizeStyle = buildSizeStyle(BADGE_SIZE[config.size], rotated ? 0.5 : 1);
 
-  const parts = BADGE_VARIANT_PARTS[resolveBadgeVariant(config.variant, fieldView)];
-  const Icon = BADGE_ICONS[config.icon ?? DEFAULT_BADGE_ICON];
+  const parts = BADGE_PROPS.variantParts[resolveBadgeVariant(config.variant, fieldView)];
+  const Icon = BADGE_PROPS.icons[config.icon ?? BADGE_PROPS.defaults.icon];
 
   return (
     <div

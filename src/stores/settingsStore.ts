@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import i18n from '@/i18n';
 import type { StorageBackend } from '@/storage/runtime';
-import type { BadgeProps } from '@/components/card/CountBadgeProps';
+import type { BadgeProps } from '@/components/card/BadgeProps';
 
 export type ImageOptions = {
   badge?: BadgeProps; // v2
