@@ -58,6 +58,12 @@
     "clear-cache": "Clear Cache",
     "storage-usage": "{{size}} / {{quota}} used"
   },
+  "misc": {
+    "count-mode": {
+      "owned-label": "Owned",
+      "wanted-label": "Wanted"
+    }
+  },
   "collection": {
     "search-placeholder": "Search collections...",
     "no-result": "No collections found",
