@@ -10,7 +10,7 @@ import {
   QuestionMarkCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/24/solid';
-import type { RecordField } from '@/domain/profile';
+import type { RecordFieldView } from '@/domain/profile';
 
 export const BADGE_POSITIONS = [
   'top-left',
@@ -104,5 +104,5 @@ export const DEFAULT_BADGE_ICON: BadgeIcon = 'heart';
 
 export const resolveBadgeVariant = (
   content: BadgeVariant | undefined,
-  field: RecordField
-): BadgeVariant => content ?? (field.type === 'number' ? 'number' : 'text');
+  fieldView: RecordFieldView
+): BadgeVariant => content ?? (fieldView.source.type === 'number' ? 'number' : 'text');
