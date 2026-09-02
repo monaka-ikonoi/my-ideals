@@ -1,6 +1,6 @@
 import { type RecordField, type RecordFieldView } from '@/domain/profile';
 import { normalizeStatusNumber } from '@/utils/utils';
-import { type BadgeMap, type BadgeProps } from '@/components/card/CountBadgeProps';
+import { type BadgeMap, type BadgeProps } from '@/components/card/BadgeProps';
 
 export const COUNT_MODE_OWNED_ID = '_owned';
 export const COUNT_MODE_WANTED_ID = '_wanted';

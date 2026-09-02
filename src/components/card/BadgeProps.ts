@@ -12,7 +12,7 @@ import {
 } from '@heroicons/react/24/solid';
 import type { RecordFieldView } from '@/domain/profile';
 
-export const BADGE_POSITIONS = [
+const POSITIONS = [
   'top-left',
   'top-middle',
   'top-right',
@@ -20,13 +20,13 @@ export const BADGE_POSITIONS = [
   'bottom-middle',
   'bottom-right',
 ] as const;
-export type BadgePosition = (typeof BADGE_POSITIONS)[number];
+export type BadgePosition = (typeof POSITIONS)[number];
 
-export const BADGE_SIZES = ['small', 'medium', 'large', 'xlarge'] as const;
-export type BadgeSize = (typeof BADGE_SIZES)[number];
+const SIZES = ['small', 'medium', 'large', 'xlarge'] as const;
+export type BadgeSize = (typeof SIZES)[number];
 
 /** `white` keeps the original neutral look; the rest are Tailwind palette names. */
-export const BADGE_COLORS = [
+const COLORS = [
   'white',
   'red',
   'orange',
@@ -46,15 +46,12 @@ export const BADGE_COLORS = [
   'pink',
   'rose',
 ] as const;
-export type BadgeColor = (typeof BADGE_COLORS)[number];
+export type BadgeColor = (typeof COLORS)[number];
 
-export const BADGE_VARIANTS = ['number', 'text', 'icon', 'textNumber', 'iconNumber'] as const;
-export type BadgeVariant = (typeof BADGE_VARIANTS)[number];
+const VARIANTS = ['number', 'text', 'icon', 'textNumber', 'iconNumber'] as const;
+export type BadgeVariant = (typeof VARIANTS)[number];
 
-export const BADGE_VARIANT_PARTS: Record<
-  BadgeVariant,
-  { icon: boolean; text: boolean; number: boolean }
-> = {
+const VARIANT_PARTS: Record<BadgeVariant, { icon: boolean; text: boolean; number: boolean }> = {
   number: { icon: false, text: false, number: true },
   text: { icon: false, text: true, number: false },
   icon: { icon: true, text: false, number: false },
@@ -62,7 +59,7 @@ export const BADGE_VARIANT_PARTS: Record<
   iconNumber: { icon: true, text: false, number: true },
 };
 
-export const BADGE_ICON_IDS = [
+const ICON_IDS = [
   'heart',
   'star',
   'check',
@@ -73,9 +70,9 @@ export const BADGE_ICON_IDS = [
   'locked',
   'unlocked',
 ] as const;
-export type BadgeIcon = (typeof BADGE_ICON_IDS)[number];
+export type BadgeIcon = (typeof ICON_IDS)[number];
 
-export const BADGE_ICONS: Record<BadgeIcon, ComponentType<ComponentProps<'svg'>>> = {
+const ICONS: Record<BadgeIcon, ComponentType<ComponentProps<'svg'>>> = {
   heart: HeartIcon,
   star: StarIcon,
   check: CheckCircleIcon,
@@ -97,10 +94,23 @@ export type BadgeProps = {
 
 export type BadgeMap = Record<string, BadgeProps>;
 
-export const DEFAULT_BADGE_POSITION: BadgePosition = 'top-right';
-export const DEFAULT_BADGE_SIZE: BadgeSize = 'medium';
-export const DEFAULT_BADGE_COLOR: BadgeColor = 'white';
-export const DEFAULT_BADGE_ICON: BadgeIcon = 'heart';
+const DEFAULTS: Required<Omit<BadgeProps, 'variant'>> = {
+  position: 'top-right',
+  size: 'medium',
+  color: 'white',
+  icon: 'heart',
+};
+
+export const BADGE_PROPS = {
+  positions: POSITIONS,
+  sizes: SIZES,
+  colors: COLORS,
+  variants: VARIANTS,
+  variantParts: VARIANT_PARTS,
+  iconIds: ICON_IDS,
+  icons: ICONS,
+  defaults: DEFAULTS,
+};
 
 export const resolveBadgeVariant = (
   content: BadgeVariant | undefined,
