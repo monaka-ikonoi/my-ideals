@@ -11,7 +11,7 @@ import { type ItemCardMode } from './card/types';
 type ImageGridItem = {
   collection: string;
   item: TemplateCollectionItem;
-  record: ItemRecord | undefined;
+  record: ItemRecord;
 };
 
 type ImageGridProps = {

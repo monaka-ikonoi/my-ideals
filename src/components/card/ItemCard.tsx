@@ -12,7 +12,7 @@ import { useImageOptions } from '@/contexts/imageOptions';
 import { useTemplate } from '@/contexts/template';
 import { getActiveProfile } from '@/stores/profileSessionStore';
 import { debugLog } from '@/utils/debug';
-import { normalizeStatusBoolean } from '@/utils/utils';
+import { normalizeStatusBoolean, normalizeStatusNumber } from '@/utils/utils';
 import { readField } from '@/utils/recordUtils';
 import { formatImageUrl } from '@/utils/templateUtils';
 import { ItemBadgeOverlay } from './ItemBadgeOverlay';
@@ -29,7 +29,7 @@ type ItemCardProps = {
   fields: RecordField[];
   fieldViews: RecordFieldView[];
   recordMode: RecordMode;
-  record: ItemRecord | undefined;
+  record: ItemRecord;
 };
 
 export const ItemCard = memo(function ItemCard({
@@ -62,7 +62,8 @@ export const ItemCard = memo(function ItemCard({
     handleChange(captionField.id, !normalizeStatusBoolean(primaryValue));
   }, [captionField, handleChange, primaryValue]);
 
-  const isToggled = typeof primaryValue === 'boolean' ? primaryValue : primaryValue !== 0;
+  // normalizeStatusBoolean returns false on negative numbers, so use normalizeStatusNumber here
+  const isToggled = fields.some(field => normalizeStatusNumber(readField(record, field)) !== 0);
   const dimmed = mode === 'export' && !imageOptions.dimUntoggled ? false : !isToggled;
   const showBadges = mode === 'export' || mode === 'edit';
 
