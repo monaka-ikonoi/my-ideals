@@ -217,6 +217,7 @@
         "badge-color-label": "色",
         "badge-variant-label": "表示内容",
         "badge-icon-label": "アイコン",
+        "badge-arrangement-label": "並べ方",
         "not-dim-untoggled-label": "未所持アイテムを薄く表示しない",
         "flatten-collections-label": "セットごとに表示しない",
         "position": {
@@ -239,6 +240,10 @@
           "icon": "アイコン",
           "textNumber": "文字 + 数値",
           "iconNumber": "アイコン + 数値"
+        },
+        "arrangement": {
+          "horizontal": "横並び",
+          "vertical": "縦並び"
         }
       }
     }

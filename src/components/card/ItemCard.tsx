@@ -13,9 +13,9 @@ import { useTemplate } from '@/contexts/template';
 import { getActiveProfile } from '@/stores/profileSessionStore';
 import { debugLog } from '@/utils/debug';
 import { normalizeStatusBoolean } from '@/utils/utils';
-import { readField, readRecordFieldView } from '@/utils/recordUtils';
+import { readField } from '@/utils/recordUtils';
 import { formatImageUrl } from '@/utils/templateUtils';
-import { ItemBadge } from './ItemBadge';
+import { ItemBadgeOverlay } from './ItemBadgeOverlay';
 import { ItemCaption } from './ItemCaption';
 import { ItemImage } from './ItemImage';
 import { RecordFieldList } from './RecordFieldList';
@@ -80,24 +80,9 @@ export const ItemCard = memo(function ItemCard({
         dimmed={dimmed}
         eager={mode === 'export'}
       >
-        {showBadges &&
-          fieldViews.map(fieldView => {
-            const badge = imageOptions.badges[fieldView.id];
-            if (!badge) return null;
-
-            const value = readRecordFieldView(record, fieldView);
-            if (value === readRecordFieldView(undefined, fieldView)) return null;
-
-            return (
-              <ItemBadge
-                key={fieldView.id}
-                fieldView={fieldView}
-                value={value}
-                config={badge}
-                rotated={item.rotated}
-              />
-            );
-          })}
+        {showBadges && (
+          <ItemBadgeOverlay fieldViews={fieldViews} record={record} rotated={item.rotated} />
+        )}
 
         <ItemCaption name={item.name} mode={mode}>
           {captionField && (

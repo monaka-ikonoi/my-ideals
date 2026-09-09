@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import i18n from '@/i18n';
 import type { StorageBackend } from '@/storage/runtime';
-import type { BadgeMap } from '@/components/card/BadgeProps';
+import type { BadgeArrangement, BadgeMap } from '@/components/card/BadgeProps';
 
 export type ImageOptions = {
   dimUntoggled?: boolean; // v3
@@ -17,6 +17,7 @@ export const buildDefaultImageOptions = (): Required<ImageOptions> => ({
 /** Image options that depend on a profile's fields, so they cannot be shared across profiles. */
 export type ProfileOptions = {
   badges?: BadgeMap;
+  badgeArrangement?: BadgeArrangement;
 };
 
 type SettingsStore = {
