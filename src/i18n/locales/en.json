@@ -172,7 +172,7 @@
       }
     },
     "record-fields": {
-      "inherited-hint": "This field takes over the records of the current mode, so its type cannot be changed and it cannot be removed.",
+      "inherited-hint": "This field takes over the records of the current mode, so it cannot be removed.",
       "type-change-hint": "Existing records will be converted on save: a counter value above zero becomes checked, and a checked box becomes 1. Counts other than 0 and 1 cannot be recovered.",
       "add": "Add Field",
       "remove": "Remove Field",
