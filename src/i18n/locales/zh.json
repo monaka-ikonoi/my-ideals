@@ -217,6 +217,7 @@
         "badge-color-label": "颜色",
         "badge-variant-label": "显示内容",
         "badge-icon-label": "图标",
+        "badge-arrangement-label": "排列方向",
         "not-dim-untoggled-label": "不弱化显示未持有项",
         "flatten-collections-label": "不按合集分组显示",
         "position": {
@@ -239,6 +240,10 @@
           "icon": "图标",
           "textNumber": "文字 + 数字",
           "iconNumber": "图标 + 数字"
+        },
+        "arrangement": {
+          "horizontal": "横向",
+          "vertical": "纵向"
         }
       }
     }

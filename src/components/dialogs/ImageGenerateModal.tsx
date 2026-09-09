@@ -18,6 +18,7 @@ import { ItemCard } from '../card/ItemCard';
 import { type BadgeMap, BADGE_PROPS } from '../card/BadgeProps';
 import { BadgeOptionsEditor } from './BadgeOptionsEditor';
 import { StepIndicator } from '../ui/StepIndicator';
+import { OptionPicker } from '../ui/OptionPicker';
 import { getErrorMessage } from '@/utils/error';
 import { computeItemWidth, resolveLayout } from '@/utils/layoutUtils';
 import { normalizeStatusNumber } from '@/utils/utils';
@@ -104,8 +105,12 @@ export function ImageGenerateModal({
   }, [savedBadges, recordMode, primaryFieldView]);
 
   const badges = showBadges ? customBadges : NO_BADGES;
+  const badgeArrangement = savedOptions?.badgeArrangement ?? BADGE_PROPS.defaults.arrangement;
 
-  const previewOptions = useMemo(() => ({ ...imageOptions, badges }), [imageOptions, badges]);
+  const previewOptions = useMemo(
+    () => ({ ...imageOptions, badges, badgeArrangement }),
+    [imageOptions, badges, badgeArrangement]
+  );
 
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -410,6 +415,26 @@ export function ImageGenerateModal({
                           multiple={fieldViews.length > 1}
                           disabled={generating}
                           onChange={next => setProfileOptions(profileId, { badges: next })}
+                        />
+                      </div>
+                    )}
+
+                    {showBadges && fieldViews.length > 1 && (
+                      <div>
+                        <p className="mb-2 text-sm font-medium text-gray-700">
+                          {t('dialog.image-generate.options.badge-arrangement-label')}
+                        </p>
+                        <OptionPicker
+                          columns={2}
+                          options={BADGE_PROPS.arrangements.map(arrangement => ({
+                            value: arrangement,
+                            label: t(`dialog.image-generate.options.arrangement.${arrangement}`),
+                            disabled: generating,
+                          }))}
+                          value={badgeArrangement}
+                          onChange={arrangement =>
+                            setProfileOptions(profileId, { badgeArrangement: arrangement })
+                          }
                         />
                       </div>
                     )}
