@@ -43,13 +43,10 @@ export function applyRecordMode(
       for (const { field, inherit, source } of fieldMap) {
         if (!source) continue;
         let value = readField(record, source);
-        if (isNumberField(field)) {
-          value = normalizeStatusNumber(value);
-          if (inherit === 'positive') value = Math.max(value, 0);
-          if (inherit === 'negative') value = Math.max(-value, 0);
-        } else {
-          value = normalizeStatusBoolean(value);
-        }
+        // The sign has to be resolved before coercing, or a negative count reads as unset.
+        if (inherit === 'positive') value = Math.max(normalizeStatusNumber(value), 0);
+        if (inherit === 'negative') value = Math.max(-normalizeStatusNumber(value), 0);
+        value = isNumberField(field) ? normalizeStatusNumber(value) : normalizeStatusBoolean(value);
         migrated = writeField(migrated, field, value);
       }
 

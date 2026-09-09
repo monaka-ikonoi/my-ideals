@@ -105,7 +105,6 @@ function RecordFieldCard({
               label: t(`dialog.record-fields.type-${type}`),
             }))}
             value={draft.type}
-            disabled={!!draft.inherit}
             onChange={type =>
               onChange({
                 type,
