@@ -44,7 +44,7 @@
     "save-backup": "バックアップを保存",
     "mode": {
       "label": "モード",
-      "count": "複数モード",
+      "count": "計数モード",
       "standard": "通常モード",
       "switch": "モードを切り替え"
     },
