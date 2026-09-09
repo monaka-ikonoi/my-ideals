@@ -5,21 +5,10 @@ import {
   resolveBadgeVariant,
   type BadgeProps,
   type BadgeColor,
-  type BadgePosition,
   type BadgeSize,
 } from './BadgeProps';
 import { resolveFieldViewName } from '@/utils/recordUtils';
 import { normalizeStatusNumber } from '@/utils/utils';
-
-// Bottom bar is ~24px tall in export mode.
-const BADGE_POSITION_CLASS: Record<BadgePosition, string> = {
-  'top-left': 'top-1.5 left-1.5',
-  'top-middle': 'top-1.5 left-1/2 -translate-x-1/2',
-  'top-right': 'top-1.5 right-1.5',
-  'bottom-left': 'bottom-7 left-1.5',
-  'bottom-middle': 'bottom-7 left-1/2 -translate-x-1/2',
-  'bottom-right': 'bottom-7 right-1.5',
-};
 
 // Interpolated names are safelisted in src/index.css.
 function badgeColorClass(color: BadgeColor = BADGE_PROPS.defaults.color): string {
@@ -81,9 +70,8 @@ export function ItemBadge({ fieldView, value, config, rotated }: ItemBadgeProps)
 
   return (
     <div
-      className={`absolute z-10 flex transform-gpu items-center justify-center overflow-hidden
-        border font-bold tabular-nums backface-hidden ${BADGE_POSITION_CLASS[config.position]}
-        ${badgeColorClass(config.color)}`}
+      className={`flex shrink-0 transform-gpu items-center justify-center overflow-hidden border
+        font-bold tabular-nums backface-hidden ${badgeColorClass(config.color)}`}
       style={sizeStyle.container}
     >
       {parts.icon && <Icon className="shrink-0" style={sizeStyle.icon} />}
