@@ -105,8 +105,16 @@ function RecordFieldCard({
               label: t(`dialog.record-fields.type-${type}`),
             }))}
             value={draft.type}
-            disabled={!draft.isNew || !!draft.inherit}
-            onChange={type => onChange({ type, default: type === 'number' ? 0 : false })}
+            disabled={!!draft.inherit}
+            onChange={type =>
+              onChange({
+                type,
+                default:
+                  type === 'number'
+                    ? normalizeStatusNumber(draft.default)
+                    : normalizeStatusBoolean(draft.default),
+              })
+            }
           />
         </div>
 
@@ -176,6 +184,10 @@ function RecordFieldCard({
 
       {draft.inherit && (
         <p className="mt-2 text-xs text-gray-500">{t('dialog.record-fields.inherited-hint')}</p>
+      )}
+
+      {draft.savedType && draft.savedType !== draft.type && (
+        <p className="mt-2 text-xs text-amber-600">{t('dialog.record-fields.type-change-hint')}</p>
       )}
     </div>
   );
