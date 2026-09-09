@@ -379,10 +379,13 @@ export function ImageGenerateModal({
 
           {step === 'customize' && (
             <>
-              <div className="min-h-0 flex-1 overflow-y-auto border-t border-gray-100">
-                <div className="flex flex-col gap-6 p-4 md:flex-row md:items-start md:p-6">
-                  {/* Preview */}
-                  <div className="mx-auto flex justify-center md:mx-0 md:shrink-0 md:justify-start">
+              <div className="flex min-h-0 flex-1 flex-col border-t border-gray-100 md:flex-row">
+                {/* Preview */}
+                <div
+                  className="shrink-0 border-b border-gray-100 p-4 md:h-full md:self-start
+                    md:border-r md:border-b-0 md:p-6"
+                >
+                  <div className="flex justify-center md:justify-start">
                     {previewItem && (
                       <div style={{ width: `${imageCardWidth}px` }}>
                         <ImageOptionsContext value={previewOptions}>
@@ -400,9 +403,11 @@ export function ImageGenerateModal({
                       </div>
                     )}
                   </div>
+                </div>
 
-                  {/* Controls */}
-                  <div className="mx-auto w-full min-w-xs space-y-6 md:mx-0">
+                {/* Controls */}
+                <div className="min-h-0 flex-1 overflow-y-auto">
+                  <div className="mx-auto w-full min-w-xs space-y-6 p-4 md:mx-0 md:p-6">
                     {/* Standard mode has no badgeable field at all */}
                     {showBadges && (
                       <div>
