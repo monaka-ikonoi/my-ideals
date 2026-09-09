@@ -25,6 +25,9 @@ export type BadgePosition = (typeof POSITIONS)[number];
 const SIZES = ['small', 'medium', 'large', 'xlarge'] as const;
 export type BadgeSize = (typeof SIZES)[number];
 
+const ARRANGEMENTS = ['horizontal', 'vertical'] as const;
+export type BadgeArrangement = (typeof ARRANGEMENTS)[number];
+
 /** `white` keeps the original neutral look; the rest are Tailwind palette names. */
 const COLORS = [
   'white',
@@ -94,16 +97,18 @@ export type BadgeProps = {
 
 export type BadgeMap = Record<string, BadgeProps>;
 
-const DEFAULTS: Required<Omit<BadgeProps, 'variant'>> = {
+const DEFAULTS: Required<Omit<BadgeProps, 'variant'>> & { arrangement: BadgeArrangement } = {
   position: 'top-right',
   size: 'medium',
   color: 'white',
   icon: 'heart',
+  arrangement: 'horizontal',
 };
 
 export const BADGE_PROPS = {
   positions: POSITIONS,
   sizes: SIZES,
+  arrangements: ARRANGEMENTS,
   colors: COLORS,
   variants: VARIANTS,
   variantParts: VARIANT_PARTS,

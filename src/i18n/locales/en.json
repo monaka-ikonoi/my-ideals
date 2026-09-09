@@ -217,6 +217,7 @@
         "badge-color-label": "Color",
         "badge-variant-label": "Content",
         "badge-icon-label": "Icon",
+        "badge-arrangement-label": "Arrangement",
         "not-dim-untoggled-label": "Do not dim unowned items",
         "flatten-collections-label": "Do not group by collection",
         "position": {
@@ -239,6 +240,10 @@
           "icon": "Icon",
           "textNumber": "Text + Number",
           "iconNumber": "Icon + Number"
+        },
+        "arrangement": {
+          "horizontal": "Horizontal",
+          "vertical": "Vertical"
         }
       }
     }
