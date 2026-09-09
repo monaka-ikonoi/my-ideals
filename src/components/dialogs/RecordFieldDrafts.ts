@@ -18,6 +18,8 @@ export type DraftField = {
   id: string;
   name: string;
   type: (typeof FieldTypes)[number];
+  /** The type the existing records are stored as, absent for fields that have none yet. */
+  savedType?: (typeof FieldTypes)[number];
   default: RecordValue;
   primary: boolean;
 };
@@ -55,6 +57,7 @@ export const buildRecordFieldDrafts = (fields?: RecordField[]): DraftField[] => 
     id: field.id,
     name: field.name,
     type: field.type,
+    savedType: field.type,
     default: field.default,
     primary: field.primary ?? false,
   }));
