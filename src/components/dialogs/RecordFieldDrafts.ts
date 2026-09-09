@@ -13,7 +13,7 @@ export const FieldTypes = ['boolean', 'number'] as const;
 export type DraftField = {
   key: string; // used at runtime only
   isNew: boolean;
-  /** Takes over the previous mode's records, so its type and primary role are fixed. */
+  /** Takes over the previous mode's records, so it cannot be removed. */
   inherit?: InheritOptions;
   id: string;
   name: string;
@@ -44,6 +44,7 @@ export const buildRecordFieldDrafts = (fields?: RecordField[]): DraftField[] => 
         ...newRecordFieldDraftEntry(true),
         inherit: 'value',
         type: rootField.type,
+        savedType: rootField.type,
         default: rootField.default,
         primary: true,
         id: 'owned',
@@ -77,6 +78,7 @@ export const splitCountModeFields = (drafts: DraftField[], enabled: boolean): Dr
     ...inherited,
     inherit: 'positive',
     type: 'number',
+    savedType: 'number',
     primary: true,
   };
   const negative: DraftField = {
@@ -84,6 +86,7 @@ export const splitCountModeFields = (drafts: DraftField[], enabled: boolean): Dr
     inherit: 'negative',
     id: 'wanted',
     type: 'number',
+    savedType: 'number',
     default: 0,
   };
 
