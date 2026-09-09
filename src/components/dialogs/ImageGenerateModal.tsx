@@ -222,6 +222,29 @@ export function ImageGenerateModal({
     [imageCardLayout, previewItem]
   );
 
+  const imageCardHeight = useMemo(() => {
+    const [width, height] = imageCardLayout.aspectRatio.split('/').map(Number);
+    return imageCardWidth * (previewItem?.item?.rotated ? width / height : height / width);
+  }, [imageCardLayout, imageCardWidth, previewItem]);
+
+  const previewAreaRef = useRef<HTMLDivElement>(null);
+  const [previewArea, setPreviewArea] = useState<{ width: number; height: number } | null>(null);
+
+  useEffect(() => {
+    const element = previewAreaRef.current;
+    if (!element) return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      setPreviewArea({ width: entry.contentRect.width, height: entry.contentRect.height });
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [step]);
+
+  const previewScale = previewArea
+    ? Math.min(1, previewArea.width / imageCardWidth, previewArea.height / imageCardHeight)
+    : 1;
+
   const handleCapture = useCallback(
     (result: CaptureResult) => {
       setGenerating(false);
@@ -382,12 +405,19 @@ export function ImageGenerateModal({
               <div className="flex min-h-0 flex-1 flex-col border-t border-gray-100 md:flex-row">
                 {/* Preview */}
                 <div
-                  className="shrink-0 border-b border-gray-100 p-4 md:h-full md:self-start
-                    md:border-r md:border-b-0 md:p-6"
+                  ref={previewAreaRef}
+                  className="max-h-[33%] shrink-0 overflow-hidden border-b border-gray-100 p-4
+                    md:h-full md:max-h-none md:self-start md:border-r md:border-b-0 md:p-6"
                 >
                   <div className="flex justify-center md:justify-start">
                     {previewItem && (
-                      <div style={{ width: `${imageCardWidth}px` }}>
+                      <div
+                        className="origin-top md:origin-top-left"
+                        style={{
+                          width: `${imageCardWidth}px`,
+                          transform: `scale(${previewScale})`,
+                        }}
+                      >
                         <ImageOptionsContext value={previewOptions}>
                           <ItemCard
                             collectionId={previewItem.collection.id}
