@@ -160,11 +160,12 @@ export function BadgeOptionsEditor({
                         {t('dialog.image-generate.options.badge-field-label')}
                       </p>
                       <DropdownSelect
-                        options={fieldViews.map(option => ({
-                          value: option.id,
-                          label: resolveFieldViewName(t, option),
-                          disabled: !!badges[option.id] && option.id !== fieldView.id,
-                        }))}
+                        options={fieldViews
+                          .filter(option => !badges[option.id] || option.id === fieldView.id)
+                          .map(option => ({
+                            value: option.id,
+                            label: resolveFieldViewName(t, option),
+                          }))}
                         value={fieldView.id}
                         disabled={disabled}
                         onChange={toId => changeField(fieldView.id, toId)}
