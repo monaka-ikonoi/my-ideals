@@ -136,6 +136,13 @@ export default defineConfig({
     'import.meta.env.VITE_GIT_HASH': JSON.stringify(gitInfo.hash),
     'import.meta.env.VITE_LONG_VERSION': JSON.stringify(longVersion),
     'import.meta.env.VITE_BUILD_TIME': JSON.stringify(buildTime),
+    'import.meta.env.VITE_DEPLOY_ENV': JSON.stringify(
+      !process.env.CF_PAGES
+        ? 'local'
+        : process.env.CF_PAGES_BRANCH === 'main'
+          ? 'production'
+          : 'preview'
+    ),
   },
   build: {
     rollupOptions: {
