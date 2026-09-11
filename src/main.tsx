@@ -3,10 +3,12 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import './i18n';
 import App from './App.tsx';
-import { APP_NAME, LONG_VERSION, BUILD_TIME_RAW, MODE } from './utils/appInfo.ts';
+import { APP_NAME, LONG_VERSION, BUILD_TIME_RAW, MODE, DEPLOY_ENV } from './utils/appInfo.ts';
 import { bootstrap } from './bootstrap.ts';
 
-console.log(`${APP_NAME} ${LONG_VERSION} (${MODE}) build at ${BUILD_TIME_RAW}`);
+console.log(
+  `${APP_NAME} ${LONG_VERSION} (${MODE}) build at ${BUILD_TIME_RAW}, ${DEPLOY_ENV} deploy`
+);
 
 void (async () => {
   await bootstrap();

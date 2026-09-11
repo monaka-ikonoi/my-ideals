@@ -5,7 +5,7 @@ import { useProfileSessionStore } from './stores/profileSessionStore';
 import { GlobalDialogs } from './components/GlobalDialogs';
 import { GlobalToaster } from './components/GlobalToaster';
 import { MainContent } from './components/MainContent';
-import { DEV_MODE } from './utils/appInfo';
+import { DEV_MODE, PREVIEW_DEPLOY } from './utils/appInfo';
 
 export default function App() {
   const { t } = useTranslation();
@@ -13,6 +13,7 @@ export default function App() {
   useEffect(() => {
     document.title = `${t('app.name')} - ${t('app.tagline')}`;
     if (DEV_MODE) document.title = `[DEV] ${document.title}`;
+    if (PREVIEW_DEPLOY) document.title = `[Preview] ${document.title}`;
   }, [t]);
 
   useEffect(() => {
