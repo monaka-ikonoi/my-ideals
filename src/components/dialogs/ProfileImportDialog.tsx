@@ -251,7 +251,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
 
             {/* Error */}
             {state.status === 'error' && (
-              <div className="rounded-lg bg-red-50 p-3">
+              <div className="max-h-72 overflow-y-auto rounded-lg bg-red-50 p-3">
                 <pre className="text-sm whitespace-pre-wrap text-red-600">{state.message}</pre>
               </div>
             )}
