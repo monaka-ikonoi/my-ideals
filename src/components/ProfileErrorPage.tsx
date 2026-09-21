@@ -13,7 +13,7 @@ export function ProfileErrorPage({ message }: { message: string }) {
   const profileLoaded = useProfileSessionStore(state => !!state.store);
 
   return (
-    <div className="flex min-h-[60vh] items-center justify-center">
+    <div className="flex items-center justify-center py-16">
       <div className="flex flex-col items-center gap-4 px-4 text-center">
         {/* Icon */}
         <div className="rounded-full bg-red-100 p-3">
@@ -24,7 +24,10 @@ export function ProfileErrorPage({ message }: { message: string }) {
         <div className="text-lg font-semibold text-gray-900">{t('common.error-title')}</div>
 
         {/* Error message box */}
-        <div className="w-full max-w-lg rounded-lg border border-red-200 bg-red-50 p-4">
+        <div
+          className="max-h-[60vh] w-full max-w-lg overflow-y-auto rounded-lg border border-red-200
+            bg-red-50 p-4"
+        >
           <pre className="text-left font-mono text-sm break-words whitespace-pre-wrap text-red-700">
             {message}
           </pre>
