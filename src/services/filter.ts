@@ -9,6 +9,16 @@ export type FieldCondition =
   | { fieldId: string; type: 'boolean'; value: boolean }
   | { fieldId: string; type: 'number'; op: NumberFilterOperator; value: number };
 
+export type FilterNode = FieldCondition | FilterGroup;
+
+export type FilterGroup = {
+  type: 'group';
+  operator: 'and' | 'or';
+  children: FilterNode[];
+};
+
+export type FilterExpression = FilterGroup | null;
+
 export type RecordPredicate = (record: ItemRecord | undefined) => boolean;
 
 const compareNumber = (value: number, op: NumberFilterOperator, threshold: number): boolean => {
@@ -36,16 +46,41 @@ const buildConditionPredicate = (field: RecordField, condition: FieldCondition):
           condition.value
         );
 
+export function buildFilterPredicate(
+  fields: RecordField[],
+  expression: FilterExpression
+): RecordPredicate | null {
+  if (!expression) return null;
+
+  const fieldsById = new Map(fields.map(field => [field.id, field]));
+
+  const compile = (node: FilterNode): RecordPredicate | null => {
+    if (node.type !== 'group') {
+      const field = fieldsById.get(node.fieldId);
+      return field ? buildConditionPredicate(field, node) : null;
+    }
+
+    const predicates = node.children
+      .map(child => compile(child))
+      .filter(predicate => predicate !== null);
+    if (predicates.length === 0) return null;
+
+    return node.operator === 'and'
+      ? record => predicates.every(predicate => predicate(record))
+      : record => predicates.some(predicate => predicate(record));
+  };
+
+  return compile(expression);
+}
+
+// The current filter UI and session store still use a flat AND list.
 export function buildConditionsPredicate(
   fields: RecordField[],
   conditions: FieldCondition[]
 ): RecordPredicate | null {
-  const predicates = conditions.flatMap(condition => {
-    const field = fields.find(candidate => candidate.id === condition.fieldId);
-    return field ? [buildConditionPredicate(field, condition)] : [];
+  return buildFilterPredicate(fields, {
+    type: 'group',
+    operator: 'and',
+    children: conditions,
   });
-
-  if (predicates.length === 0) return null;
-
-  return record => predicates.every(predicate => predicate(record));
 }
