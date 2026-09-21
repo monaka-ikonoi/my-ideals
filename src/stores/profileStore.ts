@@ -16,6 +16,7 @@ import { debugLog } from '@/utils/debug';
 import { writeField } from '@/utils/recordUtils';
 import { syncProfileWithTemplate } from '@/services/syncProfile';
 import { applyRecordMode, type RecordFieldWithOption } from '@/services/recordMode';
+import { useSettingsStore } from './settingsStore';
 
 export type LoadedProfile = {
   profile: Profile;
@@ -139,6 +140,7 @@ export function createProfileStore(loaded: LoadedProfile): ProfileStore {
         },
 
         setMode: (mode: RecordMode, customFields?: RecordFieldWithOption[]) => {
+          const { id, mode: previousMode } = get().profile;
           set(state => {
             if (state.profile.mode === mode && mode !== 'custom') return;
 
@@ -150,6 +152,9 @@ export function createProfileStore(loaded: LoadedProfile): ProfileStore {
             debugLog.perf.timeEnd(`Apply record mode ${mode}`);
             debugLog.store.log(`Profile ${state.profile.id} record mode set to ${mode}`);
           });
+          if (previousMode !== mode) {
+            useSettingsStore.getState().clearProfileOptions(id);
+          }
           debouncedSave();
         },
       };
