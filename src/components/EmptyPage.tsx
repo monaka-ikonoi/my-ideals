@@ -6,7 +6,11 @@ export function EmptyPage() {
   const { t } = useTranslation();
 
   return (
-    <div className="flex h-[calc(100vh-56px)] items-center justify-center">
+    <div
+      className="flex
+        h-[calc(100vh-56px-env(safe-area-inset-top,0px)-env(safe-area-inset-bottom,0px))]
+        items-center justify-center"
+    >
       <div className="text-center">
         <h2 className="text-xl font-semibold text-gray-700">{t('profile.not-selected')}</h2>
         <p className="mt-2 text-gray-500">{t('profile.not-selected-hint')}</p>

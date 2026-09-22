@@ -36,9 +36,11 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="pb-safe min-h-screen bg-gray-50">
       <Navbar />
-      <MainContent />
+      <div className="pr-safe pl-safe">
+        <MainContent />
+      </div>
       <GlobalDialogs />
       <GlobalToaster />
     </div>

@@ -7,7 +7,10 @@ export function Navbar() {
   const { t } = useTranslation();
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white shadow-sm">
+    <nav
+      className="pt-safe pr-safe pl-safe sticky top-0 z-50 border-b border-gray-200 bg-white
+        shadow-sm"
+    >
       <div className="mx-auto px-4 lg:max-w-[1024px] 2xl:max-w-[1664px]">
         <div className="flex h-14 items-center justify-between">
           {/* Left: Title */}

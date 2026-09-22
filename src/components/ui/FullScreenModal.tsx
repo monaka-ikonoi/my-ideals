@@ -13,10 +13,10 @@ export function FullScreenModal({ isOpen, onClose, title, children }: FullScreen
 
   return (
     <CommonBackdrop>
-      <div className="fixed inset-0 z-50 flex md:items-center md:justify-center md:p-4">
+      <div className="md:p-safe-dialog fixed inset-0 z-50 flex md:items-center md:justify-center">
         <div
-          className="flex h-full w-full flex-col bg-white md:h-[80vh] md:w-full md:max-w-4xl
-            md:rounded-xl md:shadow-2xl"
+          className="p-safe flex h-full max-h-full w-full flex-col bg-white md:h-[80vh] md:w-full
+            md:max-w-4xl md:rounded-xl md:p-0 md:shadow-2xl"
           onClick={e => e.stopPropagation()}
         >
           <div

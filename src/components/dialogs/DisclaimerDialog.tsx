@@ -21,7 +21,7 @@ export function DisclaimerDialog() {
 
   return (
     <CommonBackdrop>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="p-safe-dialog fixed inset-0 z-50 flex items-center justify-center">
         <div className="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-lg bg-white shadow-xl">
           {/* Header */}
           <div

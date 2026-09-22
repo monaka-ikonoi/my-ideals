@@ -16,7 +16,7 @@ export function LanguageSelector({ onSelect }: { onSelect?: () => void }) {
         <button
           key={lang}
           onClick={() => handleSelectLanguage(lang)}
-          className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm ${
+          className={`pr-safe-3 flex w-full items-center gap-2 py-2 pl-3 text-left text-sm ${
             lang === currentLanguage
               ? 'bg-blue-50 text-blue-700'
               : 'text-gray-700 hover:bg-gray-100'

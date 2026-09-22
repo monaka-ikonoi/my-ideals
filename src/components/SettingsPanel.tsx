@@ -59,7 +59,7 @@ export function SettingsPanel({ onSelect }: SettingsPanelProps) {
   return (
     <>
       <div className="py-1">
-        <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">
+        <div className="pr-safe-3 py-2 pl-3 text-xs font-semibold text-gray-500 uppercase">
           {t('settings.language')}
         </div>
 
@@ -74,7 +74,7 @@ export function SettingsPanel({ onSelect }: SettingsPanelProps) {
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => onSelect?.()}
-          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
+          className="pr-safe-3 flex w-full items-center gap-2 py-2 pl-3 text-sm text-gray-700
             hover:bg-gray-100"
         >
           <QuestionMarkCircleIcon className="h-4 w-4" />
@@ -86,7 +86,7 @@ export function SettingsPanel({ onSelect }: SettingsPanelProps) {
             useDialogStore.getState().openAbout();
             onSelect?.();
           }}
-          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
+          className="pr-safe-3 flex w-full items-center gap-2 py-2 pl-3 text-sm text-gray-700
             hover:bg-gray-100"
         >
           <InformationCircleIcon className="h-4 w-4" />
@@ -95,7 +95,7 @@ export function SettingsPanel({ onSelect }: SettingsPanelProps) {
         {showInstall && (
           <button
             onClick={handleInstall}
-            className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
+            className="pr-safe-3 flex w-full items-center gap-2 py-2 pl-3 text-sm text-gray-700
               hover:bg-gray-100"
           >
             <SquaresPlusIcon className="h-4 w-4" />
@@ -104,7 +104,7 @@ export function SettingsPanel({ onSelect }: SettingsPanelProps) {
         )}
         <button
           onClick={() => void handleClearCache()}
-          className="flex w-full items-start gap-2 px-3 py-2 text-sm text-gray-700
+          className="pr-safe-3 flex w-full items-start gap-2 py-2 pl-3 text-sm text-gray-700
             hover:bg-gray-100"
         >
           <CircleStackIcon className="mt-0.5 h-4 w-4 shrink-0" />

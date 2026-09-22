@@ -17,10 +17,10 @@ export function ScrollToTop({ threshold = 300 }: { threshold?: number }) {
   return (
     <button
       onClick={scrollPageToTop}
-      className={`fixed right-6 bottom-6 z-50 rounded-full bg-blue-600 p-3 text-white shadow-lg
-        transition-all duration-300 hover:bg-blue-700 hover:shadow-xl active:scale-95 ${
-          visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'
-        }`}
+      className={`fixed right-[calc(1.5rem+env(safe-area-inset-right,0px))]
+        bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] z-40 rounded-full bg-blue-600 p-3
+        text-white shadow-lg transition-all duration-300 hover:bg-blue-700 hover:shadow-xl
+        ${visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'}`}
       aria-label="Scroll to top"
     >
       <ArrowUpIcon className="h-5 w-5" />

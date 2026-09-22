@@ -17,7 +17,9 @@ export function DebugSettings({ onSelect }: { onSelect?: () => void }) {
     <>
       <div className="border-t border-gray-200" />
       <div className="py-1">
-        <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">Debug</div>
+        <div className="pr-safe-3 py-2 pl-3 text-xs font-semibold text-gray-500 uppercase">
+          Debug
+        </div>
 
         <button
           onClick={() => {
@@ -25,7 +27,7 @@ export function DebugSettings({ onSelect }: { onSelect?: () => void }) {
             sessionStorage.clear();
             onSelect?.();
           }}
-          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
+          className="pr-safe-3 flex w-full items-center gap-2 py-2 pl-3 text-sm text-gray-700
             hover:bg-gray-100"
         >
           Reset settings
@@ -33,7 +35,7 @@ export function DebugSettings({ onSelect }: { onSelect?: () => void }) {
 
         <button
           onClick={handleClearProfiles}
-          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700
+          className="pr-safe-3 flex w-full items-center gap-2 py-2 pl-3 text-sm text-gray-700
             hover:bg-gray-100"
         >
           Delete all profiles

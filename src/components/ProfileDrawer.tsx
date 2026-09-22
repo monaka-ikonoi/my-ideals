@@ -45,12 +45,15 @@ export function ProfileDrawer({ isOpen, onOpen, onClose }: ProfileDrawerProps) {
 
           {/* Panel */}
           <div
-            className="fixed inset-y-0 right-0 z-50 flex w-72 flex-col bg-white shadow-xl lg:hidden"
+            // Rows apply the safe inset so their backgrounds and dividers reach the screen edge.
+            className="pt-safe pb-safe fixed inset-y-0 right-0 z-50 flex
+              w-[calc(--spacing(72)+env(safe-area-inset-right,0px))] max-w-full flex-col bg-white
+              shadow-xl lg:hidden"
           >
             {/* Header */}
             <div
-              className="flex flex-shrink-0 items-center justify-between border-b border-gray-200
-                px-4 py-3"
+              className="pr-safe-4 flex flex-shrink-0 items-center justify-between border-b
+                border-gray-200 py-3 pl-4"
             >
               <h2 className="font-semibold text-gray-900">{t('common.menu')}</h2>
               <button onClick={onClose} className="rounded-lg p-1 text-gray-500 hover:bg-gray-100">
@@ -60,7 +63,7 @@ export function ProfileDrawer({ isOpen, onOpen, onClose }: ProfileDrawerProps) {
 
             {/* Current Profile */}
             {activeProfile && (
-              <div className="border-b border-gray-200 px-4 py-3">
+              <div className="pr-safe-4 border-b border-gray-200 py-3 pl-4">
                 <div className="text-xs font-semibold text-gray-500 uppercase">
                   {t('profile.current')}
                 </div>

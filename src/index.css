@@ -1,5 +1,52 @@
 @import 'tailwindcss';
 
 html {
-  scrollbar-gutter: stable; 
+  scrollbar-gutter: stable;
+}
+
+/* No suffix: safe inset only. Numeric suffix: safe inset plus spacing units. */
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+@utility pt-safe-* {
+  padding-top: calc(env(safe-area-inset-top, 0px) + --spacing(--value(number)));
+}
+
+@utility pr-safe {
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+@utility pr-safe-* {
+  padding-right: calc(env(safe-area-inset-right, 0px) + --spacing(--value(number)));
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@utility pb-safe-* {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + --spacing(--value(number)));
+}
+
+@utility pl-safe {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+@utility pl-safe-* {
+  padding-left: calc(env(safe-area-inset-left, 0px) + --spacing(--value(number)));
+}
+
+@utility p-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+@utility p-safe-dialog {
+  padding-top: max(--spacing(4), env(safe-area-inset-top, 0px));
+  padding-right: max(--spacing(4), env(safe-area-inset-right, 0px));
+  padding-bottom: max(--spacing(4), env(safe-area-inset-bottom, 0px));
+  padding-left: max(--spacing(4), env(safe-area-inset-left, 0px));
 }

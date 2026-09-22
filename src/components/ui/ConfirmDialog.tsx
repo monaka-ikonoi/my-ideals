@@ -43,7 +43,7 @@ export function ConfirmDialog({
   return (
     <CommonBackdrop>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 text-left"
+        className="p-safe-dialog fixed inset-0 z-50 flex items-center justify-center text-left"
         onMouseDown={e => {
           if (e.target === e.currentTarget) onCancel();
         }}

@@ -30,8 +30,8 @@ export function GlobalToaster() {
       position={isMobile ? 'top-center' : 'top-right'}
       expand={true}
       style={{
-        top: '72px',
-        right: '12px',
+        top: 'calc(72px + env(safe-area-inset-top, 0px))',
+        right: 'calc(12px + env(safe-area-inset-right, 0px))',
       }}
       icons={{
         success: <CheckCircleIcon />,

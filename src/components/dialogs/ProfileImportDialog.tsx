@@ -176,7 +176,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
   return (
     <CommonBackdrop>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        className="p-safe-dialog fixed inset-0 z-50 flex items-center justify-center"
         onMouseDown={e => {
           if (e.target === e.currentTarget) handleClose();
         }}
