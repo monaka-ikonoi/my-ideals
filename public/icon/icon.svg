@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="-20 -20 460 460" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">My Ideals</title>
+  <desc id="desc">Borderless mint portrait photo cards inside a circular arc with five equally spaced circular dots and a circular coral check badge. Transparent spacing around the badge and a transparent check work on light and dark backgrounds. The check is optically centered. Brand colors: #7ACCBE and #EA6C81.</desc>
+  <defs>
+    <linearGradient id="back-card" x1="147" y1="120" x2="301" y2="283" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B6E3DB"/>
+      <stop offset=".55" stop-color="#C3E8E2"/>
+      <stop offset="1" stop-color="#A9DED5"/>
+    </linearGradient>
+    <linearGradient id="photo" x1="120" y1="145" x2="258" y2="332" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E4F5F2"/>
+      <stop offset="1" stop-color="#E7F6F3"/>
+    </linearGradient>
+    <linearGradient id="hair" x1="151" y1="154" x2="227" y2="280" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7ACCBE"/>
+      <stop offset="1" stop-color="#85D0C3"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="177" y1="185" x2="190" y2="237" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EAF7F5"/>
+      <stop offset="1" stop-color="#E7F6F3"/>
+    </linearGradient>
+    <linearGradient id="neck" x1="179" y1="233" x2="196" y2="263" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#CAEBE5"/>
+      <stop offset="1" stop-color="#D0EDE8"/>
+    </linearGradient>
+    <linearGradient id="blouse" x1="138" y1="263" x2="242" y2="329" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A9DED5"/>
+      <stop offset=".55" stop-color="#AFE0D8"/>
+      <stop offset="1" stop-color="#B6E3DB"/>
+    </linearGradient>
+    <clipPath id="photo-crop">
+      <rect x="109" y="130" width="148" height="200" rx="11" transform="rotate(-8 180 228)"/>
+    </clipPath>
+    <clipPath id="badge-clearance" clipPathUnits="userSpaceOnUse">
+      <path d="M24 24H396V396H24Z M358 318A62 62 0 1 0 234 318A62 62 0 1 0 358 318Z" clip-rule="evenodd"/>
+    </clipPath>
+    <!-- Rounded check outline, shifted right 2 and down 2.5 for optical balance. -->
+    <clipPath id="check-knockout" clipPathUnits="userSpaceOnUse">
+      <path d="M-60 -60H60V60H-60Z M-24.242640687 8.742640687L-10.242640687 22.742640687A6 6 0 0 0 -1.757359313 22.742640687L29.242640687 -8.257359313A6 6 0 0 0 20.757359313 -16.742640687L-6.000000000 10.014718626L-15.757359313 0.257359313A6 6 0 0 0 -24.242640687 8.742640687Z" clip-rule="evenodd"/>
+    </clipPath>
+  </defs>
+
+  <!-- All underlying artwork shares a transparent 10-unit badge clearance. -->
+  <g id="logo-base" clip-path="url(#badge-clearance)">
+  <!-- Rear photo card. -->
+  <rect x="142" y="110" width="160" height="191" rx="13" transform="rotate(7 225 210)" fill="url(#back-card)"/>
+
+  <!-- Borderless photo and portrait, enlarged uniformly by 12% about (183, 230). -->
+  <g id="front-photo" transform="translate(-21.96 -27.6) scale(1.12)">
+  <rect x="109" y="130" width="148" height="200" rx="11" transform="rotate(-8 180 228)" fill="url(#photo)"/>
+
+  <!-- The portrait is drawn entirely with editable vector paths. -->
+  <g clip-path="url(#photo-crop)">
+    <path d="M181 146C163 146 150 157 144.5 176.5C139.1 195.7 144.4 221.9 142.7 239.3C141.5 247.2 139.8 253.1 145.6 257.2C148.8 259.6 151.8 258.3 154.3 256.1L157.5 274.5C165.8 282.9 183.7 275.9 192.1 274.9C207 282.8 226.3 279 230.3 258L233.9 253.1C240.1 249.2 234.6 239.6 232.1 230.6C225.4 209.6 224.7 190.8 219.1 173.8C213.3 155.6 198.9 145.3 181 146Z" fill="url(#hair)"/>
+    <path d="M145.1 225.9C144.5 236.3 141.6 249.2 144.7 253.6C145.5 254.8 146.9 255.6 148.3 254.7C145.9 247.1 145.7 236 145.1 225.9Z" fill="#E4F5F2"/>
+    <path d="M225.3 215.1C226.9 228.1 234.8 242 233.7 248.6C231.4 247.1 229.1 239.7 227.8 233.4Z" fill="#E7F6F3"/>
+
+    <!-- Arms and blouse. -->
+    <path d="M122.6 303.1L145.6 309.7L153.1 340.9L124 345.1Z" fill="#E4F5F2"/>
+    <path d="M134.8 309.4L146.5 312.8L151.3 339.2L136.7 341.8Z" fill="#D7F0EC"/>
+    <path d="M235 283.5L252 280.8L256.5 321.3L235.2 326.9Z" fill="#DCF2EE"/>
+    <path d="M147.5 256.8C139.1 258.3 135.1 262.9 132.4 274.2L121.3 307.8C128.4 311.6 136.9 314.3 145.8 316L151.1 340.3L235.1 329.2L234.2 312.6L242.2 292.4L255.5 272.1C250.8 258.5 245 251.9 235.5 250.3L207 244.9L174.7 249.8Z" fill="url(#blouse)"/>
+    <path d="M141.7 274.7C142.6 286.9 139.7 298.4 145.8 315.9L149.9 333.8L148.8 311.9C143.9 301.6 145.1 286.6 141.7 274.7Z" fill="#95D6CB" opacity=".55"/>
+    <path d="M233.7 268.5C230.2 280.4 227.9 296.3 231.3 309.7L234.2 312.6C231.6 298.6 232.3 284 233.7 268.5Z" fill="#8ED4C8" opacity=".55"/>
+
+    <!-- Neck and long locks over the shoulders. -->
+    <path d="M175.5 231.3L176.6 242.3L169.5 250.8C173.6 258.8 180.1 266.2 186.9 269.1C194.3 263 201.2 255 205 247.1L199.9 240.9L197.6 226.9Z" fill="url(#neck)"/>
+    <path d="M146.9 201.5C145.7 219.9 146 240.2 148.4 255.9C144.7 268.7 149 280.7 160.1 282.2C168.9 283.2 175.1 279.5 178.5 274.6C171.1 278.7 166.6 274 166.4 266.6C165.5 257.1 169.1 247.1 176.4 240.5L175.9 234.2C163.8 229.7 158.7 219.5 155.6 211.3L153.8 201.8Z" fill="url(#hair)"/>
+    <path d="M208.3 201.3C215.7 211.7 214.5 231.2 218.2 244.1C222.9 257.1 216.9 272 205.6 277.8C213.4 280.6 223.2 277.8 227.4 268.8C232.2 258.7 228.5 245.8 227.2 236.2L220.2 198.9Z" fill="url(#hair)"/>
+    <path d="M149.5 263.1C149.7 273.3 155.2 279.4 162.9 280.5C153.7 277.5 152 270.9 149.5 263.1Z" fill="#A2DBD2" opacity=".75"/>
+    <path d="M221.3 269.8C218.8 274.9 215 277.3 211.2 278.1C218 278 222.5 272.2 224.1 267Z" fill="#6DB8AB" opacity=".35"/>
+
+    <!-- Featureless face and ears, matching the original silhouette. -->
+    <path d="M157.1 201.5C153.4 199.9 151.8 202.7 152.3 207.1C152.8 212.7 155.4 216.6 159.4 217.2Z" fill="#D7F0EC"/>
+    <path d="M204.5 199.8C206.7 195.1 210.6 194.5 212.1 198.3C213.8 203.7 210.5 213.9 204.1 215.9Z" fill="#E7F6F3"/>
+    <path d="M156.1 204C165 201.3 169.7 192.4 173.1 179.7C176.5 189.6 181.3 197.5 192.2 197.1C188.5 194.7 185.6 190.7 184.5 186.5C189.8 193.5 196.3 197.5 204.7 197.6L206.4 204.8C206.2 218.3 200.3 229.1 188.9 235.1C184.1 237.7 180.5 237.3 176.4 234.5C164.5 227.5 159.2 220.6 156.1 204Z" fill="url(#skin)"/>
+    <path d="M157.1 203.7C161.8 202.1 164.8 198.8 167.2 193.2C166.1 197.1 163.3 201.4 160.6 203.1C161.3 199.8 162.2 197.4 161.9 195.5Z" fill="#7ACCBE"/>
+
+    <!-- Collar and ribbon. -->
+    <path d="M175.6 242.1C175.6 249.4 180.6 257.5 186.9 262.6L173 276.5C167.9 269.9 166.1 260.4 168.3 251Z" fill="#F2FAF9"/>
+    <path d="M200.1 239.2L207.1 244C212.3 251.5 209.6 264.7 203.3 273.8L186.9 262.6C194.1 256 201.5 246.9 200.1 239.2Z" fill="#F8FCFC"/>
+    <path d="M186.7 262.9L194.2 268.6L185.7 277L177.9 269.7Z" fill="#D0EDE8"/>
+    <path d="M181.6 271C176.6 272.1 171.6 276.4 169.7 280.9C170.6 284 172.7 286.4 175.7 287.9L184.2 277.5Z" fill="#7ACCBE"/>
+    <path d="M188.8 270.8C194.1 273.5 198.4 277.2 201.3 281.4C200.7 284.5 198.3 287.2 195.4 288L186.5 277.6Z" fill="#7ACCBE"/>
+    <path d="M182.3 276.6C177.3 283.9 173.3 295.2 171.4 304.2L178.7 309.6C179.2 298.1 181.9 286.2 185.3 278.3Z" fill="#74C2B5"/>
+    <path d="M186 277.2C186.1 289.5 185.8 300.9 187 310.2L194.7 303.6C193.9 293.6 191.8 285 188.8 277Z" fill="#74C2B5"/>
+    <path d="M181.8 273.2L187.4 271.7L190.1 276.7L185.4 281.1L181.1 277.8Z" fill="#87D1C4"/>
+  </g>
+
+  </g>
+
+  <!-- Exact circular arc: center (210, 210), radius 170, sweep 242 degrees. -->
+  <path id="outer-ring" d="M336.334620331 96.247796919 A170 170 0 1 0 251.126722252 374.950273467" stroke="#7ACCBE" stroke-width="17" stroke-linecap="round"/>
+  <!-- Equal circles on the same radius, spaced by 13 degrees. -->
+  <g id="ring-dots" fill="#B6E3DB">
+    <circle cx="362.794987871" cy="135.476905046" r="10"/>
+    <circle cx="375.642911013" cy="171.758320762" r="10"/>
+    <circle cx="380.000000000" cy="210.000000000" r="10"/>
+    <circle cx="375.642911013" cy="248.241679238" r="10"/>
+    <circle cx="362.794987871" cy="284.523094954" r="10"/>
+  </g>
+
+  </g>
+
+  <!-- Circular coral badge with a transparent, optically adjusted check. -->
+  <g id="completion-badge" transform="translate(296 318)">
+    <circle r="52" fill="#EA6C81" clip-path="url(#check-knockout)"/>
+  </g>
+</svg>
