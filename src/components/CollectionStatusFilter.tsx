@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { isEqual } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { FunnelIcon } from '@heroicons/react/24/outline';
 import { countFilterConditions, type FilterExpression } from '@/services/filter';
@@ -35,9 +35,9 @@ export function CustomFilterButton() {
 
 export function CollectionStatusFilter() {
   const { t } = useTranslation();
-  const [selected, setSelected] = useState<FilterStatus>('all');
 
   const primaryField = useActiveProfile(state => getPrimaryField(state.fields));
+  const filter = useProfileSessionStore(state => state.filter);
   const setFilterExpression = useProfileSessionStore(state => state.setFilterExpression);
 
   const hasWanted = isNumberField(primaryField);
@@ -62,8 +62,9 @@ export function CollectionStatusFilter() {
     },
   };
 
+  const selected = FilterStatuses.find(status => isEqual(filter, predefinedOptions[status]));
+
   const select = (status: FilterStatus) => {
-    setSelected(status);
     setFilterExpression(predefinedOptions[status]);
   };
 
