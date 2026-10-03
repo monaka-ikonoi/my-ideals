@@ -447,7 +447,6 @@ export function ImageGenerateModal({
                         <BadgeOptionsEditor
                           fieldViews={fieldViews}
                           badges={badges}
-                          multiple={fieldViews.length > 1}
                           disabled={generating}
                           onChange={next => setProfileOptions(profileId, { badges: next })}
                         />

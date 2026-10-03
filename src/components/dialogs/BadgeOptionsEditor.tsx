@@ -23,8 +23,6 @@ const labelClass = 'mb-2 text-sm font-medium text-gray-700';
 type BadgeOptionsEditorProps = {
   fieldViews: RecordFieldView[];
   badges: BadgeMap;
-  /** Preset modes have a single fixed badge and keep the plain pickers. */
-  multiple: boolean;
   disabled: boolean;
   onChange: (badges: BadgeMap) => void;
 };
@@ -32,7 +30,6 @@ type BadgeOptionsEditorProps = {
 export function BadgeOptionsEditor({
   fieldViews,
   badges,
-  multiple,
   disabled,
   onChange,
 }: BadgeOptionsEditorProps) {
@@ -87,7 +84,7 @@ export function BadgeOptionsEditor({
           const activeVariant = resolveBadgeVariant(badge.variant, fieldView);
           const activeIcon = badge.icon ?? BADGE_PROPS.defaults.icon;
           const ActiveIcon = BADGE_PROPS.icons[activeIcon];
-          const expanded = !multiple || expandedId === fieldView.id;
+          const expanded = expandedId === fieldView.id;
 
           const summary: React.ReactNode[] = [
             t(`dialog.image-generate.options.position.${badge.position}`),
@@ -104,74 +101,67 @@ export function BadgeOptionsEditor({
           ];
 
           return (
-            <div
-              key={fieldView.id}
-              className={multiple ? 'space-y-4 rounded-xl border border-gray-200 p-3' : 'space-y-6'}
-            >
-              {multiple && (
-                <div className="flex items-center gap-x-2">
-                  <button
-                    type="button"
-                    onClick={() => setExpandedId(expanded ? null : fieldView.id)}
-                    className="flex min-w-0 flex-1 items-center gap-x-2 overflow-hidden text-left"
-                  >
-                    {expanded ? (
-                      <ChevronDownIcon className="h-4 w-4 shrink-0 text-gray-400" />
-                    ) : (
-                      <ChevronRightIcon className="h-4 w-4 shrink-0 text-gray-400" />
-                    )}
-                    <span className="shrink-0 text-sm font-medium text-gray-700">
-                      {resolveFieldViewName(t, fieldView)}
+            <div key={fieldView.id} className="space-y-4 rounded-xl border border-gray-200 p-3">
+              <div className="flex items-center gap-x-2">
+                <button
+                  type="button"
+                  onClick={() => setExpandedId(expanded ? null : fieldView.id)}
+                  className="flex min-w-0 flex-1 items-center gap-x-2 overflow-hidden text-left"
+                >
+                  {expanded ? (
+                    <ChevronDownIcon className="h-4 w-4 shrink-0 text-gray-400" />
+                  ) : (
+                    <ChevronRightIcon className="h-4 w-4 shrink-0 text-gray-400" />
+                  )}
+                  <span className="shrink-0 text-sm font-medium text-gray-700">
+                    {resolveFieldViewName(t, fieldView)}
+                  </span>
+
+                  {!expanded && (
+                    <span
+                      className="flex min-w-0 items-center gap-1.5 overflow-hidden text-xs leading-5
+                        whitespace-nowrap text-gray-500"
+                    >
+                      {summary.map((part, index) => (
+                        <Fragment key={index}>
+                          {index > 0 && <span className="text-gray-300">/</span>}
+                          {part}
+                        </Fragment>
+                      ))}
                     </span>
+                  )}
+                </button>
 
-                    {!expanded && (
-                      <span
-                        className="flex min-w-0 items-center gap-1.5 overflow-hidden text-xs
-                          leading-5 whitespace-nowrap text-gray-500"
-                      >
-                        {summary.map((part, index) => (
-                          <Fragment key={index}>
-                            {index > 0 && <span className="text-gray-300">/</span>}
-                            {part}
-                          </Fragment>
-                        ))}
-                      </span>
-                    )}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => remove(fieldView.id)}
-                    disabled={disabled}
-                    title={t('common.delete')}
-                    className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-red-600
-                      disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
-                  >
-                    <TrashIcon className="h-4 w-4" />
-                  </button>
-                </div>
-              )}
+                <button
+                  type="button"
+                  onClick={() => remove(fieldView.id)}
+                  disabled={disabled}
+                  title={t('common.delete')}
+                  className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-red-600
+                    disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </button>
+              </div>
 
               {expanded && (
                 <>
-                  {multiple && (
-                    <div>
-                      <p className={labelClass}>
-                        {t('dialog.image-generate.options.badge-field-label')}
-                      </p>
-                      <DropdownSelect
-                        options={fieldViews
-                          .filter(option => !badges[option.id] || option.id === fieldView.id)
-                          .map(option => ({
-                            value: option.id,
-                            label: resolveFieldViewName(t, option),
-                          }))}
-                        value={fieldView.id}
-                        disabled={disabled}
-                        onChange={toId => changeField(fieldView.id, toId)}
-                      />
-                    </div>
-                  )}
+                  <div>
+                    <p className={labelClass}>
+                      {t('dialog.image-generate.options.badge-field-label')}
+                    </p>
+                    <DropdownSelect
+                      options={fieldViews
+                        .filter(option => !badges[option.id] || option.id === fieldView.id)
+                        .map(option => ({
+                          value: option.id,
+                          label: resolveFieldViewName(t, option),
+                        }))}
+                      value={fieldView.id}
+                      disabled={disabled}
+                      onChange={toId => changeField(fieldView.id, toId)}
+                    />
+                  </div>
 
                   <div>
                     <p className={labelClass}>
@@ -225,50 +215,46 @@ export function BadgeOptionsEditor({
                     />
                   </div>
 
-                  {multiple && (
-                    <>
-                      <div>
-                        <p className={labelClass}>
-                          {t('dialog.image-generate.options.badge-variant-label')}
-                        </p>
-                        <OptionPicker
-                          columns={3}
-                          options={BADGE_PROPS.variants
-                            .filter(
-                              variant =>
-                                fieldView.source.type === 'number' ||
-                                !BADGE_PROPS.variantParts[variant].number
-                            )
-                            .map(variant => ({
-                              value: variant,
-                              label: t(`dialog.image-generate.options.variant.${variant}`),
-                              disabled,
-                            }))}
-                          value={activeVariant}
-                          onChange={variant => patch(fieldView.id, { variant })}
-                        />
-                      </div>
+                  <div>
+                    <p className={labelClass}>
+                      {t('dialog.image-generate.options.badge-variant-label')}
+                    </p>
+                    <OptionPicker
+                      columns={3}
+                      options={BADGE_PROPS.variants
+                        .filter(
+                          variant =>
+                            fieldView.source.type === 'number' ||
+                            !BADGE_PROPS.variantParts[variant].number
+                        )
+                        .map(variant => ({
+                          value: variant,
+                          label: t(`dialog.image-generate.options.variant.${variant}`),
+                          disabled,
+                        }))}
+                      value={activeVariant}
+                      onChange={variant => patch(fieldView.id, { variant })}
+                    />
+                  </div>
 
-                      {BADGE_PROPS.variantParts[activeVariant].icon && (
-                        <div>
-                          <p className={labelClass}>
-                            {t('dialog.image-generate.options.badge-icon-label')}
-                          </p>
-                          <SwatchPicker
-                            options={BADGE_PROPS.iconIds.map(icon => {
-                              const Icon = BADGE_PROPS.icons[icon];
-                              return {
-                                value: icon,
-                                content: <Icon className="h-4 w-4" />,
-                              };
-                            })}
-                            value={activeIcon}
-                            disabled={disabled}
-                            onChange={icon => patch(fieldView.id, { icon })}
-                          />
-                        </div>
-                      )}
-                    </>
+                  {BADGE_PROPS.variantParts[activeVariant].icon && (
+                    <div>
+                      <p className={labelClass}>
+                        {t('dialog.image-generate.options.badge-icon-label')}
+                      </p>
+                      <SwatchPicker
+                        options={BADGE_PROPS.iconIds.map(icon => {
+                          const Icon = BADGE_PROPS.icons[icon];
+                          return {
+                            value: icon,
+                            content: <Icon className="h-4 w-4" />,
+                          };
+                        })}
+                        value={activeIcon}
+                        disabled={disabled}
+                        onChange={icon => patch(fieldView.id, { icon })}
+                      />
+                    </div>
                   )}
                 </>
               )}
@@ -277,7 +263,7 @@ export function BadgeOptionsEditor({
         })}
       </div>
 
-      {multiple && active.length < fieldViews.length && (
+      {active.length < fieldViews.length && (
         <button
           type="button"
           onClick={add}
