@@ -328,7 +328,7 @@ export function ImageGenerateModal({
                         onClick={() =>
                           setSelectedIds(buildInitialSelectedIds(collections, null, maxItems))
                         }
-                        disabled={generating || allSelectableSelected}
+                        disabled={allSelectableSelected}
                         className="text-xs font-medium text-blue-600 hover:text-blue-700
                           disabled:cursor-not-allowed disabled:opacity-50"
                       >
@@ -337,7 +337,7 @@ export function ImageGenerateModal({
                       <button
                         type="button"
                         onClick={() => setSelectedIds([])}
-                        disabled={generating || selectedIds.length === 0}
+                        disabled={selectedIds.length === 0}
                         className="text-xs font-medium text-blue-600 hover:text-blue-700
                           disabled:cursor-not-allowed disabled:opacity-50"
                       >
@@ -348,8 +348,7 @@ export function ImageGenerateModal({
                       {collections.map(collection => {
                         const checked = selectedIdSet.has(collection.id);
                         const disabled =
-                          generating ||
-                          (!checked && selectedItemCount + collection.items.length > maxItems);
+                          !checked && selectedItemCount + collection.items.length > maxItems;
 
                         return (
                           <label
@@ -400,7 +399,7 @@ export function ImageGenerateModal({
                   <button
                     type="button"
                     onClick={() => setStep('customize')}
-                    disabled={generating || selectedCollections.length === 0}
+                    disabled={selectedCollections.length === 0}
                     className="min-w-28 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium
                       text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
                   >
@@ -473,7 +472,6 @@ export function ImageGenerateModal({
                           options={BADGE_PROPS.arrangements.map(arrangement => ({
                             value: arrangement,
                             label: t(`dialog.image-generate.options.arrangement.${arrangement}`),
-                            disabled: generating,
                           }))}
                           value={badgeArrangement}
                           onChange={arrangement =>
@@ -489,9 +487,8 @@ export function ImageGenerateModal({
                         type="checkbox"
                         checked={!imageOptions.dimUntoggled}
                         onChange={e => setImageOptions({ dimUntoggled: !e.target.checked })}
-                        disabled={generating}
                         className="h-4 w-4 rounded border-gray-300 accent-blue-600
-                          focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+                          focus:ring-blue-500"
                       />
                       <span className="text-sm font-medium text-gray-700">
                         {t('dialog.image-generate.options.not-dim-untoggled-label')}
@@ -504,9 +501,8 @@ export function ImageGenerateModal({
                         type="checkbox"
                         checked={imageOptions.flatten}
                         onChange={e => setImageOptions({ flatten: e.target.checked })}
-                        disabled={generating}
                         className="h-4 w-4 rounded border-gray-300 accent-blue-600
-                          focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+                          focus:ring-blue-500"
                       />
                       <span className="text-sm font-medium text-gray-700">
                         {t('dialog.image-generate.options.flatten-collections-label')}
@@ -525,10 +521,8 @@ export function ImageGenerateModal({
                     <button
                       type="button"
                       onClick={() => setStep('select')}
-                      disabled={generating}
                       className="flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium
-                        text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed
-                        disabled:opacity-50"
+                        text-gray-700 hover:bg-gray-100"
                     >
                       <ArrowLeftIcon className="h-4 w-4" />
                       {t('common.back')}
@@ -537,7 +531,7 @@ export function ImageGenerateModal({
                   <button
                     type="button"
                     onClick={handleGenerate}
-                    disabled={generating || selectedCollections.length === 0}
+                    disabled={selectedCollections.length === 0}
                     className="min-w-28 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium
                       text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
                   >
