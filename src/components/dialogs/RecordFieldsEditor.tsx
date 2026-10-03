@@ -217,10 +217,9 @@ export function RecordFieldsEditor({ drafts, onChange }: RecordFieldsEditorProps
   const makePrimary = (key: string) =>
     onChange(drafts.map(draft => ({ ...draft, primary: draft.key === key })));
 
-  const moveDraft = (key: string, offset: number) => {
-    const index = drafts.findIndex(draft => draft.key === key);
+  const moveDraft = (index: number, offset: number) => {
     const target = index + offset;
-    if (index < 0 || target < 0 || target >= drafts.length) return;
+    if (target < 0 || target >= drafts.length) return;
 
     const next = [...drafts];
     [next[index], next[target]] = [next[target], next[index]];
@@ -252,7 +251,7 @@ export function RecordFieldsEditor({ drafts, onChange }: RecordFieldsEditorProps
             canMakePrimary={!hasInherit}
             onChange={patch => patchDraft(draft.key, patch)}
             onMakePrimary={() => makePrimary(draft.key)}
-            onMove={offset => moveDraft(draft.key, offset)}
+            onMove={offset => moveDraft(index, offset)}
             onRemove={() => removeDraft(draft.key)}
           />
         ))}
