@@ -10,7 +10,8 @@ import {
   QuestionMarkCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/24/solid';
-import type { RecordFieldView } from '@/domain/profile';
+import type { ItemRecord, RecordFieldView, RecordValue } from '@/domain/profile';
+import { readRecordFieldView } from '@/utils/recordUtils';
 
 const POSITIONS = [
   'top-left',
@@ -96,6 +97,29 @@ export type BadgeProps = {
 };
 
 export type BadgeMap = Record<string, BadgeProps>;
+
+export type VisibleBadge = { fieldView: RecordFieldView; value: RecordValue; config: BadgeProps };
+
+export function getVisibleBadges(
+  fieldViews: RecordFieldView[],
+  badges: BadgeMap,
+  record: ItemRecord | undefined
+): VisibleBadge[] {
+  const visible: VisibleBadge[] = [];
+
+  for (const fieldView of fieldViews) {
+    if (!Object.hasOwn(badges, fieldView.id)) continue;
+    const config = badges[fieldView.id];
+    if (!config) continue;
+
+    const value = readRecordFieldView(record, fieldView);
+    if (value === readRecordFieldView(undefined, fieldView)) continue;
+
+    visible.push({ fieldView, value, config });
+  }
+
+  return visible;
+}
 
 const DEFAULTS: Required<Omit<BadgeProps, 'variant'>> & { arrangement: BadgeArrangement } = {
   position: 'top-right',

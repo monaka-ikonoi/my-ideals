@@ -1,11 +1,13 @@
-import type { ItemRecord, RecordFieldView, RecordValue } from '@/domain/profile';
+import type { ItemRecord, RecordFieldView } from '@/domain/profile';
 import { useImageOptions } from '@/contexts/imageOptions';
-import { readRecordFieldView } from '@/utils/recordUtils';
-import { type BadgeMap, type BadgePosition, type BadgeProps } from './BadgeProps';
+import {
+  getVisibleBadges,
+  type BadgeMap,
+  type BadgePosition,
+  type VisibleBadge,
+} from './BadgeProps';
 import { ItemBadge } from './ItemBadge';
 import { ItemBadgeGroup } from './ItemBadgeGroup';
-
-type VisibleBadge = { fieldView: RecordFieldView; value: RecordValue; config: BadgeProps };
 
 function groupBadgesByPosition(
   fieldViews: RecordFieldView[],
@@ -14,17 +16,10 @@ function groupBadgesByPosition(
 ): [BadgePosition, VisibleBadge[]][] {
   const groups = new Map<BadgePosition, VisibleBadge[]>();
 
-  for (const fieldView of fieldViews) {
-    if (!Object.hasOwn(badges, fieldView.id)) continue;
-    const config = badges[fieldView.id];
-    if (!config) continue;
-
-    const value = readRecordFieldView(record, fieldView);
-    if (value === readRecordFieldView(undefined, fieldView)) continue;
-
-    const group = groups.get(config.position);
-    if (group) group.push({ fieldView, value, config });
-    else groups.set(config.position, [{ fieldView, value, config }]);
+  for (const badge of getVisibleBadges(fieldViews, badges, record)) {
+    const group = groups.get(badge.config.position);
+    if (group) group.push(badge);
+    else groups.set(badge.config.position, [badge]);
   }
 
   return [...groups];

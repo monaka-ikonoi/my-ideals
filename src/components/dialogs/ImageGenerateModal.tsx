@@ -2,20 +2,20 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useShallow } from 'zustand/shallow';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import type { TemplateCollection } from '@/domain/template';
+import type { TemplateCollection, TemplateCollectionItem } from '@/domain/template';
 import { ImageOptionsContext } from '@/contexts/imageOptions';
 import { useTemplate } from '@/contexts/template';
 import { useActiveProfile } from '@/stores/profileSessionStore';
 import { useSettingsStore, type ProfileOptions } from '@/stores/settingsStore';
 import { getPrimaryFieldView } from '@/domain/profile';
-import { readRecordFieldView } from '@/utils/recordUtils';
+import { readField } from '@/utils/recordUtils';
 import { downloadFile, shareAPISupported, shareFile } from '@/utils/fileUtils';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { FullScreenModal } from '../ui/FullScreenModal';
 import { OffscreenCaptureArea, type CaptureResult } from '../ui/OffscreenCaptureArea';
 import { CollectionImageContent } from '../CollectionImageContent';
 import { ItemCard } from '../card/ItemCard';
-import { type BadgeMap, BADGE_PROPS } from '../card/BadgeProps';
+import { type BadgeMap, BADGE_PROPS, getVisibleBadges } from '../card/BadgeProps';
 import { BadgeOptionsEditor } from './BadgeOptionsEditor';
 import { StepIndicator } from '../ui/StepIndicator';
 import { OptionPicker } from '../ui/OptionPicker';
@@ -25,6 +25,8 @@ import { normalizeStatusNumber } from '@/utils/utils';
 import { countModeBadgeProps } from '@/misc/CountMode';
 
 type Step = 'select' | 'customize' | 'preview';
+
+type PreviewItem = { collection: TemplateCollection; item: TemplateCollectionItem };
 
 const NO_BADGES: BadgeMap = {};
 
@@ -188,33 +190,42 @@ export function ImageGenerateModal({
     setGenerating(true);
   }, [i18n.language, selectedCollections, templateId, profileId]);
 
-  // Pick the first non-zero item for preview
-  const previewItem = (() => {
+  // Presets use the first non-zero value; custom mode prefers the most visible badges.
+  const previewItem = useMemo(() => {
+    let candidate: PreviewItem | null = null;
+    let maxBadgeCount = 0;
+
     for (const collection of selectedCollections) {
-      const collectionStatus = statusMap?.[collection.id];
-      const candidate =
-        collection.items.find(item => {
-          const status = readRecordFieldView(collectionStatus?.[item.id], primaryFieldView);
-          return normalizeStatusNumber(status) !== 0;
-        }) ?? collection.items[0];
-      if (candidate) {
-        return {
-          collection,
-          item: candidate,
-          record: collectionStatus?.[candidate.id],
-        };
+      for (const item of collection.items) {
+        if (!candidate) candidate = { collection, item };
+        const record = statusMap[collection.id]?.[item.id];
+
+        if (recordMode !== 'custom') {
+          if (normalizeStatusNumber(readField(record, primaryFieldView.source)) !== 0) {
+            candidate = { collection, item };
+            return candidate;
+          }
+          continue;
+        }
+
+        const badgeCount = getVisibleBadges(fieldViews, badges, record).length;
+        if (badgeCount > maxBadgeCount) {
+          candidate = { collection, item };
+          maxBadgeCount = badgeCount;
+        }
       }
     }
-    return null;
-  })();
+
+    return candidate;
+  }, [selectedCollections, statusMap, recordMode, primaryFieldView, fieldViews, badges]);
 
   const imageCardLayout = useMemo(
     () =>
       resolveLayout(
-        imageOptions.flatten ? undefined : selectedCollections[0]?.layout,
+        imageOptions.flatten ? undefined : previewItem?.collection.layout,
         templateLayout
       ),
-    [selectedCollections, templateLayout, imageOptions.flatten]
+    [previewItem, templateLayout, imageOptions.flatten]
   );
   const imageCardWidth = useMemo(
     // Export grid width is 1600px
@@ -427,7 +438,7 @@ export function ImageGenerateModal({
                             fields={fields}
                             fieldViews={fieldViews}
                             recordMode={recordMode}
-                            record={previewItem.record}
+                            record={statusMap[previewItem.collection.id]?.[previewItem.item.id]}
                           />
                         </ImageOptionsContext>
                       </div>
