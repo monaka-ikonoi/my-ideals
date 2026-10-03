@@ -181,7 +181,7 @@
       "name-label": "名称",
       "id-label": "ID",
       "type-label": "类型",
-      "type-boolean": "复选框",
+      "type-boolean": "勾选框",
       "type-number": "计数器",
       "default-label": "默认值",
       "primary-label": "主要",
