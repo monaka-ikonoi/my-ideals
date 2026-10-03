@@ -1,5 +1,6 @@
 import { Fragment, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { omit } from 'lodash-es';
 import {
   ChevronDownIcon,
   ChevronRightIcon,
@@ -37,7 +38,7 @@ export function BadgeOptionsEditor({ fieldViews, badges, onChange }: BadgeOption
 
   const remove = (fieldViewId: string) => {
     setExpandedId(current => (current === fieldViewId ? null : current));
-    onChange(Object.fromEntries(Object.entries(badges).filter(([id]) => id !== fieldViewId)));
+    onChange(omit(badges, fieldViewId));
   };
 
   const add = () => {
@@ -64,7 +65,7 @@ export function BadgeOptionsEditor({ fieldViews, badges, onChange }: BadgeOption
 
     setExpandedId(toId);
     onChange({
-      ...Object.fromEntries(Object.entries(badges).filter(([id]) => id !== fromId)),
+      ...omit(badges, fromId),
       [toId]: moved,
     });
   };
