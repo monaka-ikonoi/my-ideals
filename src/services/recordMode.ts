@@ -2,6 +2,7 @@ import {
   buildRecordFields,
   getRootField,
   isNumberField,
+  RecordFieldsSchema,
   type Profile,
   type RecordField,
   type RecordMode,
@@ -17,8 +18,9 @@ export function applyRecordMode(
   mode: RecordMode,
   customFields?: RecordFieldWithOption[]
 ) {
+  const nextCustomFields = mode === 'custom' ? RecordFieldsSchema.parse(customFields) : undefined;
   const fromFields = buildRecordFields(profile);
-  const toFields = buildRecordFields({ mode, customFields });
+  const toFields = buildRecordFields({ mode, customFields: nextCustomFields });
 
   const fieldMap = toFields.map(field => {
     const inherit = customFields?.find(f => f.id === field.id)?.inherit;
@@ -55,5 +57,5 @@ export function applyRecordMode(
   }
 
   profile.mode = mode;
-  profile.customFields = customFields?.map(({ inherit: _inherit, ...field }) => field);
+  profile.customFields = nextCustomFields;
 }

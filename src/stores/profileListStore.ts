@@ -4,6 +4,7 @@ import { immer } from 'zustand/middleware/immer';
 import { nanoid } from 'nanoid';
 import {
   CURRENT_PROFILE_VERSION,
+  RecordFieldsSchema,
   type Profile,
   type ProfileTemplateInfo,
   type RecordField,
@@ -89,7 +90,7 @@ export const useProfileListStore = create<ProfileListStore>()(
             name,
             template: templateInfo,
             mode,
-            ...(mode === 'custom' && { customFields }),
+            ...(mode === 'custom' && { customFields: RecordFieldsSchema.parse(customFields) }),
             selectedMembers: [],
             collections: {},
             lastModified: Date.now(),

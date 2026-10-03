@@ -1,12 +1,12 @@
 import { nanoid } from 'nanoid';
 import {
-  RECORD_FIELD_ID_PATTERN,
+  RecordFieldsSchema,
   getRootField,
   type RecordField,
   type RecordValue,
 } from '@/domain/profile';
 import { type RecordFieldWithOption, type InheritOptions } from '@/services/recordMode';
-import { normalizeStatusBoolean, normalizeStatusNumber } from '@/utils/utils';
+import { normalizeStatusNumber } from '@/utils/utils';
 
 export const FieldTypes = ['boolean', 'number'] as const;
 
@@ -79,6 +79,7 @@ export const splitCountModeFields = (drafts: DraftField[], enabled: boolean): Dr
     inherit: 'positive',
     type: 'number',
     savedType: 'number',
+    default: normalizeStatusNumber(inherited.default),
     primary: true,
   };
   const negative: DraftField = {
@@ -94,18 +95,11 @@ export const splitCountModeFields = (drafts: DraftField[], enabled: boolean): Dr
 };
 
 export const validateRecordFieldDrafts = (drafts: DraftField[]): boolean =>
-  new Set(drafts.map(draft => draft.id)).size === drafts.length &&
-  drafts.every(draft => draft.name.trim() && RECORD_FIELD_ID_PATTERN.test(draft.id));
+  RecordFieldsSchema.safeParse(drafts).success;
 
 export const parseRecordFieldDrafts = (drafts: DraftField[]): RecordFieldWithOption[] =>
-  drafts.map(draft => {
-    const base = {
-      id: draft.id,
-      name: draft.name,
-      ...(draft.primary && { primary: true }),
-      ...(draft.inherit && { inherit: draft.inherit }),
-    };
-    return draft.type === 'number'
-      ? { ...base, type: 'number', default: normalizeStatusNumber(draft.default) }
-      : { ...base, type: 'boolean', default: normalizeStatusBoolean(draft.default) };
-  });
+  RecordFieldsSchema.parse(drafts).map(({ primary, ...field }, index) => ({
+    ...field,
+    ...(primary && { primary: true }),
+    ...(drafts[index].inherit && { inherit: drafts[index].inherit }),
+  }));

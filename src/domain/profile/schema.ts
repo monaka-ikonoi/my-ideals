@@ -24,25 +24,51 @@ const RecordValueSchema = z.union([z.boolean(), z.int()]);
 
 const ItemRecordSchema = z.union([RecordValueSchema, z.record(z.string(), RecordValueSchema)]);
 
+export const RecordFieldIdSchema = z
+  .string()
+  .regex(RECORD_FIELD_ID_PATTERN)
+  .max(RECORD_FIELD_ID_MAX_LENGTH);
+
+export const RecordFieldNameSchema = z
+  .string()
+  .min(1)
+  .max(RECORD_FIELD_NAME_MAX_LENGTH)
+  .refine(name => name.trim().length > 0, 'Field name must not be blank');
+
 const RecordFieldCommon = {
-  id: z.string().regex(RECORD_FIELD_ID_PATTERN).max(RECORD_FIELD_ID_MAX_LENGTH),
-  name: z.string().min(1).max(RECORD_FIELD_NAME_MAX_LENGTH),
+  id: RecordFieldIdSchema,
+  name: RecordFieldNameSchema,
   primary: z.boolean().optional(),
 };
 
-// `root` is intentionally absent: it describes a preset layout and is never user-authored.
-const RecordFieldSchema = z.discriminatedUnion('type', [
-  z.object({
-    ...RecordFieldCommon,
-    type: z.literal('boolean'),
-    default: z.boolean(),
-  }),
-  z.object({
-    ...RecordFieldCommon,
-    type: z.literal('number'),
-    default: z.int(),
-  }),
+// `root` describes a preset layout and is never user-authored.
+export const RecordFieldSchema = z.discriminatedUnion('type', [
+  z.object({ ...RecordFieldCommon, type: z.literal('boolean'), default: z.boolean() }),
+  z.object({ ...RecordFieldCommon, type: z.literal('number'), default: z.int() }),
 ]);
+
+export const RecordFieldsSchema = z
+  .array(RecordFieldSchema)
+  .min(1, 'At least one field must be defined')
+  .max(RECORD_FIELDS_MAX)
+  .superRefine((fields, ctx) => {
+    if (fields.filter(field => field.primary).length !== 1) {
+      ctx.addIssue({ code: 'custom', message: 'Exactly one field must be marked primary' });
+    }
+
+    const idCounts = new Map<string, number>();
+    for (const field of fields) idCounts.set(field.id, (idCounts.get(field.id) ?? 0) + 1);
+
+    fields.forEach((field, index) => {
+      if (idCounts.get(field.id)! > 1) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `Duplicate field id: ${field.id}`,
+          path: [index, 'id'],
+        });
+      }
+    });
+  });
 
 const ProfileV1BaseSchema = {
   magic: z.literal('my-ideals-profile'),
@@ -50,7 +76,7 @@ const ProfileV1BaseSchema = {
   name: z.string(),
   template: ProfileTemplateInfoSchema,
   flags: z.array(z.enum(Object.values(ProfileFlags))).optional(),
-  customFields: z.array(RecordFieldSchema).max(RECORD_FIELDS_MAX).optional(),
+  customFields: RecordFieldsSchema.optional(),
   selectedMembers: z.array(z.string()).default([]),
   collections: z.record(z.string(), z.record(z.string(), ItemRecordSchema)),
   lastModified: z.number().default(0),
@@ -84,46 +110,17 @@ export const ProfileSchema = z
     return data;
   })
   .superRefine((data, ctx) => {
+    if (data.mode === 'custom' && !data.customFields) {
+      ctx.issues.push({
+        code: 'invalid_type',
+        expected: 'array',
+        input: data.customFields,
+        path: ['customFields'],
+      });
+      return;
+    }
+
     const fields = buildRecordFields(data);
-
-    if (fields.length === 0) {
-      ctx.issues.push({
-        code: 'custom',
-        message: 'At least one field must be defined',
-        input: data.customFields,
-        path: ['customFields'],
-      });
-      return;
-    }
-
-    if (fields.filter(field => field.primary).length !== 1) {
-      ctx.issues.push({
-        code: 'custom',
-        message: 'Exactly one field must be marked primary',
-        input: data.customFields,
-        path: ['customFields'],
-      });
-      return;
-    }
-
-    const seenIds = new Set<string>();
-    const duplicates = fields.flatMap((field, index) => {
-      if (seenIds.has(field.id)) return [{ id: field.id, index }];
-      seenIds.add(field.id);
-      return [];
-    });
-
-    for (const { id, index } of duplicates) {
-      ctx.issues.push({
-        code: 'custom',
-        message: `Duplicate field id: ${id}`,
-        input: id,
-        path: ['customFields', index, 'id'],
-      });
-    }
-
-    if (duplicates.length > 0) return;
-
     const rootField = getRootField(fields);
     const fieldTypes = new Map(fields.map(field => [field.id, field.type]));
 

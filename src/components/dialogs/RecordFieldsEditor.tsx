@@ -2,9 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { ChevronDownIcon, ChevronUpIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import {
   RECORD_FIELD_ID_MAX_LENGTH,
-  RECORD_FIELD_ID_PATTERN,
   RECORD_FIELD_NAME_MAX_LENGTH,
   RECORD_FIELDS_MAX,
+  RecordFieldIdSchema,
+  RecordFieldNameSchema,
+  RecordFieldsSchema,
 } from '@/domain/profile';
 import { normalizeStatusBoolean, normalizeStatusNumber } from '@/utils/utils';
 import { FieldTypes, type DraftField, newRecordFieldDraftEntry } from './RecordFieldDrafts';
@@ -48,12 +50,12 @@ function RecordFieldCard({
 }: RecordFieldCardProps) {
   const { t } = useTranslation();
 
-  const idError = !RECORD_FIELD_ID_PATTERN.test(draft.id)
+  const idError = !RecordFieldIdSchema.safeParse(draft.id).success
     ? t('dialog.record-fields.error-id')
     : duplicateId
       ? t('dialog.record-fields.error-id-duplicate')
       : null;
-  const nameError = draft.name.trim().length === 0;
+  const nameError = !RecordFieldNameSchema.safeParse(draft.name).success;
 
   return (
     <div className="rounded-xl border border-gray-200 p-3">
@@ -202,8 +204,12 @@ export function RecordFieldsEditor({ drafts, onChange }: RecordFieldsEditorProps
 
   const hasInherit = drafts.some(draft => draft.inherit);
 
-  const idCounts = new Map<string, number>();
-  for (const draft of drafts) idCounts.set(draft.id, (idCounts.get(draft.id) ?? 0) + 1);
+  const validation = RecordFieldsSchema.safeParse(drafts);
+  const duplicateIndexes = new Set(
+    validation.error?.issues
+      .filter(issue => issue.code === 'custom' && issue.path[1] === 'id')
+      .map(issue => issue.path[0])
+  );
 
   const patchDraft = (key: string, patch: Partial<DraftField>) =>
     onChange(drafts.map(draft => (draft.key === key ? { ...draft, ...patch } : draft)));
@@ -239,7 +245,7 @@ export function RecordFieldsEditor({ drafts, onChange }: RecordFieldsEditorProps
           <RecordFieldCard
             key={draft.key}
             draft={draft}
-            duplicateId={(idCounts.get(draft.id) ?? 0) > 1}
+            duplicateId={duplicateIndexes.has(index)}
             isFirst={index === 0}
             isLast={index === drafts.length - 1}
             canRemove={drafts.length > 1 && !draft.inherit}
