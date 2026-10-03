@@ -191,8 +191,16 @@
     },
     "collection-filter": {
       "title": "Filter Items",
-      "add": "Add Condition",
-      "remove": "Remove Condition",
+      "and": "AND",
+      "or": "OR",
+      "add": "Condition",
+      "add-group": "Group",
+      "wrap": "Group",
+      "max-depth": "Up to 4 group levels",
+      "max-depth-exceeded": "This filter has more than 4 group levels. Remove deeper groups before applying.",
+      "checked": "Checked",
+      "unchecked": "Unchecked",
+      "empty-preview": "No filter conditions",
       "clear": "Clear All",
       "apply": "Apply"
     },

@@ -191,8 +191,16 @@
     },
     "collection-filter": {
       "title": "筛选",
-      "add": "添加条件",
-      "remove": "删除条件",
+      "and": "且",
+      "or": "或",
+      "add": "条件",
+      "add-group": "条件组",
+      "wrap": "分组",
+      "max-depth": "最多 4 层条件组",
+      "max-depth-exceeded": "条件组超过 4 层，请删除多余的嵌套后再应用。",
+      "checked": "已勾选",
+      "unchecked": "未勾选",
+      "empty-preview": "未设置筛选条件",
       "clear": "清除全部",
       "apply": "应用"
     },

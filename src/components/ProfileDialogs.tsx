@@ -3,7 +3,7 @@ import { ProfileTemplateDiffDialog } from './dialogs/ProfileTemplateDiffDialog';
 import { ProfileRenameDialog } from './dialogs/ProfileRenameDialog';
 import { ProfileDuplicateDialog } from './dialogs/ProfileDuplicateDialog';
 import { ProfileModeModal } from './dialogs/ProfileModeModal';
-import { CollectionFilterDialog } from './dialogs/CollectionFilterDialog';
+import { CollectionFilterModal } from './dialogs/CollectionFilterModal';
 import { CollectionEditModal } from './dialogs/CollectionEditModal';
 import { ImageGenerateModal } from './dialogs/ImageGenerateModal';
 
@@ -29,7 +29,7 @@ export function ProfileDialogs() {
       )}
       {activeDialog.type === 'edit-profile-mode' && <ProfileModeModal onClose={closeDialog} />}
       {activeDialog.type === 'edit-collection-filter' && (
-        <CollectionFilterDialog onClose={closeDialog} />
+        <CollectionFilterModal onClose={closeDialog} />
       )}
       {activeDialog.type === 'generate-image' && (
         <ImageGenerateModal

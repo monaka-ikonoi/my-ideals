@@ -191,8 +191,16 @@
     },
     "collection-filter": {
       "title": "絞り込む",
-      "add": "条件を追加",
-      "remove": "条件を削除",
+      "and": "および",
+      "or": "または",
+      "add": "条件",
+      "add-group": "グループ",
+      "wrap": "グループ化",
+      "max-depth": "条件グループは最大 4 階層",
+      "max-depth-exceeded": "条件グループが 4 階層を超えています。深いグループを削除してから適用してください。",
+      "checked": "チェック済み",
+      "unchecked": "未チェック",
+      "empty-preview": "絞り込み条件はありません",
       "clear": "すべて解除",
       "apply": "適用"
     },
