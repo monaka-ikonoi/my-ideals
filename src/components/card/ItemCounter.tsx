@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { IntegerInput } from '../ui/IntegerInput';
 
 type ItemCounterProps = {
   value: number;
@@ -23,21 +24,18 @@ export function ItemCounter({ value, setValue, mode = 'normal' }: ItemCounterPro
     setEditorActive(true);
   }, [mode]);
 
-  const handleConfirmEdit = useCallback(() => {
-    if (!inputRef.current) return;
-    const parsed = parseInt(inputRef.current.value, 10);
-    const clamped = Number.isSafeInteger(parsed) ? parsed : 0;
-    setValue(clamped);
-    setEditorActive(false);
-  }, [setValue]);
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter') handleConfirmEdit();
-      if (e.key === 'Escape') setEditorActive(false);
+  const handleConfirmEdit = useCallback(
+    (value: number) => {
+      setValue(value);
+      setEditorActive(false);
     },
-    [handleConfirmEdit]
+    [setValue]
   );
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') e.currentTarget.blur();
+    if (e.key === 'Escape') setEditorActive(false);
+  }, []);
 
   return (
     <div
@@ -60,12 +58,11 @@ export function ItemCounter({ value, setValue, mode = 'normal' }: ItemCounterPro
           ${value < 0 ? 'text-pink-700' : 'text-gray-700'} tabular-nums`}
         >
           {editorActive ? (
-            <input
+            <IntegerInput
               ref={inputRef}
-              type="number"
               inputMode="numeric"
               defaultValue={value}
-              onBlur={handleConfirmEdit}
+              onCommit={handleConfirmEdit}
               onKeyDown={handleKeyDown}
               className="font-inherit h-full w-full [appearance:textfield] bg-gray-200 px-1
                 text-center text-inherit tabular-nums outline-none focus:bg-gray-300

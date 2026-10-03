@@ -17,6 +17,7 @@ import {
 } from './collectionFilterDraft';
 import { DropdownSelect, type DropdownOption } from '../ui/DropdownSelect';
 import { FullScreenModal } from '../ui/FullScreenModal';
+import { IntegerInput } from '../ui/IntegerInput';
 
 const OperatorOptions: DropdownOption<ConditionDraft['op']>[] = [
   { value: 'gt', label: '>' },
@@ -96,20 +97,10 @@ function ConditionRow({ draft, fields, onChange, onWrap, onRemove, depth }: Cond
             value={draft.op}
             onChange={op => onChange({ op })}
           />
-          <input
+          <IntegerInput
             aria-label={field.name}
-            type="number"
             defaultValue={draft.value}
-            onChange={event => {
-              const parsed = parseInt(event.target.value, 10);
-              if (Number.isSafeInteger(parsed)) onChange({ value: parsed });
-            }}
-            onBlur={event => {
-              const parsed = parseInt(event.target.value, 10);
-              const settled = Number.isSafeInteger(parsed) ? parsed : 0;
-              onChange({ value: settled });
-              event.target.value = String(settled);
-            }}
+            onValueChange={value => onChange({ value })}
             className="w-16 shrink-0 grow rounded-lg border border-gray-300 px-2 py-2 text-center
               text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
           />

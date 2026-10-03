@@ -11,6 +11,7 @@ import {
 import { normalizeStatusBoolean, normalizeStatusNumber } from '@/utils/utils';
 import { FieldTypes, type DraftField, newRecordFieldDraftEntry } from './RecordFieldDrafts';
 import { DropdownSelect } from '../ui/DropdownSelect';
+import { IntegerInput } from '../ui/IntegerInput';
 
 const inputClass = `rounded-lg border px-3 py-2 text-sm focus:ring-1 focus:outline-none
   disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50
@@ -122,19 +123,9 @@ function RecordFieldCard({
         <div>
           <label className={labelClass}>{t('dialog.record-fields.default-label')}</label>
           {draft.type === 'number' ? (
-            <input
-              type="number"
+            <IntegerInput
               defaultValue={normalizeStatusNumber(draft.default)}
-              onChange={e => {
-                const parsed = parseInt(e.target.value, 10);
-                if (Number.isSafeInteger(parsed)) onChange({ default: parsed });
-              }}
-              onBlur={e => {
-                const parsed = parseInt(e.target.value, 10);
-                const settled = Number.isSafeInteger(parsed) ? parsed : 0;
-                onChange({ default: settled });
-                e.target.value = String(settled);
-              }}
+              onValueChange={value => onChange({ default: value })}
               className={`mt-1 w-14 text-center ${inputClass} ${validClass}`}
             />
           ) : (
