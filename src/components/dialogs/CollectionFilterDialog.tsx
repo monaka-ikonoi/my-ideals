@@ -120,6 +120,8 @@ function ConditionBlock({ draft, fields, onChange, onRemove }: ConditionBlockPro
   );
 }
 
+const EMPTY_CONDITION: FieldCondition[] = [];
+
 type CollectionFilterDialogProps = {
   onClose: () => void;
 };
@@ -128,8 +130,14 @@ export function CollectionFilterDialog({ onClose }: CollectionFilterDialogProps)
   const { t } = useTranslation();
 
   const fields = useActiveProfile(state => state.fields);
-  const conditions = useProfileSessionStore(state => state.filter);
-  const setFilterConditions = useProfileSessionStore(state => state.setFilterConditions);
+  const conditions = useProfileSessionStore(
+    state => (state.filter?.children as FieldCondition[]) ?? EMPTY_CONDITION
+  );
+  const setFilterExpression = useProfileSessionStore(state => state.setFilterExpression);
+  const setFilterConditions = (conditions: FieldCondition[]) =>
+    setFilterExpression(
+      conditions.length > 0 ? { type: 'group', operator: 'and', children: conditions } : null
+    );
 
   const [drafts, setDrafts] = useState<Draft[]>(() => conditions.map(toDraft));
 

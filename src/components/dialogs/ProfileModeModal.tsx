@@ -37,7 +37,7 @@ export function ProfileModeModal({ onClose }: ProfileModeModalProps) {
       mode,
       mode === 'custom' ? parseRecordFieldDrafts(drafts) : undefined
     );
-    useProfileSessionStore.getState().setFilterConditions([]);
+    useProfileSessionStore.getState().setFilterExpression(null);
     onClose();
   };
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FunnelIcon } from '@heroicons/react/24/outline';
-import { type FieldCondition } from '@/services/filter';
+import { countFilterConditions, type FilterExpression } from '@/services/filter';
 import { getPrimaryField, isNumberField } from '@/domain/profile';
 import { useActiveProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
 import { useDialogStore } from '@/stores/dialogStore';
@@ -12,7 +12,8 @@ type FilterStatus = (typeof FilterStatuses)[number];
 export function CustomFilterButton() {
   const { t } = useTranslation();
 
-  const activeCount = useProfileSessionStore(state => state.filter.length);
+  const fields = useActiveProfile(state => state.fields);
+  const activeCount = useProfileSessionStore(state => countFilterConditions(fields, state.filter));
 
   return (
     <button
@@ -34,25 +35,36 @@ export function CustomFilterButton() {
 
 export function CollectionStatusFilter() {
   const { t } = useTranslation();
-
   const [selected, setSelected] = useState<FilterStatus>('all');
 
   const primaryField = useActiveProfile(state => getPrimaryField(state.fields));
-  const setFilterConditions = useProfileSessionStore(state => state.setFilterConditions);
+  const setFilterExpression = useProfileSessionStore(state => state.setFilterExpression);
 
   const hasWanted = isNumberField(primaryField);
 
   // Booleans are converted to numbers and then filtered
-  const predefinedOptions: Record<FilterStatus, FieldCondition[]> = {
-    all: [],
-    owned: [{ fieldId: primaryField.id, type: 'number', op: 'gt', value: 0 }],
-    unowned: [{ fieldId: primaryField.id, type: 'number', op: 'eq', value: 0 }],
-    wanted: [{ fieldId: primaryField.id, type: 'number', op: 'lt', value: 0 }],
+  const predefinedOptions: Record<FilterStatus, FilterExpression> = {
+    all: null,
+    owned: {
+      type: 'group',
+      operator: 'and',
+      children: [{ fieldId: primaryField.id, type: 'number', op: 'gt', value: 0 }],
+    },
+    unowned: {
+      type: 'group',
+      operator: 'and',
+      children: [{ fieldId: primaryField.id, type: 'number', op: 'eq', value: 0 }],
+    },
+    wanted: {
+      type: 'group',
+      operator: 'and',
+      children: [{ fieldId: primaryField.id, type: 'number', op: 'lt', value: 0 }],
+    },
   };
 
   const select = (status: FilterStatus) => {
     setSelected(status);
-    setFilterConditions(predefinedOptions[status]);
+    setFilterExpression(predefinedOptions[status]);
   };
 
   return (

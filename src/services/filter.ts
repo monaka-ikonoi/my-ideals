@@ -73,14 +73,14 @@ export function buildFilterPredicate(
   return compile(expression);
 }
 
-// The current filter UI and session store still use a flat AND list.
-export function buildConditionsPredicate(
-  fields: RecordField[],
-  conditions: FieldCondition[]
-): RecordPredicate | null {
-  return buildFilterPredicate(fields, {
-    type: 'group',
-    operator: 'and',
-    children: conditions,
-  });
+export function countFilterConditions(fields: RecordField[], expression: FilterExpression): number {
+  if (!expression) return 0;
+
+  const fieldIds = new Set(fields.map(field => field.id));
+  const count = (node: FilterNode): number =>
+    node.type === 'group'
+      ? node.children.reduce((total, child) => total + count(child), 0)
+      : Number(fieldIds.has(node.fieldId));
+
+  return count(expression);
 }

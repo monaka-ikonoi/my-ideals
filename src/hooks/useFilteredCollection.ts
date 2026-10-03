@@ -10,7 +10,7 @@ import { type ProfileCollection, type RecordField, getPrimaryField } from '@/dom
 import { debugLog } from '@/utils/debug';
 import { readField } from '@/utils/recordUtils';
 import { normalizeStatusBoolean } from '@/utils/utils';
-import { buildConditionsPredicate, type RecordPredicate } from '@/services/filter';
+import { buildFilterPredicate, type RecordPredicate } from '@/services/filter';
 
 type FilteredCollectionsResult = {
   filteredCollections: TemplateCollection[];
@@ -121,7 +121,7 @@ export function useCollectionFilter() {
 
   const filter = useProfileSessionStore(state => state.filter);
 
-  const predicate = useMemo(() => buildConditionsPredicate(fields, filter), [fields, filter]);
+  const predicate = useMemo(() => buildFilterPredicate(fields, filter), [fields, filter]);
 
   const { filteredCollections, hiddenCount } = useFilteredCollections(
     collections,
