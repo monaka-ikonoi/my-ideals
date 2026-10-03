@@ -23,16 +23,10 @@ const labelClass = 'mb-2 text-sm font-medium text-gray-700';
 type BadgeOptionsEditorProps = {
   fieldViews: RecordFieldView[];
   badges: BadgeMap;
-  disabled: boolean;
   onChange: (badges: BadgeMap) => void;
 };
 
-export function BadgeOptionsEditor({
-  fieldViews,
-  badges,
-  disabled,
-  onChange,
-}: BadgeOptionsEditorProps) {
+export function BadgeOptionsEditor({ fieldViews, badges, onChange }: BadgeOptionsEditorProps) {
   const { t } = useTranslation();
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -135,10 +129,8 @@ export function BadgeOptionsEditor({
                 <button
                   type="button"
                   onClick={() => remove(fieldView.id)}
-                  disabled={disabled}
                   title={t('common.delete')}
-                  className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-red-600
-                    disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
+                  className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-red-600"
                 >
                   <TrashIcon className="h-4 w-4" />
                 </button>
@@ -158,7 +150,6 @@ export function BadgeOptionsEditor({
                           label: resolveFieldViewName(t, option),
                         }))}
                       value={fieldView.id}
-                      disabled={disabled}
                       onChange={toId => changeField(fieldView.id, toId)}
                     />
                   </div>
@@ -172,7 +163,6 @@ export function BadgeOptionsEditor({
                       options={BADGE_PROPS.positions.map(position => ({
                         value: position,
                         label: t(`dialog.image-generate.options.position.${position}`),
-                        disabled,
                       }))}
                       value={badge.position}
                       onChange={position => patch(fieldView.id, { position })}
@@ -188,7 +178,6 @@ export function BadgeOptionsEditor({
                       options={BADGE_PROPS.sizes.map(size => ({
                         value: size,
                         label: t(`dialog.image-generate.options.size.${size}`),
-                        disabled,
                       }))}
                       value={badge.size}
                       onChange={size => patch(fieldView.id, { size })}
@@ -210,7 +199,6 @@ export function BadgeOptionsEditor({
                         ),
                       }))}
                       value={activeColor}
-                      disabled={disabled}
                       onChange={color => patch(fieldView.id, { color })}
                     />
                   </div>
@@ -230,7 +218,6 @@ export function BadgeOptionsEditor({
                         .map(variant => ({
                           value: variant,
                           label: t(`dialog.image-generate.options.variant.${variant}`),
-                          disabled,
                         }))}
                       value={activeVariant}
                       onChange={variant => patch(fieldView.id, { variant })}
@@ -251,7 +238,6 @@ export function BadgeOptionsEditor({
                           };
                         })}
                         value={activeIcon}
-                        disabled={disabled}
                         onChange={icon => patch(fieldView.id, { icon })}
                       />
                     </div>
@@ -267,11 +253,9 @@ export function BadgeOptionsEditor({
         <button
           type="button"
           onClick={add}
-          disabled={disabled}
           className="mt-3 flex w-full items-center justify-center gap-1 rounded-lg border
             border-dashed border-gray-300 py-3 text-sm text-gray-500 transition
-            hover:border-gray-400 hover:bg-gray-50 hover:text-gray-700 disabled:cursor-not-allowed
-            disabled:opacity-50"
+            hover:border-gray-400 hover:bg-gray-50 hover:text-gray-700"
         >
           <PlusIcon className="h-4 w-4" />
           {t('dialog.image-generate.options.badge-add')}
