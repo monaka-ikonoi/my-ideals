@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import i18n from '@/i18n';
+import type { FilterGroup } from '@/services/filter';
 import type { StorageBackend } from '@/storage/runtime';
 import type { BadgeArrangement, BadgeMap } from '@/components/card/BadgeProps';
 
@@ -14,10 +15,11 @@ export const buildDefaultImageOptions = (): Required<ImageOptions> => ({
   flatten: false,
 });
 
-/** Image options that depend on a profile's fields, so they cannot be shared across profiles. */
+/** Settings that depend on a profile's fields, so they cannot be shared across profiles. */
 export type ProfileOptions = {
   badges?: BadgeMap;
   badgeArrangement?: BadgeArrangement;
+  filterHistory?: FilterGroup[];
 };
 
 type SettingsStore = {

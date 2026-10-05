@@ -1,9 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowRightIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { isEqual } from 'lodash-es';
 import type { RecordField } from '@/domain/profile';
-import type { FilterNode } from '@/services/filter';
+import type { FilterExpression, FilterGroup, FilterNode } from '@/services/filter';
 import { useActiveProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
+import { useSettingsStore } from '@/stores/settingsStore';
 import {
   FILTER_GROUP_MAX_DEPTH,
   createConditionDraft,
@@ -18,6 +20,8 @@ import {
 import { DropdownSelect, type DropdownOption } from '../ui/DropdownSelect';
 import { FullScreenModal } from '../ui/FullScreenModal';
 import { IntegerInput } from '../ui/IntegerInput';
+
+const FILTER_HISTORY_LIMIT = 5;
 
 const OperatorOptions: DropdownOption<ConditionDraft['op']>[] = [
   { value: 'gt', label: '>' },
@@ -256,31 +260,63 @@ type CollectionFilterModalProps = {
 
 export function CollectionFilterModal({ onClose }: CollectionFilterModalProps) {
   const { t } = useTranslation();
+  const profileId = useActiveProfile(state => state.profile.id);
   const fields = useActiveProfile(state => state.fields);
   const filter = useProfileSessionStore(state => state.filter);
   const setFilterExpression = useProfileSessionStore(state => state.setFilterExpression);
+  const storedHistory = useSettingsStore(state => state.profileOptions[profileId]?.filterHistory);
+  const setProfileOptions = useSettingsStore(state => state.setProfileOptions);
   const [draft, setDraft] = useState<GroupDraft>(() => toFilterDraft(filter));
   const expression = useMemo(() => parseFilterDraft(draft, fields), [draft, fields]);
   const exceedsMaxDepth = getDraftGroupHeight(draft) > FILTER_GROUP_MAX_DEPTH;
 
-  const preview = useMemo(() => {
-    if (!expression) return t('dialog.collection-filter.empty-preview');
-    const names = new Map(fields.map(field => [field.id, field.name]));
-    const format = (node: FilterNode): string => {
-      if (node.type === 'group') {
-        return `(${node.children.map(format).join(` ${node.operator.toUpperCase()} `)})`;
-      }
-      const name = names.get(node.fieldId) ?? node.fieldId;
-      return node.type === 'number'
-        ? `${name} ${OperatorOptions.find(option => option.value === node.op)!.label} ${node.value}`
-        : `${name} ${node.value ? t('dialog.collection-filter.checked') : t('dialog.collection-filter.unchecked')}`;
-    };
-    return expression.children.map(format).join(` ${expression.operator.toUpperCase()} `);
-  }, [expression, fields, t]);
+  const history = useMemo(() => {
+    const fieldsById = new Map(fields.map(field => [field.id, field]));
+    const isAvailable = (node: FilterNode): boolean =>
+      node.type === 'group'
+        ? node.children.length > 0 && node.children.every(isAvailable)
+        : fieldsById.get(node.fieldId)?.type === node.type;
+    return (storedHistory ?? []).filter(isAvailable);
+  }, [storedHistory, fields]);
 
-  const handleApply = () => {
-    if (exceedsMaxDepth) return;
+  const formatExpression = useCallback(
+    (expression: FilterExpression): string => {
+      if (!expression) return t('dialog.collection-filter.empty-preview');
+      const names = new Map(fields.map(field => [field.id, field.name]));
+      const format = (node: FilterNode): string => {
+        if (node.type === 'group') {
+          return `(${node.children.map(format).join(` ${node.operator.toUpperCase()} `)})`;
+        }
+        const name = names.get(node.fieldId) ?? node.fieldId;
+        return node.type === 'number'
+          ? `${name} ${OperatorOptions.find(option => option.value === node.op)!.label} ${node.value}`
+          : `${name} ${node.value ? t('dialog.collection-filter.checked') : t('dialog.collection-filter.unchecked')}`;
+      };
+      return expression.children.map(format).join(` ${expression.operator.toUpperCase()} `);
+    },
+    [fields, t]
+  );
+
+  const addFilterHistory = (expression: FilterExpression) => {
+    if (!expression || expression.children.length === 0) return;
+    setProfileOptions(profileId, {
+      filterHistory: [
+        expression,
+        ...(storedHistory ?? []).filter(entry => !isEqual(entry, expression)),
+      ].slice(0, FILTER_HISTORY_LIMIT),
+    });
+  };
+
+  const removeFilterHistory = (expression: FilterGroup) => {
+    if (!storedHistory) return;
+    setProfileOptions(profileId, {
+      filterHistory: storedHistory.filter(entry => !isEqual(entry, expression)),
+    });
+  };
+
+  const handleApply = (expression: FilterExpression) => {
     setFilterExpression(expression);
+    addFilterHistory(expression);
     onClose();
   };
 
@@ -298,13 +334,51 @@ export function CollectionFilterModal({ onClose }: CollectionFilterModalProps) {
             className="mt-3 rounded-lg bg-gray-50 p-3 text-sm leading-relaxed break-words
               text-gray-600"
           >
-            {preview}
+            {formatExpression(expression)}
           </div>
           {exceedsMaxDepth && (
             <p className="mt-2 text-sm text-red-600">
               {t('dialog.collection-filter.max-depth-exceeded')}
             </p>
           )}
+          <section className="mt-6 border-t border-gray-200 pt-4">
+            <h3 className="mb-3 text-sm font-medium text-gray-700">
+              {t('dialog.collection-filter.history')}
+            </h3>
+            {history.length > 0 ? (
+              <ul className="space-y-2">
+                {history.map(entry => (
+                  <div
+                    key={JSON.stringify(entry)}
+                    className="flex min-w-0 items-center gap-2 rounded-lg border border-gray-200
+                      pr-1.5 transition-colors hover:border-blue-300 hover:bg-blue-50"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleApply(entry)}
+                      className="min-w-0 flex-1 self-stretch rounded-lg px-3 py-2 text-left text-sm
+                        leading-relaxed break-words text-gray-600 transition-colors
+                        hover:text-blue-700"
+                    >
+                      {formatExpression(entry)}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => removeFilterHistory(entry)}
+                      className="shrink-0 rounded px-1.5 py-2 text-gray-400 hover:bg-gray-100
+                        hover:text-red-600"
+                      aria-label={t('common.delete')}
+                      title={t('common.delete')}
+                    >
+                      <XMarkIcon className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-gray-400">{t('dialog.collection-filter.history-empty')}</p>
+            )}
+          </section>
         </div>
         <div
           className="flex shrink-0 flex-nowrap justify-end gap-2 overflow-x-auto border-t
@@ -328,7 +402,7 @@ export function CollectionFilterModal({ onClose }: CollectionFilterModalProps) {
           </button>
           <button
             type="button"
-            onClick={handleApply}
+            onClick={() => handleApply(expression)}
             disabled={exceedsMaxDepth}
             className="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium
               whitespace-nowrap text-white hover:bg-blue-700 disabled:cursor-not-allowed

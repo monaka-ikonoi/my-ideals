@@ -201,6 +201,8 @@
       "checked": "Checked",
       "unchecked": "Unchecked",
       "empty-preview": "No filter conditions",
+      "history": "Filter History",
+      "history-empty": "No filter history yet",
       "clear": "Clear All",
       "apply": "Apply"
     },

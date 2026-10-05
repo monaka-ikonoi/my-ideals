@@ -201,6 +201,8 @@
       "checked": "已勾选",
       "unchecked": "未勾选",
       "empty-preview": "未设置筛选条件",
+      "history": "筛选历史",
+      "history-empty": "暂无筛选历史",
       "clear": "清除全部",
       "apply": "应用"
     },

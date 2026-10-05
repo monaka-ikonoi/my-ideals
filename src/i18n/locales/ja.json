@@ -201,6 +201,8 @@
       "checked": "チェック済み",
       "unchecked": "未チェック",
       "empty-preview": "絞り込み条件はありません",
+      "history": "絞り込み履歴",
+      "history-empty": "絞り込み履歴はまだありません",
       "clear": "すべて解除",
       "apply": "適用"
     },
