@@ -6,6 +6,7 @@ import type { RecordField } from '@/domain/profile';
 import type { FilterExpression, FilterGroup, FilterNode } from '@/services/filter';
 import { useActiveProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
 import { useSettingsStore } from '@/stores/settingsStore';
+import { resolveSpecialFieldName } from '@/utils/recordUtils';
 import {
   FILTER_GROUP_MAX_DEPTH,
   createConditionDraft,
@@ -87,7 +88,10 @@ function ConditionRow({ draft, fields, onChange, onWrap, onRemove, depth }: Cond
     <div className="flex min-w-0 flex-wrap items-center gap-1">
       <DropdownSelect
         className="min-w-0 flex-[1_1_4.5rem]"
-        options={fields.map(candidate => ({ value: candidate.id, label: candidate.name }))}
+        options={fields.map(candidate => ({
+          value: candidate.id,
+          label: resolveSpecialFieldName(t, candidate),
+        }))}
         value={draft.fieldId}
         onChange={fieldId => onChange({ fieldId })}
         placeholder={draft.fieldId}
@@ -102,7 +106,7 @@ function ConditionRow({ draft, fields, onChange, onWrap, onRemove, depth }: Cond
             onChange={op => onChange({ op })}
           />
           <IntegerInput
-            aria-label={field.name}
+            aria-label={resolveSpecialFieldName(t, field)}
             defaultValue={draft.value}
             onValueChange={value => onChange({ value })}
             className="w-16 shrink-0 grow rounded-lg border border-gray-300 px-2 py-2 text-center
@@ -282,7 +286,7 @@ export function CollectionFilterModal({ onClose }: CollectionFilterModalProps) {
   const formatExpression = useCallback(
     (expression: FilterExpression): string => {
       if (!expression) return t('dialog.collection-filter.empty-preview');
-      const names = new Map(fields.map(field => [field.id, field.name]));
+      const names = new Map(fields.map(field => [field.id, resolveSpecialFieldName(t, field)]));
       const format = (node: FilterNode): string => {
         if (node.type === 'group') {
           return `(${node.children.map(format).join(` ${node.operator.toUpperCase()} `)})`;
