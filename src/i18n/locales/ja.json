@@ -75,7 +75,8 @@
         "all": "すべて",
         "owned": "所持済",
         "unowned": "未所持",
-        "wanted": "求め"
+        "wanted": "求め",
+        "custom": "カスタム"
       }
     }
   },

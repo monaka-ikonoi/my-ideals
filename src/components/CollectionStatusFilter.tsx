@@ -2,11 +2,11 @@ import { isEqual } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import { FunnelIcon } from '@heroicons/react/24/outline';
 import { countFilterConditions, type FilterExpression } from '@/services/filter';
-import { getPrimaryField, isNumberField } from '@/domain/profile';
+import { getPrimaryField } from '@/domain/profile';
 import { useActiveProfile, useProfileSessionStore } from '@/stores/profileSessionStore';
 import { useDialogStore } from '@/stores/dialogStore';
 
-const FilterStatuses = ['all', 'owned', 'unowned', 'wanted'] as const;
+const FilterStatuses = ['all', 'owned', 'unowned', 'wanted', 'custom'] as const;
 type FilterStatus = (typeof FilterStatuses)[number];
 
 export function CustomFilterButton() {
@@ -36,14 +36,13 @@ export function CustomFilterButton() {
 export function CollectionStatusFilter() {
   const { t } = useTranslation();
 
+  const mode = useActiveProfile(state => state.profile.mode);
   const primaryField = useActiveProfile(state => getPrimaryField(state.fields));
   const filter = useProfileSessionStore(state => state.filter);
   const setFilterExpression = useProfileSessionStore(state => state.setFilterExpression);
 
-  const hasWanted = isNumberField(primaryField);
-
   // Booleans are converted to numbers and then filtered
-  const predefinedOptions: Record<FilterStatus, FilterExpression> = {
+  const predefinedOptions: Record<Exclude<FilterStatus, 'custom'>, FilterExpression> = {
     all: null,
     owned: {
       type: 'group',
@@ -62,18 +61,29 @@ export function CollectionStatusFilter() {
     },
   };
 
-  const selected = FilterStatuses.find(status => isEqual(filter, predefinedOptions[status]));
+  const selected =
+    FilterStatuses.find(
+      status => status !== 'custom' && isEqual(filter, predefinedOptions[status])
+    ) ?? 'custom';
 
   const select = (status: FilterStatus) => {
+    if (status === 'custom') {
+      useDialogStore.getState().openEditCollectionFilter();
+      return;
+    }
     setFilterExpression(predefinedOptions[status]);
   };
 
   return (
     <div className="inline-flex shrink-0 rounded-lg bg-gray-100 p-1 text-sm">
-      {FilterStatuses.filter(status => hasWanted || status !== 'wanted').map(status => (
+      {FilterStatuses.filter(
+        status => mode === 'count' || (status !== 'wanted' && status !== 'custom')
+      ).map(status => (
         <button
           key={status}
+          type="button"
           onClick={() => select(status)}
+          aria-pressed={selected === status}
           className={`rounded-md px-2 py-1 font-medium whitespace-nowrap transition-colors sm:px-3
           ${
             selected === status

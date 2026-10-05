@@ -75,7 +75,8 @@
         "all": "All",
         "owned": "Owned",
         "unowned": "Missing",
-        "wanted": "Wanted"
+        "wanted": "Wanted",
+        "custom": "Custom"
       }
     }
   },
