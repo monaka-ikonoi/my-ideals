@@ -17,7 +17,7 @@ import {
 import { DropdownSelect } from '../ui/DropdownSelect';
 import { OptionPicker } from '../ui/OptionPicker';
 import { SwatchPicker } from '../ui/SwatchPicker';
-import { resolveFieldViewName } from '@/utils/recordUtils';
+import { resolveSpecialFieldName } from '@/utils/recordUtils';
 
 const labelClass = 'mb-2 text-sm font-medium text-gray-700';
 
@@ -109,7 +109,7 @@ export function BadgeOptionsEditor({ fieldViews, badges, onChange }: BadgeOption
                     <ChevronRightIcon className="h-4 w-4 shrink-0 text-gray-400" />
                   )}
                   <span className="shrink-0 text-sm font-medium text-gray-700">
-                    {resolveFieldViewName(t, fieldView)}
+                    {resolveSpecialFieldName(t, fieldView)}
                   </span>
 
                   {!expanded && (
@@ -148,7 +148,7 @@ export function BadgeOptionsEditor({ fieldViews, badges, onChange }: BadgeOption
                         .filter(option => !badges[option.id] || option.id === fieldView.id)
                         .map(option => ({
                           value: option.id,
-                          label: resolveFieldViewName(t, option),
+                          label: resolveSpecialFieldName(t, option),
                         }))}
                       value={fieldView.id}
                       onChange={toId => changeField(fieldView.id, toId)}

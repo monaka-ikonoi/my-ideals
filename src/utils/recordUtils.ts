@@ -5,6 +5,7 @@ import {
   type RecordField,
   type RecordValue,
   type RecordFieldView,
+  DEFAULT_FIELD_ID,
 } from '@/domain/profile';
 import { COUNT_MODE_OWNED_ID, COUNT_MODE_WANTED_ID } from '@/misc/CountMode';
 
@@ -37,8 +38,18 @@ export const readRecordFieldView = (
   return fieldView.transform ? fieldView.transform(value) : value;
 };
 
-export const resolveFieldViewName = (t: TFunction, fieldView: RecordFieldView): string => {
-  if (fieldView.id === COUNT_MODE_OWNED_ID) return t('misc.count-mode.owned-label');
-  if (fieldView.id === COUNT_MODE_WANTED_ID) return t('misc.count-mode.wanted-label');
-  return fieldView.name;
+export const resolveSpecialFieldName = (
+  t: TFunction,
+  field: Pick<RecordField, 'id' | 'name'>
+): string => {
+  switch (field.id) {
+    case DEFAULT_FIELD_ID:
+      return t('misc.count-mode.default-label');
+    case COUNT_MODE_OWNED_ID:
+      return t('misc.count-mode.owned-label');
+    case COUNT_MODE_WANTED_ID:
+      return t('misc.count-mode.wanted-label');
+    default:
+      return field.name;
+  }
 };

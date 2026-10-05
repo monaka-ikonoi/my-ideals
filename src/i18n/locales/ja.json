@@ -60,6 +60,7 @@
   },
   "misc": {
     "count-mode": {
+      "default-label": "数量",
       "owned-label": "所持",
       "wanted-label": "求め"
     }

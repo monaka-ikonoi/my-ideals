@@ -7,7 +7,7 @@ import {
   type BadgeColor,
   type BadgeSize,
 } from './BadgeProps';
-import { resolveFieldViewName } from '@/utils/recordUtils';
+import { resolveSpecialFieldName } from '@/utils/recordUtils';
 import { normalizeStatusNumber } from '@/utils/utils';
 
 // Interpolated names are safelisted in src/index.css.
@@ -76,7 +76,7 @@ export function ItemBadge({ fieldView, value, config, rotated }: ItemBadgeProps)
     >
       {parts.icon && <Icon className="shrink-0" style={sizeStyle.icon} />}
       {parts.text && (
-        <span className="truncate">{resolveFieldViewName(t, fieldView).slice(0, 1)}</span>
+        <span className="truncate">{resolveSpecialFieldName(t, fieldView).slice(0, 1)}</span>
       )}
       {parts.number && <span className="leading-none">{normalizeStatusNumber(value)}</span>}
     </div>

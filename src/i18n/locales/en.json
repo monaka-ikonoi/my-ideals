@@ -60,6 +60,7 @@
   },
   "misc": {
     "count-mode": {
+      "default-label": "Quantity",
       "owned-label": "Owned",
       "wanted-label": "Wanted"
     }
