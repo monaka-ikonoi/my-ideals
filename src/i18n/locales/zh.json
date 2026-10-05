@@ -36,6 +36,7 @@
     "export-all": "导出全部档案",
     "select-placeholder": "选择档案",
     "current": "当前档案",
+    "last-modified": "最后修改时间",
     "list": "全部档案",
     "copy-template-link": "复制模板链接",
     "not-selected": "未选择档案",

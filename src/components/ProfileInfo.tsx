@@ -23,19 +23,23 @@ const ModeLabelKeys = {
 } as const satisfies Record<RecordMode, string>;
 
 export function ProfileInfo() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
-  const { profileId, profileName, mode } = useActiveProfile(
+  const { id: templateId, name: templateName } = useTemplate();
+  const { profileId, profileName, mode, lastModified, profileTemplateInfo } = useActiveProfile(
     useShallow(state => ({
       profileId: state.profile.id,
       profileName: state.profile.name,
+      profileTemplateInfo: state.profile.template,
       mode: state.profile.mode,
+      lastModified: state.profile.lastModified,
     }))
   );
-  const { id: templateId, name: templateName } = useTemplate();
-  const profileTemplateInfo = useActiveProfile(state => state.profile.template);
 
   const [copied, setCopied] = useState(false);
+
+  const lastModifiedText =
+    lastModified === 0 ? t('common.unknown') : new Date(lastModified).toLocaleString(i18n.language);
 
   const handleCopyLink = async () => {
     try {
@@ -49,44 +53,52 @@ export function ProfileInfo() {
   };
 
   return (
-    <div className="space-y-2">
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
-        {/* Profile Name */}
-        <div className="flex items-center gap-1">
-          <h1 className="pr-2 text-xl font-semibold text-gray-900">{profileName}</h1>
-          <button
-            onClick={() => useDialogStore.getState().openRenameProfile(profileId, profileName)}
-            className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-            title={t('profile.rename')}
-          >
-            <PencilIcon className="h-4 w-4" />
-          </button>
-          <button
-            onClick={() => useDialogStore.getState().openDuplicateProfile()}
-            className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-            title={t('profile.duplicate')}
-          >
-            <DocumentDuplicateIcon className="h-4 w-4" />
-          </button>
-        </div>
+    <div
+      className="grid grid-cols-1 items-start gap-x-4 gap-y-2 md:grid-cols-[minmax(0,1fr)_auto]
+        md:grid-rows-[auto_1fr]"
+    >
+      {/* Profile Name */}
+      <div className="flex items-center gap-1">
+        <h1 className="pr-2 text-xl font-semibold text-gray-900">{profileName}</h1>
+        <button
+          onClick={() => useDialogStore.getState().openRenameProfile(profileId, profileName)}
+          className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+          title={t('profile.rename')}
+        >
+          <PencilIcon className="h-4 w-4" />
+        </button>
+        <button
+          onClick={() => useDialogStore.getState().openDuplicateProfile()}
+          className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+          title={t('profile.duplicate')}
+        >
+          <DocumentDuplicateIcon className="h-4 w-4" />
+        </button>
+      </div>
 
-        {/* ID */}
-        <div className="text-sm text-gray-500">
-          <InlineCode>ID: {profileId}</InlineCode>
-        </div>
+      {/* ID and last modified time */}
+      <div
+        className="flex flex-col items-start gap-2 text-sm text-gray-500 md:col-start-2
+          md:row-span-2 md:row-start-1 md:items-end"
+      >
+        <InlineCode>ID: {profileId}</InlineCode>
+        <span className="self-stretch text-left text-xs md:text-right">
+          {t('profile.last-modified')}: {lastModifiedText}
+        </span>
       </div>
 
       <div
-        className="flex flex-col gap-2 text-sm text-gray-500 md:flex-row md:items-center md:gap-4"
+        className="flex flex-col gap-x-8 gap-y-2 overflow-x-clip text-sm text-gray-500 md:flex-row
+          md:flex-wrap md:items-center"
       >
         {/* Template */}
         <div className="flex items-center gap-1">
-          <div className="flex-1 sm:flex-initial">
+          <div className="flex-1 md:flex-initial">
             <span className="block sm:inline">
               {t('common.template')}: {templateName}
             </span>
             <span className="hidden sm:mx-2 sm:inline">/</span>
-            <span className="block font-mono text-gray-500 sm:inline">
+            <span className="block font-mono sm:inline">
               {profileTemplateInfo.id} (rev. {profileTemplateInfo.revision})
             </span>
           </div>
@@ -114,11 +126,10 @@ export function ProfileInfo() {
           </button>
         </div>
 
-        <span className="hidden h-4 w-px bg-gray-300 md:block" aria-hidden="true" />
-
         {/* Mode */}
-        <div className="flex items-center gap-1">
-          <div className="flex-1 sm:flex-initial">
+        <div className="relative flex items-center gap-1">
+          <span className="absolute top-1/2 -left-4 h-4 w-px -translate-y-1/2 bg-gray-300" />
+          <div className="flex-1 md:flex-initial">
             {t('profile.mode.label')}: {t(ModeLabelKeys[mode])}
           </div>
           <button

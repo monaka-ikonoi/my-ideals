@@ -36,6 +36,7 @@
     "export-all": "Export All Profiles",
     "select-placeholder": "Select Profile",
     "current": "Current Profile",
+    "last-modified": "Last Modified",
     "list": "Profiles",
     "copy-template-link": "Copy Template Link",
     "not-selected": "No Profile Selected",

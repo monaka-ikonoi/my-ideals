@@ -36,6 +36,7 @@
     "export-all": "一括エクスポート",
     "select-placeholder": "プロファイルを選択",
     "current": "現在のプロファイル",
+    "last-modified": "最終更新日時",
     "list": "プロファイル",
     "copy-template-link": "テンプレートリンクをコピー",
     "not-selected": "プロファイル未選択",
