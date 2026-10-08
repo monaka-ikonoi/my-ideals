@@ -234,6 +234,7 @@
         "badge-arrangement-label": "Arrangement",
         "not-dim-untoggled-label": "Do not dim unowned items",
         "flatten-collections-label": "Do not group by collection",
+        "use-profile-name": "Use profile name as title",
         "position": {
           "top-left": "Top left",
           "top-middle": "Top middle",

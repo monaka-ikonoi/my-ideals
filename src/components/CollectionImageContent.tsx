@@ -12,6 +12,7 @@ type CollectionImageContentProps = {
   templateName: string;
   templateId: string;
   profileId: string;
+  profileName: string;
   collections: TemplateCollection[];
   captureTime: string;
   imageOptions: ImageRenderOptions;
@@ -40,18 +41,20 @@ export function CollectionImageContent({
   templateName,
   templateId,
   profileId,
+  profileName,
   collections,
   captureTime,
   imageOptions,
 }: CollectionImageContentProps) {
-  const singleCollection = collections.length === 1;
+  const singleCollection = !imageOptions.useProfileName && collections.length === 1;
+  const title = imageOptions.useProfileName ? profileName : templateName;
 
   return (
     <ImageOptionsContext value={imageOptions}>
       <div className="bg-white text-gray-900">
         <div className="px-8 pt-6">
           <h1 className="text-3xl leading-tight font-semibold">
-            {singleCollection && !imageOptions.flatten ? collections[0].name : templateName}
+            {singleCollection && !imageOptions.flatten ? collections[0].name : title}
           </h1>
         </div>
 

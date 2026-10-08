@@ -234,6 +234,7 @@
         "badge-arrangement-label": "並べ方",
         "not-dim-untoggled-label": "未所持アイテムを薄く表示しない",
         "flatten-collections-label": "セットごとに表示しない",
+        "use-profile-name": "プロフィール名をタイトルに使用",
         "position": {
           "top-left": "左上",
           "top-middle": "上中央",

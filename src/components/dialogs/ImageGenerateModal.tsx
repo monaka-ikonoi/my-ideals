@@ -64,10 +64,11 @@ export function ImageGenerateModal({
 }: ImageGenerateModalProps) {
   const { t, i18n } = useTranslation();
 
-  const { profileId, fields, fieldViews, recordMode, primaryFieldView, statusMap } =
+  const { profileId, profileName, fields, fieldViews, recordMode, primaryFieldView, statusMap } =
     useActiveProfile(
       useShallow(state => ({
         profileId: state.profile.id,
+        profileName: state.profile.name,
         fields: state.fields,
         fieldViews: state.fieldViews,
         recordMode: state.profile.mode,
@@ -508,6 +509,20 @@ export function ImageGenerateModal({
                         {t('dialog.image-generate.options.flatten-collections-label')}
                       </span>
                     </label>
+
+                    {/* Use profile name as title checkbox */}
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={imageOptions.useProfileName}
+                        onChange={e => setImageOptions({ useProfileName: e.target.checked })}
+                        className="h-4 w-4 rounded border-gray-300 accent-blue-600
+                          focus:ring-blue-500"
+                      />
+                      <span className="text-sm font-medium text-gray-700">
+                        {t('dialog.image-generate.options.use-profile-name')}
+                      </span>
+                    </label>
                   </div>
                 </div>
               </div>
@@ -617,6 +632,7 @@ export function ImageGenerateModal({
           templateName={templateName}
           templateId={templateId}
           profileId={profileId}
+          profileName={profileName}
           collections={selectedCollections}
           captureTime={captureTime}
           imageOptions={previewOptions}

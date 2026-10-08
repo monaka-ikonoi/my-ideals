@@ -8,11 +8,13 @@ import type { BadgeArrangement, BadgeMap } from '@/components/card/BadgeProps';
 export type ImageOptions = {
   dimUntoggled?: boolean; // v3
   flatten?: boolean; // v4
+  useProfileName?: boolean; // v7
 };
 
 export const buildDefaultImageOptions = (): Required<ImageOptions> => ({
   dimUntoggled: true,
   flatten: false,
+  useProfileName: false,
 });
 
 /** Settings that depend on a profile's fields, so they cannot be shared across profiles. */
@@ -35,7 +37,7 @@ type SettingsStore = {
   // Actions
   setLanguage: (code: string) => void;
   setStorageBackend: (backend: StorageBackend) => void; // v1
-  setImageOptions: (options: ImageOptions) => void; // v2 / v3 / v4
+  setImageOptions: (options: ImageOptions) => void; // v2 / v3 / v4 / v7
   dismissItpWarning: () => void; // v5
   dismissInstallBanner: () => void; // v5
   setProfileOptions: (profileId: string, options: ProfileOptions) => void; // v6
@@ -59,7 +61,7 @@ export const useSettingsStore = create<SettingsStore>()(
         set({ storageBackend: backend });
       },
 
-      // v2 / v3 / v4
+      // v2 / v3 / v4 / v7
       imageOptions: buildDefaultImageOptions(),
       setImageOptions: (options: ImageOptions) => {
         set(state => ({ imageOptions: { ...state.imageOptions, ...options } }));
@@ -91,7 +93,7 @@ export const useSettingsStore = create<SettingsStore>()(
     }),
     {
       name: 'my-ideals:settings',
-      version: 6,
+      version: 7,
       migrate: (persisted, version) => {
         const state = persisted as Partial<SettingsStore>;
         if (version === 0) {
@@ -119,8 +121,16 @@ export const useSettingsStore = create<SettingsStore>()(
         if (version < 6) {
           state.profileOptions = {};
           state.imageOptions = {
+            ...buildDefaultImageOptions(),
             dimUntoggled: state.imageOptions?.dimUntoggled ?? true,
             flatten: state.imageOptions?.flatten ?? false,
+          };
+        }
+        if (version < 7) {
+          state.imageOptions = {
+            ...buildDefaultImageOptions(),
+            ...state.imageOptions,
+            useProfileName: false,
           };
         }
         return state;

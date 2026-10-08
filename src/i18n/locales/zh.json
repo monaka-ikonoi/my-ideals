@@ -234,6 +234,7 @@
         "badge-arrangement-label": "排列方向",
         "not-dim-untoggled-label": "不弱化显示未持有项",
         "flatten-collections-label": "不按合集分组显示",
+        "use-profile-name": "使用档案名称替代模板名称作为标题",
         "position": {
           "top-left": "左上",
           "top-middle": "正上",
