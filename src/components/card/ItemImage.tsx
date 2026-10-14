@@ -19,8 +19,8 @@ export function ItemImage({
   eager,
   children,
 }: ItemImageProps) {
-  const [status, setStatus] = useState<'loading' | 'fallback' | 'loaded' | 'failed'>('loading');
-  const currentSrc = status === 'fallback' ? (fallbackSrc as string) : src;
+  const [currentSrc, setCurrentSrc] = useState(src);
+  const [status, setStatus] = useState<'loading' | 'loaded' | 'failed'>('loading');
 
   return (
     <div className="@container relative w-full shrink-0" style={{ aspectRatio }}>
@@ -43,13 +43,14 @@ export function ItemImage({
           loading={eager ? 'eager' : 'lazy'}
           decoding={eager ? 'sync' : 'async'}
           onLoad={() => setStatus('loaded')}
-          onError={() =>
-            setStatus(prev => {
-              if (prev === 'loading') return fallbackSrc ? 'fallback' : 'failed';
-              if (prev === 'fallback') return 'failed';
-              return prev;
-            })
-          }
+          onError={() => {
+            if (fallbackSrc && currentSrc !== fallbackSrc) {
+              setCurrentSrc(fallbackSrc);
+              setStatus('loading');
+            } else {
+              setStatus('failed');
+            }
+          }}
           className={`absolute inset-0 h-full w-full object-cover transition
           ${dimmed ? 'opacity-50' : ''}`}
         />
