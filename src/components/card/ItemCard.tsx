@@ -50,6 +50,7 @@ export const ItemCard = memo(function ItemCard({
   const primaryField = getPrimaryField(fields);
   const primaryValue = readField(record, primaryField);
   const captionField = recordMode === 'standard' ? primaryField : undefined;
+  const canToggle = captionField && mode !== 'export';
 
   const handleChange = useCallback(
     (fieldId: string, value: RecordValue) =>
@@ -70,8 +71,8 @@ export const ItemCard = memo(function ItemCard({
   return (
     <div
       className={`flex w-full flex-col overflow-hidden rounded-md
-        ${captionField ? 'cursor-pointer' : ''}`}
-      onClick={captionField ? handleCaptionToggle : undefined}
+        ${canToggle ? 'cursor-pointer' : ''}`}
+      onClick={canToggle ? handleCaptionToggle : undefined}
     >
       <ItemImage
         src={item.image ?? formatImageUrl(imageBaseUrl, revision, collectionId, item.id)}
