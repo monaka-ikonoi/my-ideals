@@ -12,6 +12,7 @@ import {
 } from '@/domain/profile';
 import { getProfileStorage } from '@/storage/ProfileStorage';
 import { useSettingsStore } from './settingsStore';
+import { useProfileSessionStore } from './profileSessionStore';
 
 export type ProfileListEntry = {
   id: string;
@@ -117,6 +118,7 @@ export const useProfileListStore = create<ProfileListStore>()(
             finalProfile = { ...profile, id: nanoid(), lastModified: Date.now() };
           }
 
+          await useProfileSessionStore.getState().flush();
           await getProfileStorage().setProfile(finalProfile);
 
           set(state => {
@@ -130,6 +132,7 @@ export const useProfileListStore = create<ProfileListStore>()(
         },
 
         deleteProfile: async id => {
+          await useProfileSessionStore.getState().flush();
           await getProfileStorage().deleteProfile(id);
           useSettingsStore.getState().clearProfileOptions(id);
 
