@@ -122,7 +122,7 @@ export function ImageGenerateModal({
     return () => {
       if (imageUrl) URL.revokeObjectURL(imageUrl);
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [imageUrl]);
 
   const collectionMap = useMemo(
     () => new Map(collections.map(collection => [collection.id, collection])),
@@ -262,11 +262,7 @@ export function ImageGenerateModal({
       setGenerating(false);
 
       if (result.success) {
-        // Revoke the old URL before replacing
-        setImageUrl(prev => {
-          if (prev) URL.revokeObjectURL(prev);
-          return URL.createObjectURL(result.blob);
-        });
+        setImageUrl(URL.createObjectURL(result.blob));
         setImageBlob(result.blob);
       } else {
         setStep('customize');
