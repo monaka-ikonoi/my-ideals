@@ -58,10 +58,10 @@ export function useTemplateFetcher({
       return;
     }
 
+    setState({ status: 'loading' });
+
     let abortController: AbortController | null = null;
     const doFetch = async (url: string) => {
-      setState({ status: 'loading' });
-
       abortController?.abort();
       abortController = new AbortController();
 
