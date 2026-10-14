@@ -26,6 +26,9 @@ type ProfileSessionState = {
   setFilterExpression: (expression: FilterExpression) => void;
 };
 
+// Loads and clears share a sequence so only the latest request can replace the session.
+let sessionId = 0;
+
 export const useProfileSessionStore = create<ProfileSessionState>()((set, get) => ({
   loadState: { status: 'idle' },
   store: null,
@@ -34,11 +37,14 @@ export const useProfileSessionStore = create<ProfileSessionState>()((set, get) =
   filter: null,
 
   load: async (profileId: string) => {
+    const currentSessionId = ++sessionId;
     const previous = get().store;
     set({ loadState: { status: 'loading' } });
     await previous?.getState().flush();
+    if (currentSessionId !== sessionId) return;
 
     const result = await loadActiveProfile(profileId);
+    if (currentSessionId !== sessionId) return;
 
     if (result.status === 'template-error') {
       set({
@@ -73,9 +79,11 @@ export const useProfileSessionStore = create<ProfileSessionState>()((set, get) =
   },
 
   clear: async () => {
+    const currentSessionId = ++sessionId;
     const previous = get().store;
     set({ loadState: { status: 'loading' } });
     await previous?.getState().flush();
+    if (currentSessionId !== sessionId) return;
 
     set({
       loadState: { status: 'idle' },
