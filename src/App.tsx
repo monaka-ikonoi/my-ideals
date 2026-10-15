@@ -4,6 +4,7 @@ import { Navbar } from '@/components/Navbar';
 import { useProfileSessionStore } from './stores/profileSessionStore';
 import { GlobalDialogs } from './components/GlobalDialogs';
 import { GlobalToaster } from './components/GlobalToaster';
+import { GlobalBanners } from './components/GlobalBanners';
 import { MainContent } from './components/MainContent';
 import { DEV_MODE, PREVIEW_DEPLOY } from './utils/appInfo';
 
@@ -36,9 +37,10 @@ export default function App() {
   }, []);
 
   return (
-    <div className="pb-safe min-h-screen bg-gray-50">
+    <div className="pb-safe flex min-h-screen flex-col bg-gray-50">
       <Navbar />
-      <div className="pr-safe pl-safe">
+      <div className="pr-safe pl-safe flex flex-1 flex-col">
+        <GlobalBanners />
         <MainContent />
       </div>
       <GlobalDialogs />
