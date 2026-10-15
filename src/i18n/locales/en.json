@@ -135,12 +135,17 @@
     },
     "install-app-ios": {
       "title": "Add to Home Screen",
-      "open-in-safari-hint": "Please open this page in Safari first:",
-      "step1": "Tap the More button",
-      "step2": "Tap Share",
-      "step3": "Scroll down and tap \"Add to Home Screen\" (if you don't see it, tap \"Edit Actions\" at the bottom and add it)",
-      "step4": "Tap \"Add\"",
-      "data-warning": "Please export a backup of all profiles using the button below, then import it in the installed app."
+      "open-in-safari": "Open in Safari",
+      "copy-url": "Copy URL",
+      "step1": "Open this page in Safari.",
+      "step1-hint": "If Safari does not open, tap the URL below to copy it and open it manually in Safari.",
+      "step2": "Tap Share<share/> in the toolbar.",
+      "step2-hint": "If it is not visible, open More<more/> or Page Menu<pageMenu/>, then select Share<share/>.",
+      "step3": "Scroll down the share options and select \"Add to Home Screen\".",
+      "step3-hint": "If it is missing, add it using \"Edit Actions\" at the bottom of the list.",
+      "step4": "Turn on \"Open as Web App\", then tap \"Add\".",
+      "step4-hint": "If this option is not shown, tap \"Add\" directly.",
+      "data-warning": "Export a backup of all profiles before following the steps below. After installation, import the backup in the app to continue using your existing profiles."
     },
     "template-diff": {
       "title": "Template Updated",
