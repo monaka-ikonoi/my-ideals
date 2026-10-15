@@ -31,7 +31,7 @@ export function useProfileExporter() {
     }
   };
 
-  const exportProfileBundle = async () => {
+  const prepareProfileBundle = async () => {
     if (exporting) return;
 
     try {
@@ -52,11 +52,16 @@ export function useProfileExporter() {
 
       const date = new Date().toISOString().slice(0, 10);
       const filename = `my-ideals-profile-bundle-${date}.json`;
-      downloadFile(buildJsonFile(bundle, filename));
+      return buildJsonFile(bundle, filename);
     } finally {
       setExporting(false);
     }
   };
 
-  return { canExport, exportProfile, exportProfileBundle };
+  const exportProfileBundle = async () => {
+    const file = await prepareProfileBundle();
+    if (file) downloadFile(file);
+  };
+
+  return { canExport, exporting, exportProfile, exportProfileBundle, prepareProfileBundle };
 }

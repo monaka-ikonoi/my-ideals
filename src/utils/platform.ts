@@ -25,6 +25,12 @@ export const isAndroid = (): boolean => {
   return /Android/.test(navigator.userAgent);
 };
 
+export const isTwitterInAppBrowser = (): boolean => {
+  if (typeof navigator === 'undefined') return false;
+  // X still uses Twitter-branded identifiers. Referrers alone cannot identify an in-app browser.
+  return /\bTwitter(?:Android| for (?:iPhone|iPad|iPod))\b/i.test(navigator.userAgent);
+};
+
 export const isIos3rdParty = (): boolean => {
   if (!isIos()) return false;
   return /CriOS|FxiOS|EdgiOS|OPiOS|mercury|GSA/i.test(navigator.userAgent);

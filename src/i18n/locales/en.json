@@ -116,6 +116,11 @@
       "count-message": "{{count}} / {{total}} profile(s) to import",
       "bundle-hint": "Uncheck a profile to skip importing it"
     },
+    "profile-share": {
+      "hint": "Your backup is ready. Tap “Share JSON” to save the file or send it to another app using the system share sheet, then import it in your new browser.",
+      "share-json": "Share JSON",
+      "unsupported": "This browser does not support sharing JSON files."
+    },
     "profile-delete": {
       "title": "Delete Profile",
       "content-confim": "Are you sure you want to delete <strong>{{name}}</strong> ?",
@@ -287,6 +292,12 @@
     }
   },
   "notice": {
+    "twitter-browser-warning": {
+      "title": "Compatibility warning: open in your browser",
+      "body": "You are using the X (Twitter) in-app browser. Some features may not work correctly. We strongly recommend switching browsers before continuing.",
+      "hint": "Choose “Open in browser” from the browser menu, or copy the current link into Safari, Chrome, or another browser.",
+      "backup-hint": "If you already have saved data, export all profiles before switching browsers."
+    },
     "ios-data-warning": {
       "title": "Notice for iOS (iPhone / iPad) and Safari Users",
       "body": "Due to Apple ITP restrictions, saved data may be deleted after 7 days of inactivity. Please export a backup using the \"$t(profile.export)\" button in the top right after each use."

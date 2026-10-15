@@ -116,6 +116,11 @@
       "count-message": "导入 {{count}} / {{total}} 个档案",
       "bundle-hint": "取消勾选可跳过对应的档案"
     },
+    "profile-share": {
+      "hint": "备份已准备好。点击“分享 JSON”，在系统分享面板中保存文件或发送到其他 App，然后在新浏览器中导入该文件。",
+      "share-json": "分享 JSON",
+      "unsupported": "当前浏览器不支持分享 JSON 文件。"
+    },
     "profile-delete": {
       "title": "删除档案",
       "content-confim": "确定要删除 <strong>{{name}}</strong> 吗？",
@@ -287,6 +292,12 @@
     }
   },
   "notice": {
+    "twitter-browser-warning": {
+      "title": "兼容性警告：请在系统浏览器中打开",
+      "body": "你正在使用 X（Twitter）内置浏览器，部分功能可能出现异常。强烈建议切换浏览器后再继续使用。",
+      "hint": "请使用浏览器菜单中的“在浏览器中打开”，或复制当前链接到 Safari、Chrome 等浏览器。",
+      "backup-hint": "如果已有数据，请先导出全部档案，再切换浏览器。"
+    },
     "ios-data-warning": {
       "body": "由于 Apple ITP 限制，7 天未访问可能导致数据被自动清除。每次使用后请通过右上角的\"$t(profile.export)\"按钮备份数据。",
       "title": "iOS (iPhone / iPad) 及 Safari 用户须知"
