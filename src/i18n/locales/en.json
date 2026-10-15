@@ -114,12 +114,27 @@
       "importing": "Importing",
       "newer": "(Newer)",
       "count-message": "{{count}} / {{total}} profile(s) to import",
-      "bundle-hint": "Uncheck a profile to skip importing it"
+      "bundle-hint": "Uncheck a profile to skip importing it",
+      "paste-backup": "Or paste a compressed backup code",
+      "paste-backup-hint": "Paste the complete generated backup code",
+      "pasted-backup": "Pasted compressed backup",
+      "preview-backup": "Decode and preview"
     },
     "profile-share": {
       "hint": "Your backup is ready. Tap “Share JSON” to save the file or send it to another app using the system share sheet, then import it in your new browser.",
       "share-json": "Share JSON",
       "unsupported": "This browser does not support sharing JSON files."
+    },
+    "profile-text-export": {
+      "title": "Compressed Backup",
+      "generate": "Generate Backup Code",
+      "hint": "Copy the complete backup code and paste it into Import Profile in your new browser. Preview the profiles, then confirm the import. You can also select all and copy manually.",
+      "sizes": "Original {{original}} · Compressed {{compressed}} · Backup code {{encoded}}",
+      "code": "Backup code",
+      "copy": "Copy Backup Code",
+      "copied": "Backup code copied",
+      "copy-failed": "Automatic copying failed. Select all of the backup code and copy it manually.",
+      "unsupported": "This browser does not support compressed backups."
     },
     "profile-delete": {
       "title": "Delete Profile",

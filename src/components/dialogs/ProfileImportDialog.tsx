@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useImmer } from 'use-immer';
 import { useShallow } from 'zustand/shallow';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,7 @@ import { CommonBackdrop } from '../ui/CommonBackdrop';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/error';
 import { getProfileStorage } from '@/storage/ProfileStorage';
+import { decodeCompressedBackup } from '@/utils/compressedBackup';
 
 type ConflictState = { hasConflict: false } | { hasConflict: true; existingLastModified: number };
 
@@ -54,6 +55,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useImmer<ImportState>({ status: 'idle' });
+  const [pastedBackup, setPastedBackup] = useState('');
 
   const { profiles, activeProfileId, importProfile, setActiveProfile } = useProfileListStore(
     useShallow(state => ({
@@ -98,17 +100,19 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     });
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = '';
-
-    if (!file) return;
-
-    const fileName = file.name;
+  const previewImport = async (source: File | string) => {
+    if (state.status === 'loading') return;
+    const fileName =
+      typeof source === 'string' ? t('dialog.profile-import.pasted-backup') : source.name;
     setState({ status: 'loading', fileName });
 
     try {
-      const parsed = JSON.parse(await file.text());
+      if (typeof source === 'string' && typeof DecompressionStream === 'undefined') {
+        throw new Error(t('dialog.profile-text-export.unsupported'));
+      }
+      const json =
+        typeof source === 'string' ? await decodeCompressedBackup(source) : await source.text();
+      const parsed = JSON.parse(json);
       const type = parsed?.magic === 'my-ideals-profile-bundle' ? 'bundle' : 'single';
       const parsedProfiles =
         parsed?.magic === 'my-ideals-profile-bundle'
@@ -120,6 +124,12 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
     } catch (e) {
       setState({ status: 'error', fileName, message: getErrorMessage(e) });
     }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (file) void previewImport(file);
   };
 
   const handleImport = async (overwrite?: boolean) => {
@@ -182,11 +192,15 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
         }}
       >
         <div
-          className="w-full max-w-lg rounded-lg bg-white text-left shadow-xl"
+          className="flex max-h-full w-full max-w-lg flex-col overflow-hidden rounded-lg bg-white
+            text-left shadow-xl"
           onClick={e => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
+          <div
+            className="flex shrink-0 items-center justify-between border-b border-gray-200 px-4
+              py-3"
+          >
             <h2 className="text-lg font-semibold text-gray-900">
               {t('dialog.profile-import.title')}
             </h2>
@@ -199,7 +213,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
           </div>
 
           {/* Content */}
-          <div className="space-y-4 px-4 py-4">
+          <div className="min-h-0 space-y-4 overflow-y-auto px-4 py-4">
             {/* File Input */}
             <input
               ref={fileInputRef}
@@ -248,6 +262,40 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
                 </div>
               </button>
             )}
+
+            <div className="space-y-2 rounded-lg border border-gray-200 p-3">
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-gray-700">
+                  {t('dialog.profile-import.paste-backup')}
+                </span>
+                <textarea
+                  value={pastedBackup}
+                  onChange={e => {
+                    setPastedBackup(e.target.value);
+                    setState({ status: 'idle' });
+                  }}
+                  disabled={state.status === 'loading'}
+                  rows={3}
+                  spellCheck={false}
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  placeholder={t('dialog.profile-import.paste-backup-hint')}
+                  className="w-full resize-y rounded-lg border border-gray-300 p-2 font-mono text-xs
+                    break-all focus:border-blue-500 focus:outline-none disabled:opacity-50"
+                />
+              </label>
+              <button
+                type="button"
+                onClick={() => void previewImport(pastedBackup)}
+                disabled={!pastedBackup.trim() || state.status === 'loading'}
+                className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white
+                  hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {state.status === 'loading'
+                  ? t('common.loading')
+                  : t('dialog.profile-import.preview-backup')}
+              </button>
+            </div>
 
             {/* Error */}
             {state.status === 'error' && (
@@ -402,7 +450,7 @@ export function ProfileImportDialog({ onClose }: ProfileImportDialogProps) {
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end gap-2 border-t border-gray-200 px-4 py-3">
+          <div className="flex shrink-0 justify-end gap-2 border-t border-gray-200 px-4 py-3">
             <button
               onClick={handleClose}
               className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"

@@ -114,12 +114,27 @@
       "importing": "导入",
       "newer": "(较新)",
       "count-message": "导入 {{count}} / {{total}} 个档案",
-      "bundle-hint": "取消勾选可跳过对应的档案"
+      "bundle-hint": "取消勾选可跳过对应的档案",
+      "paste-backup": "或粘贴压缩备份码",
+      "paste-backup-hint": "粘贴生成的完整备份码",
+      "pasted-backup": "粘贴的压缩备份",
+      "preview-backup": "解析并预览"
     },
     "profile-share": {
       "hint": "备份已准备好。点击“分享 JSON”，在系统分享面板中保存文件或发送到其他 App，然后在新浏览器中导入该文件。",
       "share-json": "分享 JSON",
       "unsupported": "当前浏览器不支持分享 JSON 文件。"
+    },
+    "profile-text-export": {
+      "title": "压缩备份",
+      "generate": "生成压缩备份码",
+      "hint": "复制完整备份码，在新浏览器的“导入档案”窗口中粘贴，解析后确认导入。也可以全选后手动复制。",
+      "sizes": "原始 {{original}} · 压缩后 {{compressed}} · 备份码 {{encoded}}",
+      "code": "备份码",
+      "copy": "复制备份码",
+      "copied": "备份码已复制",
+      "copy-failed": "自动复制失败，请全选备份码后手动复制。",
+      "unsupported": "当前浏览器不支持压缩备份功能。"
     },
     "profile-delete": {
       "title": "删除档案",

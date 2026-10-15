@@ -1,13 +1,19 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowDownTrayIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowDownTrayIcon,
+  ClipboardDocumentIcon,
+  ExclamationTriangleIcon,
+} from '@heroicons/react/24/outline';
 import { toast } from 'sonner';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { ProfileTextExportDialog } from '@/components/dialogs/ProfileTextExportDialog';
 import { useProfileExporter } from '@/hooks/useProfileExporter';
 import { useProfileListStore } from '@/stores/profileListStore';
 import { getErrorMessage } from '@/utils/error';
 import { shareAPISupported, shareFile } from '@/utils/fileUtils';
 import { isTwitterInAppBrowser } from '@/utils/platform';
+import { encodeCompressedBackup, type CompressedBackup } from '@/utils/compressedBackup';
 
 export function TwitterBrowserWarning() {
   const { t } = useTranslation();
@@ -15,6 +21,26 @@ export function TwitterBrowserWarning() {
   const { exporting, prepareProfileBundle } = useProfileExporter();
   const [file, setFile] = useState<File | null>(null);
   const [sharing, setSharing] = useState(false);
+  const [compressing, setCompressing] = useState(false);
+  const [textBackup, setTextBackup] = useState<CompressedBackup | null>(null);
+
+  const handlePrepareText = async () => {
+    if (exporting || compressing) return;
+    if (typeof CompressionStream === 'undefined') {
+      toast.error(t('dialog.profile-text-export.unsupported'));
+      return;
+    }
+
+    setCompressing(true);
+    try {
+      const backup = await prepareProfileBundle();
+      if (backup) setTextBackup(await encodeCompressedBackup(backup));
+    } catch (e) {
+      toast.error(t('toast.error', { error: getErrorMessage(e) }));
+    } finally {
+      setCompressing(false);
+    }
+  };
 
   const handlePrepare = async () => {
     try {
@@ -62,21 +88,37 @@ export function TwitterBrowserWarning() {
           {hasProfiles && (
             <div className="mt-3 border-t border-red-200 pt-3">
               <p>{t('notice.twitter-browser-warning.backup-hint')}</p>
-              <button
-                type="button"
-                onClick={() => void handlePrepare()}
-                disabled={exporting}
-                className="mt-2 inline-flex items-center gap-2 rounded-lg bg-red-600 px-3 py-2
-                  font-semibold text-white hover:bg-red-700 disabled:cursor-wait
-                  disabled:opacity-50"
-              >
-                <ArrowDownTrayIcon className="h-5 w-5" aria-hidden="true" />
-                {exporting ? t('common.loading') : t('profile.export-all')}
-              </button>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => void handlePrepare()}
+                  disabled={exporting || compressing}
+                  className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-3 py-2
+                    font-semibold text-white hover:bg-red-700 disabled:cursor-wait
+                    disabled:opacity-50"
+                >
+                  <ArrowDownTrayIcon className="h-5 w-5" aria-hidden="true" />
+                  {exporting ? t('common.loading') : t('profile.export-all')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handlePrepareText()}
+                  disabled={exporting || compressing}
+                  className="inline-flex items-center gap-2 rounded-lg border border-red-300
+                    bg-white px-3 py-2 font-semibold text-red-800 hover:bg-red-100
+                    disabled:cursor-wait disabled:opacity-50"
+                >
+                  <ClipboardDocumentIcon className="h-5 w-5" aria-hidden="true" />
+                  {compressing ? t('common.loading') : t('dialog.profile-text-export.generate')}
+                </button>
+              </div>
             </div>
           )}
         </div>
       </div>
+      {textBackup && (
+        <ProfileTextExportDialog backup={textBackup} onClose={() => setTextBackup(null)} />
+      )}
       {file && (
         <ConfirmDialog
           isOpen
