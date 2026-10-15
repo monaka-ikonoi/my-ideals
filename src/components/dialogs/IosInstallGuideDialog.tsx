@@ -60,20 +60,21 @@ export function IosInstallGuideDialog({ onClose }: { onClose: () => void }) {
           <li>{t('dialog.install-app-ios.step4')}</li>
         </ol>
 
-        <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-amber-800">
-          {t('dialog.install-app-ios.data-warning')}
-        </p>
-
         {canExport && (
-          <button
-            type="button"
-            onClick={() => exportProfileBundle()}
-            className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-4
-              py-2 text-sm font-medium text-white hover:bg-blue-700"
-          >
-            <ArrowDownTrayIcon className="h-4 w-4" />
-            {t('profile.export-all')}
-          </button>
+          <>
+            <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-amber-800">
+              {t('dialog.install-app-ios.data-warning')}
+            </p>
+            <button
+              type="button"
+              onClick={() => exportProfileBundle()}
+              className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-4
+                py-2 text-sm font-medium text-white hover:bg-blue-700"
+            >
+              <ArrowDownTrayIcon className="h-4 w-4" />
+              {t('profile.export-all')}
+            </button>
+          </>
         )}
       </div>
     </ConfirmDialog>
