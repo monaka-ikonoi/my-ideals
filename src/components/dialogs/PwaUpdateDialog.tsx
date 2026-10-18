@@ -9,7 +9,7 @@ const UPDATE_CHECK_INTERVAL_MS = 60 * 60 * 1000; // 1 hour
 
 async function fetchNewVersion(): Promise<string | null> {
   try {
-    const response = await fetch('/version.json', { cache: 'no-store' });
+    const response = await fetch(`${import.meta.env.BASE_URL}version.json`, { cache: 'no-store' });
     if (!response.ok) return null;
     const data = await response.json();
     return data.version;

@@ -75,17 +75,18 @@ export default defineConfig({
         theme_color: '#ffffff',
         background_color: '#fbf9fa',
         display: 'standalone',
-        start_url: '/',
+        // Let start_url and scope follow Vite's resolved base.
         icons: [
-          { src: '/icon/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
-          { src: '/icon/192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-          { src: '/icon/512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'icon/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
+          { src: 'icon/192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'icon/512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
         ],
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
         globIgnores: ['**/sample/**'],
-        navigateFallback: '/index.html',
+        // Resolve relative to the service worker so it matches the precached URL under any base.
+        navigateFallback: 'index.html',
         runtimeCaching: [
           {
             // User-provided template JSON files, favor freshness over cache.
