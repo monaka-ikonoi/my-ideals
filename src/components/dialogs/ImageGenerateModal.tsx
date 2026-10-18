@@ -37,23 +37,28 @@ type ImageGenerateModalProps = {
   maxItems?: number;
 };
 
-function buildInitialSelectedIds(
+function buildSelectedIds(
   collections: TemplateCollection[],
   maxCollections: number | null,
-  maxItems: number | null
+  maxItems: number | null,
+  existingIds: string[] = []
 ) {
-  const selectedIds: string[] = [];
-  let totalItems = 0;
+  const selectedIds = new Set(existingIds);
+  let totalItems = collections.reduce(
+    (sum, collection) => sum + (selectedIds.has(collection.id) ? collection.items.length : 0),
+    0
+  );
 
   for (const collection of collections) {
-    if (maxCollections && selectedIds.length >= maxCollections) break;
+    if (maxCollections && selectedIds.size >= maxCollections) break;
+    if (selectedIds.has(collection.id)) continue;
     if (maxItems && totalItems + collection.items.length > maxItems) continue;
 
-    selectedIds.push(collection.id);
+    selectedIds.add(collection.id);
     totalItems += collection.items.length;
   }
 
-  return selectedIds;
+  return [...selectedIds];
 }
 
 export function ImageGenerateModal({
@@ -82,7 +87,7 @@ export function ImageGenerateModal({
 
   const [selectedIds, setSelectedIds] = useState<string[]>(() =>
     // Select 3 collections by default
-    preSelectedId ? [preSelectedId] : buildInitialSelectedIds(collections, 3, maxItems)
+    preSelectedId ? [preSelectedId] : buildSelectedIds(collections, 3, maxItems)
   );
   const [generating, setGenerating] = useState(false);
   const [captureTime, setCaptureTime] = useState('');
@@ -141,22 +146,14 @@ export function ImageGenerateModal({
     [selectedCollections]
   );
 
-  // Collections that can still be selected (not yet at limits)
-  const selectableCollections = useMemo(
+  const canSelectMore = useMemo(
     () =>
-      collections.filter(
+      collections.some(
         collection =>
-          selectedIdSet.has(collection.id) ||
+          !selectedIdSet.has(collection.id) &&
           selectedItemCount + collection.items.length <= maxItems
       ),
     [collections, selectedIdSet, selectedItemCount, maxItems]
-  );
-
-  const allSelectableSelected = useMemo(
-    () =>
-      selectableCollections.length > 0 &&
-      selectableCollections.every(collection => selectedIdSet.has(collection.id)),
-    [selectableCollections, selectedIdSet]
   );
 
   const toggleCollection = useCallback(
@@ -323,9 +320,11 @@ export function ImageGenerateModal({
                       <button
                         type="button"
                         onClick={() =>
-                          setSelectedIds(buildInitialSelectedIds(collections, null, maxItems))
+                          setSelectedIds(prev =>
+                            buildSelectedIds(collections, null, maxItems, prev)
+                          )
                         }
-                        disabled={allSelectableSelected}
+                        disabled={!canSelectMore}
                         className="text-xs font-medium text-blue-600 hover:text-blue-700
                           disabled:cursor-not-allowed disabled:opacity-50"
                       >
