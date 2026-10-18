@@ -25,14 +25,14 @@ export function diffProfileWithTemplate(profile: Profile, template: Template): C
   const profileItemKeys = new Set<string>();
   for (const collectionId in profile.collections) {
     for (const itemId in profile.collections[collectionId]) {
-      profileItemKeys.add(`${collectionId}:${itemId}`);
+      profileItemKeys.add(JSON.stringify([collectionId, itemId]));
     }
   }
 
   const templateItemKeys = new Set<string>();
   for (const collection of template.collections) {
     for (const item of collection.items) {
-      templateItemKeys.add(`${collection.id}:${item.id}`);
+      templateItemKeys.add(JSON.stringify([collection.id, item.id]));
     }
   }
 
@@ -40,7 +40,7 @@ export function diffProfileWithTemplate(profile: Profile, template: Template): C
   const addedMap = new Map<string, CollectionChange>();
   for (const collection of template.collections) {
     for (const item of collection.items) {
-      const key = `${collection.id}:${item.id}`;
+      const key = JSON.stringify([collection.id, item.id]);
       if (!profileItemKeys.has(key)) {
         if (!addedMap.has(collection.id)) {
           addedMap.set(collection.id, {
@@ -66,7 +66,7 @@ export function diffProfileWithTemplate(profile: Profile, template: Template): C
   const removedMap = new Map<string, CollectionChange>();
   for (const collectionId in profile.collections) {
     for (const itemId in profile.collections[collectionId]) {
-      const key = `${collectionId}:${itemId}`;
+      const key = JSON.stringify([collectionId, itemId]);
       if (!templateItemKeys.has(key)) {
         if (!removedMap.has(collectionId)) {
           removedMap.set(collectionId, {
