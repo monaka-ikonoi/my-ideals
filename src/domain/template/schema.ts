@@ -1,6 +1,20 @@
 import { z } from 'zod';
 import { TemplateResourceBaseUrlSchema } from './imageBaseUrl';
 
+function checkUniqueIds(entries: { id: string }[], ctx: z.RefinementCtx) {
+  const seen = new Set<string>();
+  entries.forEach(({ id }, index) => {
+    if (seen.has(id)) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `Duplicate id: ${id}`,
+        path: [index, 'id'],
+      });
+    }
+    seen.add(id);
+  });
+}
+
 const TemplateLayoutSchema = z.object({
   aspectRatio: z
     .union([
@@ -31,7 +45,7 @@ const TemplateCollection = z.object({
   name: z.string(),
   searchTerms: z.array(z.string().min(1)).min(1).optional(),
   layout: TemplateLayoutSchema.optional(),
-  items: z.array(TemplateCollectionItem),
+  items: z.array(TemplateCollectionItem).superRefine(checkUniqueIds),
 });
 
 const TemplateMigrationEntry = z.object({
@@ -59,7 +73,7 @@ export const TemplateSchema = z.object({
   imageBaseUrl: TemplateResourceBaseUrlSchema.optional(),
   layout: TemplateLayoutSchema.optional(),
   members: z.array(TemplateMember),
-  collections: z.array(TemplateCollection),
+  collections: z.array(TemplateCollection).superRefine(checkUniqueIds),
 });
 
 const TemplateManifestEntrySchema = z.object({
