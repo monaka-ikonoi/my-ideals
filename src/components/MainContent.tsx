@@ -1,6 +1,7 @@
+import { useMemo } from 'react';
 import { useProfileSessionStore, useActiveProfile } from '@/stores/profileSessionStore';
 import { useProfileListStore } from '@/stores/profileListStore';
-import { TemplateContext } from '@/contexts/template';
+import { buildTemplateContext, TemplateContext } from '@/contexts/template';
 import { ProfileErrorPage } from './ProfileErrorPage';
 import { ProfilePage } from './ProfilePage';
 import { ProfileDialogs } from './ProfileDialogs';
@@ -9,7 +10,8 @@ import { LoadingPage } from './ui/LoadingPage';
 
 function TemplateScope({ children }: { children: React.ReactNode }) {
   const template = useActiveProfile(state => state.template);
-  return <TemplateContext value={template}>{children}</TemplateContext>;
+  const value = useMemo(() => (template ? buildTemplateContext(template) : null), [template]);
+  return <TemplateContext value={value}>{children}</TemplateContext>;
 }
 
 export function MainContent() {

@@ -14,7 +14,6 @@ import { getActiveProfile } from '@/stores/profileSessionStore';
 import { debugLog } from '@/utils/debug';
 import { normalizeStatusBoolean, normalizeStatusNumber } from '@/utils/utils';
 import { readField } from '@/utils/recordUtils';
-import { formatImageUrl } from '@/utils/templateUtils';
 import { ItemBadgeOverlay } from './ItemBadgeOverlay';
 import { ItemCaption } from './ItemCaption';
 import { ItemImage } from './ItemImage';
@@ -45,7 +44,7 @@ export const ItemCard = memo(function ItemCard({
   debugLog.render.log(`ItemCard: ${collectionId} ${item.id}`);
 
   const imageOptions = useImageOptions();
-  const { imageBaseUrl, revision } = useTemplate();
+  const { imageBaseUrl, formatImageUrl } = useTemplate();
 
   const primaryField = getPrimaryField(fields);
   const primaryValue = readField(record, primaryField);
@@ -75,7 +74,7 @@ export const ItemCard = memo(function ItemCard({
       onClick={canToggle ? handleCaptionToggle : undefined}
     >
       <ItemImage
-        src={item.image ?? formatImageUrl(imageBaseUrl, revision, collectionId, item.id)}
+        src={formatImageUrl(collectionId, item)}
         fallbackSrc={imageBaseUrl?.fallback}
         alt={item.name}
         aspectRatio={item.rotated ? aspectRatio.split('/').reverse().join('/') : aspectRatio}
