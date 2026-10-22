@@ -175,6 +175,7 @@ App 拉取并校验模板 → 用户开始记录收藏
 | `member` | `string \| string[]` | ✅ | — | 归属成员。数组时**至少 1 项**（见[第 6 节](#6-成员与多成员条目)）。 |
 | `name` | `string` | ✅ | — | 条目显示名。 |
 | `image` | `string` | ❌ | — | 图片地址。`inline` 模式必填；`baseUrl` 模式可省略（由基址自动拼接）。 |
+| `imageHash` | `string` | ❌ | — | 可选的图片内容哈希，16–64 位小写十六进制字符，参与生成图片文件名；显式 `image` 优先。 |
 | `rotated` | `boolean` | ❌ | `false` | 是否为横向（旋转）图片，显示时占双倍宽度（见 [7.3](#73-rotated-横向条目)）。 |
 
 ### 4.5 layout（布局）
@@ -259,7 +260,12 @@ App 拉取并校验模板 → 用户开始记录收藏
       "id": "2026-new-year",
       "name": "2026年新春",
       "items": [
-        { "id": "nanaka-hiki", "member": "noguchi-nanaka", "name": "野口菜々風 ヒキ" }
+        {
+          "id": "nanaka-hiki",
+          "member": "noguchi-nanaka",
+          "name": "野口菜々風 ヒキ",
+          "imageHash": "8d7e64a32f190bc5"
+        }
       ]
     }
   ]
@@ -269,20 +275,22 @@ App 拉取并校验模板 → 用户开始记录收藏
 **URL 拼接规则**：
 
 ```
-{root}/{collectionId}/{itemId}.{format}?rev={revision}
+{root}/{collectionId}/{itemId}.{imageHash}.{format}
 ```
 
 上例中 `nanaka-hiki` 的图片地址会被解析为：
 
 ```
-https://example.com/equal-me/2026-new-year/nanaka-hiki.webp?rev=4
+https://example.com/equal-me/2026-new-year/nanaka-hiki.8d7e64a32f190bc5.webp
 ```
 
-因此你的图片文件必须按 `根地址/合集id/条目id.格式` 的目录结构存放。末尾的 `?rev={revision}` 由模板的 `revision` 决定，用于在更新时刷新缓存。
+没有 `imageHash` 时，地址回落为 `{root}/{collectionId}/{itemId}.{format}`，例如 `https://example.com/equal-me/2026-new-year/nanaka-hiki.webp`。App 不再追加 `rev`；`revision` 仍用于模板同步，但不参与图片 URL。两种模式下，显式填写的 `item.image` 均优先使用。
+
+图片文件须按对应的文件名上传。生成器可对最终上传的文件字节计算 SHA-256，取前 16 位十六进制字符作为内容哈希；客户端只校验哈希格式，不强制算法。内容不变时保持相同哈希，内容变化时生成新文件名。应先上传新图片，再发布更新后的模板。
 
 - **`fallback`**：可选。当某张图加载失败时，显示该占位图。
 - **优点**：JSON 极简，条目只需 `id` / `member` / `name`；图片统一管理。
-- **缺点**：图片必须严格按命名规则存放，URL 不能随意自定义。
+- **缺点**：自动生成的 URL 要求统一命名；单个条目可用 `item.image` 覆盖。
 
 ### 5.3 该选哪种？
 
@@ -420,7 +428,7 @@ https://example.com/equal-me/2026-new-year/nanaka-hiki.webp?rev=4
 2. **规划合集与条目**：按系列 / 期数划分 `collections`，每个合集列出 `items`。为每个合集和条目定好稳定 `id`。
 3. **选择图片模式并准备图片**：
    - 选 `inline`：为每个条目准备好可公开访问的图片 URL，写进 `image`。
-   - 选 `baseUrl`：把图片按 `root/合集id/条目id.格式` 的目录结构上传，配置好 `imageBaseUrl`。
+   - 选 `baseUrl`：配置好 `imageBaseUrl`；有 `imageHash` 的条目按 `root/合集id/条目id.imageHash.格式` 上传图片，无哈希时按 `root/合集id/条目id.格式` 上传。
 4. **填写元数据**：`magic`、`version`（填 `1`）、`revision`（首发填 `1`）、`id`、`name`，可选 `description` / `author` / `link`。
 5. **（可选）配置布局**：需要时设置 `layout.aspectRatio` 和 `layout.columns`，可在合集级覆盖。
 6. **对照样例校验**：参考仓库里的样例文件（见[第 14 节](#14-完整示例)），逐字段核对类型与必填项。可用任意 JSON 校验器确认语法无误。
@@ -471,7 +479,8 @@ App 使用严格的 Schema 校验模板，任何不符都会导致**加载失败
 | `columns` 报错 | 含 < 1 的值或超过 3 个元素 | 每个值 ≥ 1，最多 3 个 |
 | `searchTerms` 报错 | 是空数组或含空字符串 | 至少 1 项且每项非空；不需要则删除该字段 |
 | `member` 报错 | 是空数组 | 用单个 `string`，或至少含 1 个 id 的 `string[]` |
-| `baseUrl` 模式图片不显示 | 目录 / 命名不符拼接规则 | 按 `root/合集id/条目id.格式` 存放 |
+| `imageHash` 校验失败 | 长度不符或含非小写十六进制字符 | 使用 16–64 位小写十六进制字符，或省略该字段 |
+| `baseUrl` 模式图片不显示 | 目录 / 命名不符拼接规则 | 按 `root/合集id/条目id.imageHash.格式` 存放，无哈希时使用 `条目id.格式` |
 | 更新时 `id-mismatch` | 改动了根 `id` | 恢复原 `id`，根 id 永不可改 |
 | 用户更新后数据「丢失」 | 改了 `collection.id` / `item.id` 但未迁移 | 补 `migrations` 的 `replace-in-id` |
 
@@ -499,16 +508,18 @@ App 使用严格的 Schema 校验模板，任何不符都会导致**加载失败
 - `columns` 为 `[int>=1, (int>=1)?, (int>=1)?]` 元组。
 - `searchTerms` 为 `z.array(z.string().min(1)).min(1).optional()`。
 - `item.member` 为 `z.string().or(z.array(z.string()).min(1))`。
+- `item.imageHash` 可省略，填写时须符合 `^[a-f0-9]{16,64}$`。
 
 ### 13.2 图片 URL 构造
 
-`baseUrl` 模式的拼接逻辑见 [`src/utils/templateUtils.ts`](../../src/utils/templateUtils.ts) 的 `formatImageUrl`：
+[`src/contexts/template.ts`](../../src/contexts/template.ts) 提供 `useTemplate().formatImageUrl(collectionId, item)`，读取当前模板的图片基址配置，优先返回显式 `item.image`，否则按以下规则拼接：
 
 ```
-`${root}/${collectionId}/${itemId}.${format}?rev=${revision}`
+{root}/{collectionId}/{itemId}.{imageHash}.{format}
+{root}/{collectionId}/{itemId}.{format}             （无 imageHash 时）
 ```
 
-`inline` 模式直接使用 `item.image`。
+`inline` 模式仍直接使用 `item.image`。生成的图片 URL 均不包含模板 revision。
 
 ### 13.3 布局解析与默认值
 
@@ -618,7 +629,12 @@ App 使用严格的 Schema 校验模板，任何不符都会导致**加载失败
       "id": "2026-new-year",
       "name": "2026年新春",
       "items": [
-        { "id": "nanaka-hiki", "member": "noguchi-nanaka", "name": "野口菜々風 ヒキ" },
+        {
+          "id": "nanaka-hiki",
+          "member": "noguchi-nanaka",
+          "name": "野口菜々風 ヒキ",
+          "imageHash": "8d7e64a32f190bc5"
+        },
         { "id": "moeko-hiki", "member": "yamamoto-moeko", "name": "山本萌子 ヒキ" }
       ]
     }
@@ -626,8 +642,9 @@ App 使用严格的 Schema 校验模板，任何不符都会导致**加载失败
 }
 ```
 
-上面 `nanaka-hiki` 解析出的图片地址为：
+上面 `nanaka-hiki`（有哈希）和 `moeko-hiki`（无哈希）解析出的图片地址分别为：
 
 ```
-https://example.com/equal-me/2026-new-year/nanaka-hiki.webp?rev=4
+https://example.com/equal-me/2026-new-year/nanaka-hiki.8d7e64a32f190bc5.webp
+https://example.com/equal-me/2026-new-year/moeko-hiki.webp
 ```

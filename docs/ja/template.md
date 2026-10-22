@@ -175,6 +175,7 @@ Profile（プロファイル。ユーザーごとに非公開）
 | `member` | `string \| string[]` | ✅ | — | 所属メンバー。配列なら**1 件以上**（[第 6 節](#6-メンバーと複数メンバー項目)）。 |
 | `name` | `string` | ✅ | — | 項目表示名。 |
 | `image` | `string` | ❌ | — | 画像 URL。`inline` では必須、`baseUrl` では省略可（自動生成）。 |
+| `imageHash` | `string` | ❌ | — | 任意の画像コンテンツハッシュ。16–64 桁の小文字 16 進数で、生成するファイル名に使用。明示的な `image` を優先。 |
 | `rotated` | `boolean` | ❌ | `false` | 横向き（回転）画像かどうか。2 倍幅で表示（[7.3](#73-rotated) 参照）。 |
 
 ### 4.5 layout
@@ -259,7 +260,12 @@ Profile（プロファイル。ユーザーごとに非公開）
       "id": "2026-new-year",
       "name": "2026年新春",
       "items": [
-        { "id": "nanaka-hiki", "member": "noguchi-nanaka", "name": "野口菜々風 ヒキ" }
+        {
+          "id": "nanaka-hiki",
+          "member": "noguchi-nanaka",
+          "name": "野口菜々風 ヒキ",
+          "imageHash": "8d7e64a32f190bc5"
+        }
       ]
     }
   ]
@@ -269,20 +275,22 @@ Profile（プロファイル。ユーザーごとに非公開）
 **URL 生成ルール**：
 
 ```
-{root}/{collectionId}/{itemId}.{format}?rev={revision}
+{root}/{collectionId}/{itemId}.{imageHash}.{format}
 ```
 
 上例で `nanaka-hiki` は次のように解決されます：
 
 ```
-https://example.com/equal-me/2026-new-year/nanaka-hiki.webp?rev=4
+https://example.com/equal-me/2026-new-year/nanaka-hiki.8d7e64a32f190bc5.webp
 ```
 
-よって画像は `root/コレクションid/項目id.format` の構造で配置が必要。末尾の `?rev={revision}` はテンプレートの `revision` 由来で、更新時のキャッシュ更新に使用。
+`imageHash` がなければ `{root}/{collectionId}/{itemId}.{format}` にフォールバックします。例：`https://example.com/equal-me/2026-new-year/nanaka-hiki.webp`。アプリは `rev` を付加しません。`revision` は引き続きテンプレートの同期に使いますが、画像 URL には含めません。どちらのモードでも、明示的な `item.image` を優先します。
+
+画像は対応するファイル名でアップロードしてください。生成側では、最終的にアップロードするファイルのバイト列から SHA-256 を計算し、先頭 16 桁の 16 進数をコンテンツハッシュとして使えます。クライアントは形式のみ検証し、アルゴリズムは限定しません。同じ内容には同じハッシュを使い、内容が変われば新しいファイル名にします。更新したテンプレートを公開する前に、新しい画像をアップロードしてください。
 
 - **`fallback`**：任意。読み込み失敗時に表示。
 - **長所**：JSON が最小限、項目は `id` / `member` / `name` のみ。画像を一元管理。
-- **短所**：命名規則の厳守が必要、URL は自由化不可。
+- **短所**：自動生成する URL には統一した命名が必要。個別の URL は `item.image` で上書き可能。
 
 ### 5.3 どちらを選ぶ？
 
@@ -420,7 +428,7 @@ https://example.com/equal-me/2026-new-year/nanaka-hiki.webp?rev=4
 2. **コレクションと項目を設計**：シリーズ / 回ごとに `collections` を分け、各コレクションに `items` を列挙、安定 `id` を付与。
 3. **画像モードを選び準備**：
    - `inline`：各項目に公開アクセス可能な画像 URL を用意し `image` に書く。
-   - `baseUrl`：画像を `root/コレクションid/項目id.format` 構造でアップロードし `imageBaseUrl` を設定。
+   - `baseUrl`：`imageBaseUrl` を設定し、`imageHash` があれば `root/コレクションid/項目id.imageHash.format`、なければ `root/コレクションid/項目id.format` で画像をアップロード。
 4. **メタデータ記入**：`magic`、`version`（`1`）、`revision`（初回 `1`）、`id`、`name`、任意で `description` / `author` / `link`。
 5. **（任意）レイアウト**：必要なら `layout.aspectRatio` と `layout.columns` を設定、コレクション級で上書き可。
 6. **サンプルで検証**：サンプルファイル（[第 14 節](#14-完全な例)）と照合し、JSON バリデーターで構文確認。
@@ -471,7 +479,8 @@ https://raw.githubusercontent.com/<user>/<repo>/refs/heads/main/template.json
 | `columns` エラー | 1 未満や 3 超 | 各 ≥ 1、最大 3 |
 | `searchTerms` エラー | 空配列や空文字 | 1 件以上で空無し、不要なら削除 |
 | `member` エラー | 空配列 | 単一 `string` か 1 件以上の `string[]` |
-| `baseUrl` で画像なし | 構造 / 命名不一致 | `root/コレクションid/項目id.format` で配置 |
+| `imageHash` 無効 | 桁数や文字種が不正 | 16–64 桁の小文字 16 進数にするか、フィールドを省略 |
+| `baseUrl` で画像なし | 構造 / 命名不一致 | `root/コレクションid/項目id.imageHash.format` で配置。ハッシュがなければ `項目id.format` |
 | 更新時 `id-mismatch` | ルート `id` 変更 | 元の `id` に戻す。ルート id は不変 |
 | 更新後データ消失 | `collection.id` / `item.id` 改名で移行なし | `replace-in-id` を追加 |
 
@@ -499,16 +508,18 @@ https://raw.githubusercontent.com/<user>/<repo>/refs/heads/main/template.json
 - `columns` は `[int>=1, (int>=1)?, (int>=1)?]` タプル。
 - `searchTerms` は `z.array(z.string().min(1)).min(1).optional()`。
 - `item.member` は `z.string().or(z.array(z.string()).min(1))`。
+- `item.imageHash` は省略可。指定時は `^[a-f0-9]{16,64}$` に一致すること。
 
 ### 13.2 画像 URL の構築
 
-`baseUrl` モードは [`src/utils/templateUtils.ts`](../../src/utils/templateUtils.ts) の `formatImageUrl` で結合：
+[`src/contexts/template.ts`](../../src/contexts/template.ts) の `useTemplate().formatImageUrl(collectionId, item)` が現在のテンプレートの画像基準設定を参照します。明示的な `item.image` を優先し、なければ以下の規則で結合します：
 
 ```
-`${root}/${collectionId}/${itemId}.${format}?rev=${revision}`
+{root}/{collectionId}/{itemId}.{imageHash}.{format}
+{root}/{collectionId}/{itemId}.{format}             （imageHash なし）
 ```
 
-`inline` モードは `item.image` をそのまま使用。
+`inline` モードは引き続き `item.image` をそのまま使用します。生成する画像 URL にテンプレートの revision は含めません。
 
 ### 13.3 レイアウト解決と既定値
 
@@ -618,7 +629,12 @@ https://raw.githubusercontent.com/<user>/<repo>/refs/heads/main/template.json
       "id": "2026-new-year",
       "name": "2026年新春",
       "items": [
-        { "id": "nanaka-hiki", "member": "noguchi-nanaka", "name": "野口菜々風 ヒキ" },
+        {
+          "id": "nanaka-hiki",
+          "member": "noguchi-nanaka",
+          "name": "野口菜々風 ヒキ",
+          "imageHash": "8d7e64a32f190bc5"
+        },
         { "id": "moeko-hiki", "member": "yamamoto-moeko", "name": "山本萌子 ヒキ" }
       ]
     }
@@ -626,8 +642,9 @@ https://raw.githubusercontent.com/<user>/<repo>/refs/heads/main/template.json
 }
 ```
 
-上の `nanaka-hiki` が解決する画像 URL：
+上の `nanaka-hiki`（ハッシュあり）と `moeko-hiki`（ハッシュなし）が解決する画像 URL：
 
 ```
-https://example.com/equal-me/2026-new-year/nanaka-hiki.webp?rev=4
+https://example.com/equal-me/2026-new-year/nanaka-hiki.8d7e64a32f190bc5.webp
+https://example.com/equal-me/2026-new-year/moeko-hiki.webp
 ```

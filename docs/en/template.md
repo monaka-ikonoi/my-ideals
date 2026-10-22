@@ -175,6 +175,7 @@ Save this as a `.json` file, host it publicly (see [Section 11](#11-hosting-and-
 | `member` | `string \| string[]` | ✅ | — | Owning member(s). When an array, **at least 1 element** (see [Section 6](#6-members-and-multi-member-items)). |
 | `name` | `string` | ✅ | — | Item display name. |
 | `image` | `string` | ❌ | — | Image URL. Required in `inline` mode; optional in `baseUrl` mode (built automatically). |
+| `imageHash` | `string` | ❌ | — | Optional image content hash: 16–64 lowercase hexadecimal characters. Included in generated filenames; an explicit `image` takes precedence. |
 | `rotated` | `boolean` | ❌ | `false` | Whether it's a landscape (rotated) image, shown at double width (see [7.3](#73-rotated)). |
 
 ### 4.5 layout
@@ -259,7 +260,12 @@ Configure the image base once; the app builds each item's image URL by a **fixed
       "id": "2026-new-year",
       "name": "2026年新春",
       "items": [
-        { "id": "nanaka-hiki", "member": "noguchi-nanaka", "name": "野口菜々風 ヒキ" }
+        {
+          "id": "nanaka-hiki",
+          "member": "noguchi-nanaka",
+          "name": "野口菜々風 ヒキ",
+          "imageHash": "8d7e64a32f190bc5"
+        }
       ]
     }
   ]
@@ -269,20 +275,22 @@ Configure the image base once; the app builds each item's image URL by a **fixed
 **URL build rule**:
 
 ```
-{root}/{collectionId}/{itemId}.{format}?rev={revision}
+{root}/{collectionId}/{itemId}.{imageHash}.{format}
 ```
 
 In the example above, `nanaka-hiki` resolves to:
 
 ```
-https://example.com/equal-me/2026-new-year/nanaka-hiki.webp?rev=4
+https://example.com/equal-me/2026-new-year/nanaka-hiki.8d7e64a32f190bc5.webp
 ```
 
-So your image files must be stored in a `root/collectionId/itemId.format` directory structure. The trailing `?rev={revision}` comes from the template `revision` and busts the cache on updates.
+Without `imageHash`, the URL falls back to `{root}/{collectionId}/{itemId}.{format}`, for example `https://example.com/equal-me/2026-new-year/nanaka-hiki.webp`. The app does not append `rev`; `revision` still controls template synchronization, but no longer forms part of the image URL. An explicit `item.image` takes precedence in either mode.
+
+Upload files using the matching names. For content hashes, a producer can use the first 16 hexadecimal characters of SHA-256 computed from the final uploaded bytes. The client validates the hash format, without requiring a specific algorithm. Unchanged bytes should keep the same hash; changed bytes should produce a new filename. Upload new images before publishing the updated template.
 
 - **`fallback`**: optional; shown when an image fails to load.
 - **Pros**: minimal JSON; items only need `id` / `member` / `name`; images managed uniformly.
-- **Cons**: images must follow the naming rule strictly; URLs cannot be customized.
+- **Cons**: generated URLs require consistent filenames; use `item.image` to override individual URLs.
 
 ### 5.3 Which one to choose?
 
@@ -420,7 +428,7 @@ Notes:
 2. **Plan collections and items**: split `collections` by series / release, list `items` per collection, and assign stable `id`s.
 3. **Pick an image mode and prepare images**:
    - `inline`: prepare a publicly accessible image URL per item and put it in `image`.
-   - `baseUrl`: upload images in the `root/collectionId/itemId.format` structure and configure `imageBaseUrl`.
+   - `baseUrl`: configure `imageBaseUrl` and upload images as `root/collectionId/itemId.imageHash.format` when an item has `imageHash`, or `root/collectionId/itemId.format` otherwise.
 4. **Fill metadata**: `magic`, `version` (`1`), `revision` (`1` for first release), `id`, `name`; optional `description` / `author` / `link`.
 5. **(Optional) configure layout**: set `layout.aspectRatio` and `layout.columns` as needed; override at collection level.
 6. **Validate against samples**: compare with the sample files (see [Section 14](#14-full-examples)) field by field; use any JSON validator to confirm syntax.
@@ -471,7 +479,8 @@ The app validates templates strictly; any mismatch causes a **load failure**. Co
 | `columns` error | Values < 1 or more than 3 elements | Each ≥ 1, max 3 |
 | `searchTerms` error | Empty array or empty strings | ≥ 1 item, none empty; or drop the field |
 | `member` error | Empty array | Use a single `string` or a `string[]` with ≥ 1 id |
-| Images missing in `baseUrl` mode | Directory / naming off | Store as `root/collectionId/itemId.format` |
+| `imageHash` invalid | Wrong length or non-lowercase-hex characters | Use 16–64 lowercase hexadecimal characters, or omit the field |
+| Images missing in `baseUrl` mode | Directory / naming off | Store as `root/collectionId/itemId.imageHash.format`, or `itemId.format` when no hash is provided |
 | `id-mismatch` on update | Root `id` changed | Restore the original `id`; root id is immutable |
 | Data "lost" after update | Renamed `collection.id` / `item.id` without migration | Add a `replace-in-id` migration |
 
@@ -499,16 +508,18 @@ Key constraints (from `schema.ts`):
 - `columns` is a `[int>=1, (int>=1)?, (int>=1)?]` tuple.
 - `searchTerms` is `z.array(z.string().min(1)).min(1).optional()`.
 - `item.member` is `z.string().or(z.array(z.string()).min(1))`.
+- `item.imageHash` is optional and matches `^[a-f0-9]{16,64}$`.
 
 ### 13.2 Image URL construction
 
-`baseUrl` mode joins via `formatImageUrl` in [`src/utils/templateUtils.ts`](../../src/utils/templateUtils.ts):
+[`src/contexts/template.ts`](../../src/contexts/template.ts) exposes `useTemplate().formatImageUrl(collectionId, item)`. It reads the current template's image base configuration, prefers an explicit `item.image`, and otherwise builds:
 
 ```
-`${root}/${collectionId}/${itemId}.${format}?rev=${revision}`
+{root}/{collectionId}/{itemId}.{imageHash}.{format}
+{root}/{collectionId}/{itemId}.{format}             (without imageHash)
 ```
 
-`inline` mode uses `item.image` directly.
+`inline` mode continues to use `item.image` directly. Neither generated URL includes the template revision.
 
 ### 13.3 Layout resolution and defaults
 
@@ -618,7 +629,12 @@ For `baseUrl` mode, see the constructed example in 14.2 below.
       "id": "2026-new-year",
       "name": "2026年新春",
       "items": [
-        { "id": "nanaka-hiki", "member": "noguchi-nanaka", "name": "野口菜々風 ヒキ" },
+        {
+          "id": "nanaka-hiki",
+          "member": "noguchi-nanaka",
+          "name": "野口菜々風 ヒキ",
+          "imageHash": "8d7e64a32f190bc5"
+        },
         { "id": "moeko-hiki", "member": "yamamoto-moeko", "name": "山本萌子 ヒキ" }
       ]
     }
@@ -626,8 +642,9 @@ For `baseUrl` mode, see the constructed example in 14.2 below.
 }
 ```
 
-The image URL resolved for `nanaka-hiki` above is:
+The image URLs resolved for `nanaka-hiki` (with a hash) and `moeko-hiki` (without a hash) are:
 
 ```
-https://example.com/equal-me/2026-new-year/nanaka-hiki.webp?rev=4
+https://example.com/equal-me/2026-new-year/nanaka-hiki.8d7e64a32f190bc5.webp
+https://example.com/equal-me/2026-new-year/moeko-hiki.webp
 ```
