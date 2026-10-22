@@ -287,6 +287,11 @@
     }
   },
   "notice": {
+    "in-app-browser-warning": {
+      "title": "Unsupported in-app browser",
+      "body": "You are using an in-app browser. Some features do not work correctly.",
+      "hint": "Choose “Open in browser” from the app menu, or copy the current link and open it in Safari, Chrome, or another browser."
+    },
     "ios-data-warning": {
       "title": "Notice for iOS (iPhone / iPad) and Safari Users",
       "body": "Due to Apple ITP restrictions, saved data may be deleted after 7 days of inactivity. Please export a backup using the \"$t(profile.export)\" button in the top right after each use."

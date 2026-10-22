@@ -185,6 +185,9 @@ importers:
       immer:
         specifier: ^11.2.6
         version: 11.2.6
+      inapp-spy:
+        specifier: ^5.0.10
+        version: 5.0.10
       lodash-es:
         specifier: ^4.18.1
         version: 4.18.1
@@ -2061,6 +2064,9 @@ packages:
   imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
     engines: {node: '>=0.8.19'}
+
+  inapp-spy@5.0.10:
+    resolution: {integrity: sha512-TBvQdIo2F9zc6qeOPiqOZ9dpUaBX61ImF+gEvWVwVFXPXgey/AvGgN2l8gUZlGd4UE6rCahSfCV+51WtxeTY2w==}
 
   internal-slot@1.1.0:
     resolution: {integrity: sha512-4gd7VpWNQNB4UKKCFFVcp1AVv+FMOgs9NKzjHKusc8jTMhd5eL1NqQqOpE0KzMds804/yHlglp3uxgluOqAPLw==}
@@ -4986,6 +4992,8 @@ snapshots:
   immer@11.2.6: {}
 
   imurmurhash@0.1.4: {}
+
+  inapp-spy@5.0.10: {}
 
   internal-slot@1.1.0:
     dependencies:

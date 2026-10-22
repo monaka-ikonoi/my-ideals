@@ -287,6 +287,11 @@
     }
   },
   "notice": {
+    "in-app-browser-warning": {
+      "title": "アプリ内ブラウザには対応していません",
+      "body": "現在、アプリ内ブラウザを使用しているため、一部の機能が正常に動作しません。",
+      "hint": "アプリのメニューから「ブラウザで開く」を選ぶか、現在のリンクをコピーして Safari や Chrome などで開いてください。"
+    },
     "ios-data-warning": {
       "title": "iOS (iPhone/iPad) および Safari ユーザーへ",
       "body": "Apple ITP 仕様により、7日間サイトを開かないと保存データが消える場合があります。ご利用後は右上の「$t(profile.export)」ボタンからバックアップを取ってください。"

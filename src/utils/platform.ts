@@ -1,3 +1,5 @@
+import InAppSpy from 'inapp-spy';
+
 export const isStandalonePWA = (): boolean => {
   if (typeof window === 'undefined') return false;
   if (window.matchMedia?.('(display-mode: standalone)').matches) return true;
@@ -28,4 +30,9 @@ export const isAndroid = (): boolean => {
 export const isIos3rdParty = (): boolean => {
   if (!isIos()) return false;
   return /CriOS|FxiOS|EdgiOS|OPiOS|mercury|GSA/i.test(navigator.userAgent);
+};
+
+export const isInAppBrowser = (): boolean => {
+  if (typeof navigator === 'undefined' || isStandalonePWA()) return false;
+  return InAppSpy({ ua: navigator.userAgent }).isInApp;
 };

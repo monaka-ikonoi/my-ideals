@@ -287,6 +287,11 @@
     }
   },
   "notice": {
+    "in-app-browser-warning": {
+      "title": "不受支持的内置浏览器",
+      "body": "当前正在使用 App 内置浏览器，部分功能无法正常工作。",
+      "hint": "请在 App 的菜单中选择“在浏览器中打开”，或复制当前链接到 Safari、Chrome 等浏览器打开。"
+    },
     "ios-data-warning": {
       "body": "由于 Apple ITP 限制，7 天未访问可能导致数据被自动清除。每次使用后请通过右上角的\"$t(profile.export)\"按钮备份数据。",
       "title": "iOS (iPhone / iPad) 及 Safari 用户须知"

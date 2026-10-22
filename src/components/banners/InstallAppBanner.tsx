@@ -3,7 +3,7 @@ import { DevicePhoneMobileIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 import { useDialogStore } from '@/stores/dialogStore';
 import { useSettingsStore } from '@/stores/settingsStore';
-import { isIos, isAndroid, isStandalonePWA } from '@/utils/platform';
+import { isIos, isAndroid, isStandalonePWA, isInAppBrowser } from '@/utils/platform';
 
 export function InstallAppBanner() {
   const { t } = useTranslation();
@@ -13,7 +13,7 @@ export function InstallAppBanner() {
 
   const installCapable = isIos() || (isAndroid() && canInstall);
 
-  if (dismissed || isStandalonePWA() || !installCapable) return null;
+  if (dismissed || isStandalonePWA() || isInAppBrowser() || !installCapable) return null;
 
   return (
     <div
