@@ -10,6 +10,7 @@ export type TemplateCollectionItem = {
   member: string | string[];
   name: string;
   image?: string;
+  imageHash?: string;
   rotated?: boolean;
 };
 

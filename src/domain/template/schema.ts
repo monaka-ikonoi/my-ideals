@@ -37,6 +37,10 @@ const TemplateCollectionItem = z.object({
   member: z.string().or(z.array(z.string()).min(1)),
   name: z.string(),
   image: z.string().optional(),
+  imageHash: z
+    .string()
+    .regex(/^[a-f0-9]{16,64}$/, 'Must be 16-64 lowercase hexadecimal characters')
+    .optional(),
   rotated: z.boolean().optional(),
 });
 
