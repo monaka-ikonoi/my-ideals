@@ -103,11 +103,26 @@ export default defineConfig({
             },
           },
           {
-            // Images from the template json, cache first
-            urlPattern: ({ url }) => /\.(?:png|jpe?g|webp|gif|svg)$/i.test(url.pathname),
+            // Content hashes make these URLs immutable across template revisions.
+            urlPattern: ({ url }) =>
+              /\.[a-f0-9]{16,64}\.(?:png|jpe?g|webp|gif|svg)$/i.test(url.pathname),
             handler: 'CacheFirst',
             options: {
               cacheName: 'my-ideals-images-cache',
+              expiration: {
+                maxEntries: 8192,
+                purgeOnQuotaError: true,
+              },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            // Mutable image URLs follow the server's HTTP cache policy, with offline fallback.
+            urlPattern: ({ url }) => /\.(?:png|jpe?g|webp|gif|svg)$/i.test(url.pathname),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'my-ideals-images-cache',
+              networkTimeoutSeconds: 5,
               expiration: {
                 maxEntries: 8192,
                 purgeOnQuotaError: true,
