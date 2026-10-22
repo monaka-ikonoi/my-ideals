@@ -60,23 +60,25 @@ export function useTemplateFetcher({
 
     setState({ status: 'loading' });
 
-    let abortController: AbortController | null = null;
+    const abortController = new AbortController();
+    const { signal } = abortController;
     const doFetch = async (url: string) => {
-      abortController?.abort();
-      abortController = new AbortController();
-
-      if (isTwitterShortenedLink(url)) {
-        const result = await extractTwitterShortenedLink(url);
-        if (!result.success) {
-          setState({ status: 'error', message: result.error });
-          return;
-        }
-        setUrl(result.url);
-        return;
-      }
+      if (signal.aborted) return;
 
       try {
-        const result = await fetchTemplate(url, undefined, abortController.signal);
+        if (isTwitterShortenedLink(url)) {
+          const result = await extractTwitterShortenedLink(url, signal);
+          if (signal.aborted) return;
+          if (!result.success) {
+            setState({ status: 'error', message: result.error });
+            return;
+          }
+          setUrl(result.url);
+          return;
+        }
+
+        const result = await fetchTemplate(url, undefined, signal);
+        if (signal.aborted) return;
         if (!result.success) {
           setState({ status: 'error', message: formatTemplateError(result.error) });
           return;
@@ -99,7 +101,7 @@ export function useTemplateFetcher({
         onSuccessRef.current?.(result.template);
       } catch (e) {
         // Ignore AbortError
-        if (e instanceof Error && e.name === 'AbortError') return;
+        if (signal.aborted || (e instanceof Error && e.name === 'AbortError')) return;
         setState({ status: 'error', message: 'Unknown error' });
       }
     };
@@ -108,7 +110,7 @@ export function useTemplateFetcher({
 
     return () => {
       debouncedFetch.cancel();
-      abortController?.abort();
+      abortController.abort();
     };
   }, [url, expectedId]);
 

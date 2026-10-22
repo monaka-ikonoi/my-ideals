@@ -11,7 +11,8 @@ export type TwitterShortenedLinkResult =
   { success: true; url: string } | { success: false; error: string };
 
 export async function extractTwitterShortenedLink(
-  url: string
+  url: string,
+  signal?: AbortSignal
 ): Promise<TwitterShortenedLinkResult> {
   if (!url || !isTwitterShortenedLink(url))
     return { success: false, error: 'Invalid Twitter shortened link' };
@@ -19,7 +20,7 @@ export async function extractTwitterShortenedLink(
   debugLog.network.log(`Extracting Twitter shortened link: ${url}`);
 
   try {
-    const response = await fetch(url, {});
+    const response = await fetch(url, { signal });
 
     if (!response.ok) {
       return {
@@ -60,6 +61,7 @@ export async function extractTwitterShortenedLink(
 
     return { success: false, error: 'Failed to extract URL from Twitter shortened link' };
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') throw error;
     return { success: false, error: `Error extracting Twitter shortened link: ${error}` };
   }
 }
