@@ -111,10 +111,10 @@ export const useProfileListStore = create<ProfileListStore>()(
         },
 
         importProfile: async (profile, overwrite) => {
-          const existingIndex = get().profiles.findIndex(p => p.id === profile.id);
+          const hasExistingProfile = get().profiles.some(p => p.id === profile.id);
 
           let finalProfile = profile;
-          if (existingIndex >= 0 && !overwrite) {
+          if (hasExistingProfile && !overwrite) {
             finalProfile = { ...profile, id: nanoid(), lastModified: Date.now() };
           }
 
@@ -122,9 +122,7 @@ export const useProfileListStore = create<ProfileListStore>()(
           await getProfileStorage().setProfile(finalProfile);
 
           set(state => {
-            if (existingIndex >= 0 && overwrite) {
-              state.profiles.splice(existingIndex, 1);
-            }
+            state.profiles = state.profiles.filter(p => p.id !== finalProfile.id);
             state.profiles.push({ id: finalProfile.id, name: finalProfile.name });
           });
 
