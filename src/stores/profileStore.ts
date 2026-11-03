@@ -15,7 +15,7 @@ import { getProfileStorage } from '@/storage/ProfileStorage';
 import { debugLog } from '@/utils/debug';
 import { writeField } from '@/utils/recordUtils';
 import { syncProfileWithTemplate } from '@/services/syncProfile';
-import { applyRecordMode, type RecordFieldWithOption } from '@/services/recordMode';
+import { applyRecordMode, type FieldMigration } from '@/services/recordMode';
 import { useSettingsStore } from './settingsStore';
 
 export type LoadedProfile = {
@@ -37,7 +37,7 @@ export type ProfileState = LoadedProfile & {
   toggleMember: (member: string) => void;
   updateName: (name: string) => void;
   updateTemplateInfo: (url: string, templateId?: string) => void;
-  setMode: (mode: RecordMode, customFields?: RecordFieldWithOption[]) => void;
+  setMode: (mode: RecordMode, fieldMigrations?: FieldMigration[]) => void;
 };
 
 export type ProfileStore = StoreApi<ProfileState>;
@@ -139,13 +139,13 @@ export function createProfileStore(loaded: LoadedProfile): ProfileStore {
           debouncedSave();
         },
 
-        setMode: (mode: RecordMode, customFields?: RecordFieldWithOption[]) => {
+        setMode: (mode: RecordMode, fieldMigrations?: FieldMigration[]) => {
           const { id, mode: previousMode } = get().profile;
           set(state => {
             if (state.profile.mode === mode && mode !== 'custom') return;
 
             debugLog.perf.time(`Apply record mode ${mode}`);
-            applyRecordMode(state.profile, mode, customFields);
+            applyRecordMode(state.profile, mode, fieldMigrations);
             state.fields = buildRecordFields(state.profile);
             state.fieldViews = buildRecordFieldViews(state.profile);
             touch(state.profile);

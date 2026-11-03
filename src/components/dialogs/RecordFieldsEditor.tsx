@@ -174,7 +174,7 @@ function RecordFieldCard({
         </div>
       </div>
 
-      {draft.inherit && (
+      {draft.source && (
         <p className="mt-2 text-xs text-gray-500">{t('dialog.record-fields.inherited-hint')}</p>
       )}
 
@@ -193,7 +193,7 @@ type RecordFieldsEditorProps = {
 export function RecordFieldsEditor({ drafts, onChange }: RecordFieldsEditorProps) {
   const { t } = useTranslation();
 
-  const hasInherit = drafts.some(draft => draft.inherit);
+  const hasSource = drafts.some(draft => draft.source);
 
   const validation = RecordFieldsSchema.safeParse(drafts);
   const duplicateIndexes = new Set(
@@ -238,8 +238,8 @@ export function RecordFieldsEditor({ drafts, onChange }: RecordFieldsEditorProps
             duplicateId={duplicateIndexes.has(index)}
             isFirst={index === 0}
             isLast={index === drafts.length - 1}
-            canRemove={drafts.length > 1 && !draft.inherit}
-            canMakePrimary={!hasInherit}
+            canRemove={drafts.length > 1 && !draft.source}
+            canMakePrimary={!hasSource}
             onChange={patch => patchDraft(draft.key, patch)}
             onMakePrimary={() => makePrimary(draft.key)}
             onMove={offset => moveDraft(index, offset)}

@@ -5,7 +5,7 @@ import {
   type RecordField,
   type RecordValue,
 } from '@/domain/profile';
-import { type RecordFieldWithOption, type InheritOptions } from '@/services/recordMode';
+import { type FieldMigration } from '@/services/recordMode';
 import { normalizeStatusNumber } from '@/utils/utils';
 
 export const FieldTypes = ['boolean', 'number'] as const;
@@ -14,7 +14,7 @@ export type DraftField = {
   key: string; // used at runtime only
   isNew: boolean;
   /** Takes over the previous mode's records, so it cannot be removed. */
-  inherit?: InheritOptions;
+  source?: FieldMigration['source'];
   id: string;
   name: string;
   type: (typeof FieldTypes)[number];
@@ -42,7 +42,7 @@ export const buildRecordFieldDrafts = (fields?: RecordField[]): DraftField[] => 
     return [
       {
         ...newRecordFieldDraftEntry(true),
-        inherit: 'value',
+        source: { fieldId: rootField.id },
         type: rootField.type,
         savedType: rootField.type,
         default: rootField.default,
@@ -67,39 +67,48 @@ export const buildRecordFieldDrafts = (fields?: RecordField[]): DraftField[] => 
 export const splitCountModeFields = (drafts: DraftField[], enabled: boolean): DraftField[] => {
   if (!enabled) {
     return drafts
-      .filter(draft => draft.inherit !== 'negative')
-      .map(draft => (draft.inherit === 'positive' ? { ...draft, inherit: 'value' } : draft));
+      .filter(draft => draft.source?.transform !== 'negative')
+      .map(draft =>
+        draft.source?.transform === 'positive'
+          ? { ...draft, source: { fieldId: draft.source.fieldId } }
+          : draft
+      );
   }
 
-  const inherited = drafts.find(draft => draft.inherit === 'value');
-  if (!inherited) return drafts;
+  const draft = drafts.find(draft => draft.source && draft.source.transform === undefined);
+  if (!draft || !draft.source) return drafts;
 
   const positive: DraftField = {
-    ...inherited,
-    inherit: 'positive',
+    ...draft,
+    source: { ...draft.source, transform: 'positive' },
     type: 'number',
     savedType: 'number',
-    default: normalizeStatusNumber(inherited.default),
+    default: normalizeStatusNumber(draft.default),
     primary: true,
   };
   const negative: DraftField = {
     ...newRecordFieldDraftEntry(),
-    inherit: 'negative',
+    source: { ...draft.source, transform: 'negative' },
     id: 'wanted',
     type: 'number',
     savedType: 'number',
     default: 0,
   };
 
-  return drafts.flatMap(draft => (draft.key === inherited.key ? [positive, negative] : [draft]));
+  return drafts.flatMap(d => (d.key === draft.key ? [positive, negative] : [d]));
 };
 
 export const validateRecordFieldDrafts = (drafts: DraftField[]): boolean =>
   RecordFieldsSchema.safeParse(drafts).success;
 
-export const parseRecordFieldDrafts = (drafts: DraftField[]): RecordFieldWithOption[] =>
-  RecordFieldsSchema.parse(drafts).map(({ primary, ...field }, index) => ({
+export const parseRecordFieldDrafts = (drafts: DraftField[]): RecordField[] =>
+  RecordFieldsSchema.parse(drafts).map(({ primary, ...field }) => ({
     ...field,
     ...(primary && { primary: true }),
-    ...(drafts[index].inherit && { inherit: drafts[index].inherit }),
+  }));
+
+export const buildFieldMigrations = (drafts: DraftField[]): FieldMigration[] =>
+  parseRecordFieldDrafts(drafts).map((field, index) => ({
+    field,
+    ...(drafts[index].source && { source: drafts[index].source }),
   }));

@@ -173,6 +173,8 @@
     "profile-mode": {
       "title": "モードを編集",
       "current-tag": "現在",
+      "pick-field-label": "残すフィールド",
+      "discard-fields-warn": "選択したフィールドのみを残します。他のフィールドとその記録は完全に削除されます。この操作は元に戻せません。",
       "count-to-standard-warn": "所持数が2以上のアイテムはすべて1として扱われ、数量データが失われます。この操作は元に戻せません。",
       "split-count": {
         "label": "求めの数量を別のフィールドに分ける",

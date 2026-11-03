@@ -173,6 +173,8 @@
     "profile-mode": {
       "title": "Edit Mode",
       "current-tag": "Current",
+      "pick-field-label": "Field to Keep",
+      "discard-fields-warn": "Only the selected field will be kept. All other fields and their records will be permanently deleted. This cannot be undone.",
       "count-to-standard-warn": "Items with quantity 2 or more will all be reduced to 1. Count data will be lost. This cannot be undone.",
       "split-count": {
         "label": "Split wanted quantities into their own field",

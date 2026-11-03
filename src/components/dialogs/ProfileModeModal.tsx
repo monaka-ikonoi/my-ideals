@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useShallow } from 'zustand/shallow';
-import { RECORD_FIELDS_MAX, RecordModes, type RecordMode } from '@/domain/profile';
+import {
+  RECORD_FIELDS_MAX,
+  RecordModes,
+  buildRecordFields,
+  getPrimaryField,
+  type RecordMode,
+} from '@/domain/profile';
 import {
   getActiveProfile,
   useActiveProfile,
@@ -9,7 +15,7 @@ import {
 } from '@/stores/profileSessionStore';
 import {
   buildRecordFieldDrafts,
-  parseRecordFieldDrafts,
+  buildFieldMigrations,
   validateRecordFieldDrafts,
   splitCountModeFields,
 } from './RecordFieldDrafts';
@@ -31,12 +37,22 @@ export function ProfileModeModal({ onClose }: ProfileModeModalProps) {
   const [mode, setMode] = useState<RecordMode>(currentMode);
   const [drafts, setDrafts] = useState(() => buildRecordFieldDrafts(fields));
   const [splitCount, setSplitCount] = useState(false);
+  const [sourceFieldId, setSourceFieldId] = useState(() => getPrimaryField(fields).id);
 
+  const canSave =
+    mode === 'custom'
+      ? validateRecordFieldDrafts(drafts)
+      : fields.find(field => field.id === sourceFieldId) !== undefined;
   const handleSave = () => {
-    getActiveProfile().setMode(
-      mode,
-      mode === 'custom' ? parseRecordFieldDrafts(drafts) : undefined
-    );
+    if (!canSave) return;
+    const fieldMigrations =
+      mode === 'custom'
+        ? buildFieldMigrations(drafts)
+        : buildRecordFields({ mode }).map(field => ({
+            field,
+            source: { fieldId: sourceFieldId },
+          }));
+    getActiveProfile().setMode(mode, fieldMigrations);
     useProfileSessionStore.getState().setFilterExpression(null);
     onClose();
   };
@@ -50,7 +66,6 @@ export function ProfileModeModal({ onClose }: ProfileModeModalProps) {
               {t('profile.mode.label')}
             </label>
             <DropdownSelect
-              disabled={currentMode === 'custom'}
               options={RecordModes.map(mode => ({
                 value: mode,
                 label:
@@ -95,6 +110,23 @@ export function ProfileModeModal({ onClose }: ProfileModeModalProps) {
             )}
           </div>
 
+          {currentMode === 'custom' && mode !== 'custom' && (
+            <div className="mb-4 space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                {t('dialog.profile-mode.pick-field-label')}
+              </label>
+              <DropdownSelect
+                options={fields.map(field => ({
+                  value: field.id,
+                  label: `${field.name} (${field.id})`,
+                }))}
+                value={sourceFieldId}
+                onChange={setSourceFieldId}
+              />
+              <p className="text-xs text-red-600">{t('dialog.profile-mode.discard-fields-warn')}</p>
+            </div>
+          )}
+
           {mode === 'custom' && <RecordFieldsEditor drafts={drafts} onChange={setDrafts} />}
         </div>
 
@@ -109,7 +141,7 @@ export function ProfileModeModal({ onClose }: ProfileModeModalProps) {
           <button
             type="button"
             onClick={handleSave}
-            disabled={mode === 'custom' && !validateRecordFieldDrafts(drafts)}
+            disabled={!canSave}
             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white
               hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           >

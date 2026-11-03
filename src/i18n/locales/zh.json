@@ -173,6 +173,8 @@
     "profile-mode": {
       "title": "编辑模式",
       "current-tag": "当前",
+      "pick-field-label": "保留字段",
+      "discard-fields-warn": "仅保留所选字段，其他字段及记录将被永久删除。此操作无法撤销。",
       "count-to-standard-warn": "持有 2 个以上的物品将全部变为 1，数量数据将丢失。此操作无法撤销。",
       "split-count": {
         "label": "将求收数量拆分为独立字段",
