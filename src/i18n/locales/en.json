@@ -308,7 +308,6 @@
     "error": "Error: {{error}}",
     "profile-deleted": "Profile {{name}} deleted",
     "template-link-copied": "Template link copied",
-    "profile-duplicate": {},
     "profile-created": "Created profile \"{{name}}\"",
     "profile-template url-updated": "Template link updated",
     "profile-imported": "Imported profile \"{{name}}\"",
